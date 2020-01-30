@@ -2,10 +2,7 @@ package cloudsim.interference;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.container.core.ContainerVm;
-import org.cloudbus.cloudsim.container.core.PowerContainerHost;
-import org.cloudbus.cloudsim.container.core.PowerContainerVm;
+import org.cloudbus.cloudsim.container.core.*;
 
 public abstract class IntContainerVmSelectionPolicy {
 
@@ -15,7 +12,7 @@ public abstract class IntContainerVmSelectionPolicy {
      * @param host the host
      * @return the vms to migrate
      */
-    public abstract ContainerVm getVmToMigrate(PowerContainerHost host);
+    public abstract ContainerVm getVmToMigrate(ContainerHost host);
 
     /**
      * Gets the migratable vms.
@@ -23,9 +20,9 @@ public abstract class IntContainerVmSelectionPolicy {
      * @param host the host
      * @return the migratable vms
      */
-    protected List<PowerContainerVm> getMigratableVms(PowerContainerHost host) {
-        List<PowerContainerVm> migratableVms = new ArrayList<>();
-        for (PowerContainerVm vm : host.<PowerContainerVm> getVmList()) {
+    protected List<ContainerVm> getMigratableVms(ContainerHost host) {
+        List<ContainerVm> migratableVms = new ArrayList<>();
+        for (ContainerVm vm : host.<ContainerVm> getVmList()) {
             if (!vm.isInMigration()) {
                 migratableVms.add(vm);
             }

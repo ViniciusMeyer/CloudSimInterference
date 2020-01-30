@@ -48,12 +48,8 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import cloudsim.interference.IntContainerAllocationPolicySimple;
 //adjusts
-import cloudsim.interference.IntContainerCloudlet;
-import cloudsim.interference.IntContainerVmSelectionPolicy;
-import cloudsim.interference.IntContainerVmSelectionPolicySimple;
-import cloudsim.interference.Interference;;
+import cloudsim.interference.*;
 
 /**
  * A simple example showing how to create a data center with one host, one VM,
@@ -66,7 +62,7 @@ public class ContainerCloudSimExampleInterference {
 	 */
 	static final boolean ENABLE_OUTPUT = true;
 	static final boolean OUTPUT_CSV = false;
-	static final double SCHEDULING_INTERVAL = 400.0D;
+	static final double SCHEDULING_INTERVAL = 300.0D;
 	static final double SIMULATION_LIMIT = 87400.0D;
 	/**
 	 * Cloudlet specs
@@ -190,17 +186,17 @@ public class ContainerCloudSimExampleInterference {
 			 * be selected for migration when a host is identified as over-loaded.
 			 *
 			 */
-			PowerContainerVmSelectionPolicy vmSelectionPolicy = new PowerContainerVmSelectionPolicyMaximumUsage();
-			// IntContainerVmSelectionPolicy vmSelectionPolicy = new
-			// IntContainerVmSelectionPolicySimple();
+			//PowerContainerVmSelectionPolicy vmSelectionPolicy = new PowerContainerVmSelectionPolicyMaximumUsage();
+			 IntContainerVmSelectionPolicy vmSelectionPolicy = new IntContainerVmSelectionPolicySimple();
 
 			/**
 			 * 4- Defining the host selection Policy. This policy determines which hosts
 			 * should be selected as migration destination.
 			 *
 			 */
-			HostSelectionPolicy hostSelectionPolicy = new HostSelectionPolicyFirstFit();
-			/**
+			//HostSelectionPolicy hostSelectionPolicy = new HostSelectionPolicyFirstFit();
+			 HostSelectionPolicy hostSelectionPolicy = new IntHostSelectionPolicyFirstFit();
+			 /**
 			 * 5- Defining the thresholds for selecting the under-utilized and over-utilized
 			 * hosts.
 			 */
@@ -219,7 +215,10 @@ public class ContainerCloudSimExampleInterference {
 			 * 7- The container allocation policy which defines the allocation of VMs to
 			 * containers.
 			 */
-			ContainerVmAllocationPolicy vmAllocationPolicy = new PowerContainerVmAllocationPolicyMigrationAbstractHostSelection(
+			//ContainerVmAllocationPolicy vmAllocationPolicy = new PowerContainerVmAllocationPolicyMigrationAbstractHostSelection(
+			//		hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
+			//		underUtilizationThreshold);
+			ContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(
 					hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
 					underUtilizationThreshold);
 			/**

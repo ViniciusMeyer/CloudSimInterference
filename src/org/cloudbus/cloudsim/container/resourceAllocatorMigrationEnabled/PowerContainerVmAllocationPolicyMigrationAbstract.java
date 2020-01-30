@@ -86,8 +86,7 @@ public abstract class PowerContainerVmAllocationPolicyMigrationAbstract extends 
 
         ExecutionTimeMeasurer.start("optimizeAllocationHostSelection");
         List<PowerContainerHostUtilizationHistory> overUtilizedHosts = getOverUtilizedHosts();
-        getExecutionTimeHistoryHostSelection().add(
-                ExecutionTimeMeasurer.end("optimizeAllocationHostSelection"));
+        getExecutionTimeHistoryHostSelection().add(ExecutionTimeMeasurer.end("optimizeAllocationHostSelection"));
 
         printOverUtilizedHosts(overUtilizedHosts);
 
@@ -99,10 +98,8 @@ public abstract class PowerContainerVmAllocationPolicyMigrationAbstract extends 
 
         Log.printLine("Reallocation of VMs from the over-utilized hosts:");
         ExecutionTimeMeasurer.start("optimizeAllocationVmReallocation");
-        List<Map<String, Object>> migrationMap = getNewVmPlacement(vmsToMigrate, new HashSet<ContainerHost>(
-                overUtilizedHosts));
-        getExecutionTimeHistoryVmReallocation().add(
-                ExecutionTimeMeasurer.end("optimizeAllocationVmReallocation"));
+        List<Map<String, Object>> migrationMap = getNewVmPlacement(vmsToMigrate, new HashSet<ContainerHost>(overUtilizedHosts));
+        getExecutionTimeHistoryVmReallocation().add(ExecutionTimeMeasurer.end("optimizeAllocationVmReallocation"));
         Log.printLine();
 
         migrationMap.addAll(getMigrationMapFromUnderUtilizedHosts(overUtilizedHosts, migrationMap));

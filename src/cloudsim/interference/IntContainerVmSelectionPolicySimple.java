@@ -3,8 +3,8 @@ package cloudsim.interference;
 import java.util.List;
 
 import org.cloudbus.cloudsim.container.core.ContainerVm;
-import org.cloudbus.cloudsim.container.core.PowerContainerHost;
-import org.cloudbus.cloudsim.container.core.PowerContainerVm;
+import org.cloudbus.cloudsim.container.core.ContainerHost;
+
 
 public class IntContainerVmSelectionPolicySimple extends IntContainerVmSelectionPolicy {
 
@@ -15,8 +15,8 @@ public class IntContainerVmSelectionPolicySimple extends IntContainerVmSelection
 	 * getVmsToMigrate(org.cloudbus .cloudsim.power.PowerHost)
 	 */
 	@Override
-	public ContainerVm getVmToMigrate(PowerContainerHost host) {
-		List<PowerContainerVm> migratableContainers = getMigratableVms(host);
+	public ContainerVm getVmToMigrate(ContainerHost host) {
+		List<ContainerVm> migratableContainers = getMigratableVms(host);
 		if (migratableContainers.isEmpty()) {
 			return null;
 		}
