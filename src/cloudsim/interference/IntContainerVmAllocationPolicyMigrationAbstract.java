@@ -70,7 +70,7 @@ public abstract class IntContainerVmAllocationPolicyMigrationAbstract extends In
     private final List<Double> executionTimeHistoryTotal = new LinkedList<Double>();
 
     /**
-     * Instantiates a new power vm allocation policy migration abstract.
+     * Instantiates a new vm allocation policy migration abstract.
      *
      * @param hostList          the host list
      * @param vmSelectionPolicy the vm selection policy
@@ -86,6 +86,9 @@ public abstract class IntContainerVmAllocationPolicyMigrationAbstract extends In
      *
      * @param vmList the vm list
      * @return the array list< hash map< string, object>>
+     * 
+     * OTIMIZAÇÃO DE VMS ... nao sei se VMS serão alteradas(otimizadas)
+     * 
      */
     @Override
     public List<Map<String, Object>> optimizeAllocation(List<? extends ContainerVm> vmList) {
@@ -123,6 +126,8 @@ public abstract class IntContainerVmAllocationPolicyMigrationAbstract extends In
      *
      * @param overUtilizedHosts the over utilized hosts
      * @return the migration map from under utilized hosts
+     * 
+     * MAPA DE MIGRAÇÃO ... ... nao sei se VMS serão alteradas(otimizadas)
      */
     protected List<Map<String, Object>> getMigrationMapFromUnderUtilizedHosts(
             List<PowerContainerHostUtilizationHistory> overUtilizedHosts, List<Map<String, Object>> previouseMap) {

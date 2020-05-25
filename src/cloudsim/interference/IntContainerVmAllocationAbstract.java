@@ -17,7 +17,7 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
         private final Map<String, ContainerHost> vmTable = new HashMap<String, ContainerHost>();
 
         /**
-         * Instantiates a new power vm allocation policy abstract.
+         * Instantiates a new vm allocation policy abstract.
          *
          * @param list the list
          */
@@ -62,7 +62,7 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * Find host for vm.
          *
          * @param containerVm the vm
-         * @return the power host
+         * @return the host
          */
         public ContainerHost findHostForVm(ContainerVm containerVm) {
             for (ContainerHost host : this.<ContainerHost> getContainerHostList()) {

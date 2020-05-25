@@ -26,6 +26,7 @@ import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicy
 import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicyFirstFit;
 import org.cloudbus.cloudsim.container.resourceAllocatorMigrationEnabled.PowerContainerVmAllocationPolicyMigrationAbstractHostSelection;
 import org.cloudbus.cloudsim.container.resourceAllocators.ContainerAllocationPolicy;
+import org.cloudbus.cloudsim.container.resourceAllocators.ContainerAllocationPolicySimple;
 import org.cloudbus.cloudsim.container.resourceAllocators.ContainerVmAllocationPolicy;
 import org.cloudbus.cloudsim.container.resourceAllocators.PowerContainerAllocationPolicySimple;
 import org.cloudbus.cloudsim.container.schedulers.ContainerCloudletSchedulerDynamicWorkload;
@@ -63,7 +64,7 @@ public class ContainerCloudSimExampleInterference {
 	static final boolean ENABLE_OUTPUT = true;
 	static final boolean OUTPUT_CSV = false;
 	static final double SCHEDULING_INTERVAL = 300.0D;
-	static final double SIMULATION_LIMIT = 87400.0D;
+	//static final double SIMULATION_LIMIT = 87400.0D;
 	/**
 	 * Cloudlet specs
 	 */
@@ -82,8 +83,8 @@ public class ContainerCloudSimExampleInterference {
 
 	static final int VM_TYPES = 1;
 	static final double[] VM_MIPS = new double[] { 400 };
-	static final int[] VM_PES = new int[] { 2 };
-	static final float[] VM_RAM = new float[] { (float) 1024 };// **MB*
+	static final int[] VM_PES = new int[] { 4 };
+	static final float[] VM_RAM = new float[] { (float) 2048 };// **MB*
 	static final int VM_BW = 100000;
 	static final int VM_SIZE = 2500;
 
@@ -92,9 +93,9 @@ public class ContainerCloudSimExampleInterference {
 	 */
 
 	static final int CONTAINER_TYPES = 1;
-	static final int[] CONTAINER_MIPS = new int[] { 100 };
-	static final int[] CONTAINER_PES = new int[] { 1 };
-	static final int[] CONTAINER_RAM = new int[] { 256 };
+	static final int[] CONTAINER_MIPS = new int[] { 200 };
+	static final int[] CONTAINER_PES = new int[] { 2 };
+	static final int[] CONTAINER_RAM = new int[] { 1024 };
 	static final int CONTAINER_BW = 2500;
 
 	/**
@@ -103,7 +104,7 @@ public class ContainerCloudSimExampleInterference {
 
 	static final int HOST_TYPES = 1;
 	static final int[] HOST_MIPS = new int[] { 400 };
-	static final int[] HOST_PES = new int[] { 2 };
+	static final int[] HOST_PES = new int[] { 4 };
 	static final int[] HOST_RAM = new int[] { 2048 };
 	static final int HOST_BW = 1000000;
 	static final int HOST_STORAGE = 1000000;
@@ -116,9 +117,9 @@ public class ContainerCloudSimExampleInterference {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS = 1;
-	static final int NUMBER_VMS = 1;
-	static final int NUMBER_CLOUDLETS = 2;
+	static final int NUMBER_HOSTS = 4;
+	static final int NUMBER_VMS = 4;
+	static final int NUMBER_CLOUDLETS = 8;
 
 	/**
 	 * The cloudlet list.
@@ -178,7 +179,7 @@ public class ContainerCloudSimExampleInterference {
 			 */
 
 			// ContainerAllocationPolicy containerAllocationPolicy = new PowerContainerAllocationPolicySimple();
-			IntContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
+			ContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
 
 			/**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 			 * 3- Defining the VM selection Policy. This policy determines which VMs should
@@ -211,15 +212,26 @@ public class ContainerCloudSimExampleInterference {
 			cloudletList = new ArrayList<IntContainerCloudlet>();
 			vmList = new ArrayList<ContainerVm>();
 			/**
-			 * 7- The container allocation policy which defines the allocation of VMs to
-			 * containers.
+			 * 7- The container allocation policy which defines the allocation of VMs to containers.
 			 */
 			//ContainerVmAllocationPolicy vmAllocationPolicy = new PowerContainerVmAllocationPolicyMigrationAbstractHostSelection(
 			//		hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
 			//		underUtilizationThreshold);
+						
+			
+			// não sei pq foi utilizado PowerContainer como referencia, mas dentro de IntContainerVmAllocationPolicyMigrationAbstractHostSelection 
+			//(nossa versão de vmAllocationPolicy) tem funções importantes, como:     (muitas nao serão utilizadadas)
+			// findHostForVm
+			//Essa classe extende IntContainerVmAllocationPolicyMigrationAbstract que tem várias funções importantes, como:
+			//optimizeAllocation
+			//findHostForVm
+			// ##### TODO --- MAPEAR TODAS AS FUNÇÕES DESSA CLASSE
 			ContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(
 					hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
 					underUtilizationThreshold);
+			
+			
+
 			/**
 			 * 8- The overbooking factor for allocating containers to VMs. This factor is
 			 * used by the broker for the allocation process.
@@ -256,7 +268,9 @@ public class ContainerCloudSimExampleInterference {
 			 * 12- Determining the simulation termination time according to the cloudlet's
 			 * workload.
 			 */
-			CloudSim.terminateSimulation(86400.00);
+			
+			//CloudSim.terminateSimulation(86400.00);
+			
 			/**
 			 * 13- Starting the simualtion.
 			 */
@@ -361,7 +375,8 @@ public class ContainerCloudSimExampleInterference {
 
 		for (int i = 0; i < containerVmsNumber; ++i) {
 			ArrayList<ContainerPe> peList = new ArrayList<ContainerPe>();
-			int vmType = i / (int) Math.ceil((double) containerVmsNumber / 4.0D);
+			//int vmType = i / (int) Math.ceil((double) containerVmsNumber / 4.0D);
+			int vmType = 0;
 			for (int j = 0; j < VM_PES[vmType]; ++j) {
 				peList.add(new ContainerPe(j, new CotainerPeProvisionerSimple((double) VM_MIPS[vmType])));
 			}
@@ -387,7 +402,8 @@ public class ContainerCloudSimExampleInterference {
 	public static List<ContainerHost> createHostList(int hostsNumber) {
 		ArrayList<ContainerHost> hostList = new ArrayList<ContainerHost>();
 		for (int i = 0; i < hostsNumber; ++i) {
-			int hostType = i / (int) Math.ceil((double) hostsNumber / 3.0D);
+			//int hostType = i / (int) Math.ceil((double) hostsNumber / 3.0D); /// para deixar um tipo só, homogeneo
+			int hostType = 0;
 			ArrayList<ContainerVmPe> peList = new ArrayList<ContainerVmPe>();
 			for (int j = 0; j < HOST_PES[hostType]; ++j) {
 				peList.add(new ContainerVmPe(j, new ContainerVmPeProvisionerSimple((double) HOST_MIPS[hostType])));

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package cloudsim.interference;
 
 import org.cloudbus.cloudsim.container.core.Container;
@@ -17,12 +14,9 @@ import java.util.Map;
  * @author sareh
  *
  */
-public class IntContainerAllocationPolicySimple extends IntContainerAllocationPolicy {
-
-	
-	
-
-    /** The container table. */
+public class IntContainerAllocationPolicySimple extends ContainerAllocationPolicy {
+    
+	/** The container table. */
     private final Map<String, ContainerVm> containerTable = new HashMap<>();
 
     /**
@@ -55,7 +49,7 @@ public class IntContainerAllocationPolicySimple extends IntContainerAllocationPo
             return false;
         }
         if (containerVm.containerCreate(container)) { // if vm has been succesfully created in the host
-            getContainerTable().put(container.getUid(), containerVm);
+            getContainerTable().put(container.getUid(), containerVm);            
 //            container.setVm(containerVm);
             //System.out.println("########## container ########## "+container.getId());
             Log.formatLine(
