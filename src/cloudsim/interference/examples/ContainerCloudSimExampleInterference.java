@@ -177,11 +177,10 @@ public class ContainerCloudSimExampleInterference {
 			 *
 			 */
 
-			// ContainerAllocationPolicy containerAllocationPolicy = new
-			// PowerContainerAllocationPolicySimple();
-			ContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
+			// ContainerAllocationPolicy containerAllocationPolicy = new PowerContainerAllocationPolicySimple();
+			IntContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
 
-			/**
+			/**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 			 * 3- Defining the VM selection Policy. This policy determines which VMs should
 			 * be selected for migration when a host is identified as over-loaded.
 			 *
@@ -473,12 +472,13 @@ public class ContainerCloudSimExampleInterference {
 	 */
 	public static List<IntContainerCloudlet> createIntContainerCloudletList(int brokerId, int numberOfCloudlets)
 			throws FileNotFoundException {
-		String inputFolderName = System.getProperty("user.dir")+"/src/resources/workload/interference1";//ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
-		System.out.println(inputFolderName);
-		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>();
+		//pasta com os traces de interferência
+		String inputFolderName = System.getProperty("user.dir")+"/src/resources/workload/interference";//ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
+		//System.out.println(inputFolderName);
+		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>(); // criar um ArrayList de IntContainerCloudlet
 		long fileSize = 300L;
 		long outputSize = 300L;
-		UtilizationModelNull utilizationModelNull = new UtilizationModelNull();
+		UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); //Modo NULO (simples)
 		java.io.File inputFolder1 = new java.io.File(inputFolderName);
 		java.io.File[] files1 = inputFolder1.listFiles();
 		int createdCloudlets = 0;

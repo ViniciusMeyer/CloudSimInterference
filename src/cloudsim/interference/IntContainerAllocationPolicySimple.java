@@ -17,7 +17,7 @@ import java.util.Map;
  * @author sareh
  *
  */
-public class IntContainerAllocationPolicySimple extends ContainerAllocationPolicy {
+public class IntContainerAllocationPolicySimple extends IntContainerAllocationPolicy {
 
 	
 	
@@ -59,8 +59,7 @@ public class IntContainerAllocationPolicySimple extends ContainerAllocationPolic
 //            container.setVm(containerVm);
             //System.out.println("########## container ########## "+container.getId());
             Log.formatLine(
-                    "%.2f: Container #" + container.getId() + "  has been allocated to the VM #" + containerVm.getId(),
-                    CloudSim.clock());
+                    "%.2f: Container #" + container.getId() + "  has been allocated to the VM #" + containerVm.getId(), CloudSim.clock());
             return true;
         }
         Log.formatLine(
