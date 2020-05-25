@@ -473,7 +473,7 @@ public class ContainerCloudSimExampleInterference {
 	 */
 	public static List<IntContainerCloudlet> createIntContainerCloudletList(int brokerId, int numberOfCloudlets)
 			throws FileNotFoundException {
-		String inputFolderName = System.getProperty("user.dir")+"/src/resources/workload/interference";//ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
+		String inputFolderName = System.getProperty("user.dir")+"/src/resources/workload/interference1";//ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
 		System.out.println(inputFolderName);
 		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>();
 		long fileSize = 300L;
