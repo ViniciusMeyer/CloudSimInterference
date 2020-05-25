@@ -463,7 +463,6 @@ public class ContainerCloudSimExampleInterference {
 		return containers;
 	}
 	
-
 	/**
 	 * Creating the cloudlet list that are going to run on containers 
 	 *
