@@ -10,6 +10,8 @@ package cloudsim.interference.examples;
  */
 
 import org.cloudbus.cloudsim.Cloudlet;
+import cloudsim.interference.IntContainerDataCenterBroker;
+import cloudsim.interference.IntContainerDataCenter;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.UtilizationModelNull;
@@ -56,7 +58,7 @@ import cloudsim.interference.*;
  * A simple example showing how to create a data center with one host, one VM,
  * one container and run one cloudlet on it.
  */
-public class ContainerCloudSimExampleInterference {
+public class XXContainerCloudSimExampleInterference2 {
 
 	/**
 	 * Simulation parameters including the interval and limit
@@ -64,7 +66,7 @@ public class ContainerCloudSimExampleInterference {
 	static final boolean ENABLE_OUTPUT = true;
 	static final boolean OUTPUT_CSV = false;
 	static final double SCHEDULING_INTERVAL = 300.0D;
-	//static final double SIMULATION_LIMIT = 87400.0D;
+	// static final double SIMULATION_LIMIT = 87400.0D;
 	/**
 	 * Cloudlet specs
 	 */
@@ -178,25 +180,27 @@ public class ContainerCloudSimExampleInterference {
 			 *
 			 */
 
-			// ContainerAllocationPolicy containerAllocationPolicy = new PowerContainerAllocationPolicySimple();
+			// ContainerAllocationPolicy containerAllocationPolicy = new
+			// PowerContainerAllocationPolicySimple();
 			ContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
 
-			/**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			/**
 			 * 3- Defining the VM selection Policy. This policy determines which VMs should
 			 * be selected for migration when a host is identified as over-loaded.
 			 *
 			 */
-			//PowerContainerVmSelectionPolicy vmSelectionPolicy = new PowerContainerVmSelectionPolicyMaximumUsage();
-			 IntContainerVmSelectionPolicy vmSelectionPolicy = new IntContainerVmSelectionPolicySimple();
+			// PowerContainerVmSelectionPolicy vmSelectionPolicy = new
+			// PowerContainerVmSelectionPolicyMaximumUsage();
+			IntContainerVmSelectionPolicy vmSelectionPolicy = new IntContainerVmSelectionPolicySimple();
 
 			/**
 			 * 4- Defining the host selection Policy. This policy determines which hosts
 			 * should be selected as migration destination.
 			 *
 			 */
-			//HostSelectionPolicy hostSelectionPolicy = new HostSelectionPolicyFirstFit();
-			 HostSelectionPolicy hostSelectionPolicy = new IntHostSelectionPolicyFirstFit();
-			 /**
+			// HostSelectionPolicy hostSelectionPolicy = new HostSelectionPolicyFirstFit();
+			HostSelectionPolicy hostSelectionPolicy = new IntHostSelectionPolicyFirstFit();
+			/**
 			 * 5- Defining the thresholds for selecting the under-utilized and over-utilized
 			 * hosts.
 			 */
@@ -211,57 +215,56 @@ public class ContainerCloudSimExampleInterference {
 			hostList = createHostList(NUMBER_HOSTS);
 			cloudletList = new ArrayList<IntContainerCloudlet>();
 			vmList = new ArrayList<ContainerVm>();
-			
-			
+
 			/**
-			 * 7- The container allocation policy which defines the allocation of VMs to containers.
+			 * 7- The container allocation policy which defines the allocation of VMs to
+			 * containers.
 			 */
-			/*ContainerVmAllocationPolicy vmAllocationPolicy = new PowerContainerVmAllocationPolicyMigrationAbstractHostSelection(
-			*		hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
-			*		underUtilizationThreshold);
-			*			
-			*não sei pq foi utilizado PowerContainer como referencia, mas dentro de IntContainerVmAllocationPolicyMigrationAbstractHostSelection 
-			*(nossa versão de vmAllocationPolicy) tem funções importantes, como:     (muitas nao serão utilizadadas)
-			* findHostForVm
-			* vmSelectionPolicy (esse objeto vai dentro do ContainerVmALlocationPollicy)			
-			*
-			*Essa classe extende IntContainerVmAllocationPolicyMigrationAbstract que tem várias funções importantes, como:
-			*
-			*optimizeAllocation (Optimize allocation of the VMs according to current utilization.)
-			*getMigrationMapFromUnderUtilizedHosts (Gets the migration map from under utilized hosts)
-			*printOverUtilizedHosts (Prints the over utilized hosts.)
-			*findHostForVm (Find host for vm.)
-			*isHostOverUtilizedAfterAllocation (Checks if is host over utilized after allocation.)
-			*findHostForVm (Find host for vm.)
-			*extractHostListFromMigrationMap (Extract host list from migration map.)
-			*getNewVmPlacement (Gets the new vm placement.)
-			*getNewVmPlacementFromUnderUtilizedHost (Gets the new vm placement from under utilized host.)
-			*getVmsToMigrateFromHosts (Gets the vms to migrate from hosts.)
-			*getVmsToMigrateFromUnderUtilizedHost (Gets the vms to migrate from under utilized host.)
-			*getOverUtilizedHosts (Gets the over utilized hosts.)
-			*getSwitchedOffHosts ( Gets the switched off host.)
-			*getUnderUtilizedHost (Gets the under utilized host.)
-			*reAllVmsMigratingOutOrAnyVmMigratingIn (Checks whether all vms are in migration.)
-			*areAllContainersMigratingOutOrAnyContainersMigratingIn (Checks whether all vms are in migration.)
-			*históricos de tempo de alterações (migrações etc)
-			*outros ... 
-			*
-			*/
-			
-			
+			/*
+			 * ContainerVmAllocationPolicy vmAllocationPolicy = new
+			 * PowerContainerVmAllocationPolicyMigrationAbstractHostSelection( hostList,
+			 * vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
+			 * underUtilizationThreshold);
+			 * 
+			 * não sei pq foi utilizado PowerContainer como referencia, mas dentro de
+			 * IntContainerVmAllocationPolicyMigrationAbstractHostSelection (nossa versão de
+			 * vmAllocationPolicy) tem funções importantes, como: (muitas nao serão
+			 * utilizadadas) findHostForVm vmSelectionPolicy (esse objeto vai dentro do
+			 * ContainerVmALlocationPollicy)
+			 *
+			 * Essa classe extende IntContainerVmAllocationPolicyMigrationAbstract que tem
+			 * várias funções importantes, como:
+			 *
+			 * optimizeAllocation (Optimize allocation of the VMs according to current
+			 * utilization.) getMigrationMapFromUnderUtilizedHosts (Gets the migration map
+			 * from under utilized hosts) printOverUtilizedHosts (Prints the over utilized
+			 * hosts.) findHostForVm (Find host for vm.) isHostOverUtilizedAfterAllocation
+			 * (Checks if is host over utilized after allocation.) findHostForVm (Find host
+			 * for vm.) extractHostListFromMigrationMap (Extract host list from migration
+			 * map.) getNewVmPlacement (Gets the new vm placement.)
+			 * getNewVmPlacementFromUnderUtilizedHost (Gets the new vm placement from under
+			 * utilized host.) getVmsToMigrateFromHosts (Gets the vms to migrate from
+			 * hosts.) getVmsToMigrateFromUnderUtilizedHost (Gets the vms to migrate from
+			 * under utilized host.) getOverUtilizedHosts (Gets the over utilized hosts.)
+			 * getSwitchedOffHosts ( Gets the switched off host.) getUnderUtilizedHost (Gets
+			 * the under utilized host.) reAllVmsMigratingOutOrAnyVmMigratingIn (Checks
+			 * whether all vms are in migration.)
+			 * areAllContainersMigratingOutOrAnyContainersMigratingIn (Checks whether all
+			 * vms are in migration.) históricos de tempo de alterações (migrações etc)
+			 * outros ...
+			 *
+			 */
+
 			ContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(
 					hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
 					underUtilizationThreshold);
-			
-			
 
 			/**
 			 * 8- The overbooking factor for allocating containers to VMs. This factor is
 			 * used by the broker for the allocation process.
 			 */
-			
-			int overBookingFactor = 80;
-			ContainerDatacenterBroker broker = createBroker(overBookingFactor);
+
+			IntContainerDataCenterBroker broker = createBroker("Broker");
 			int brokerId = broker.getId();
 			/**
 			 * 9- Creating the cloudlet, container and VM lists for submitting to the
@@ -270,13 +273,13 @@ public class ContainerCloudSimExampleInterference {
 			cloudletList = createIntContainerCloudletList(brokerId, NUMBER_CLOUDLETS);
 
 			// imprimir um trace de interferencia
-			//for(int o=0; o<cloudletList.get(0).interfMetrics.getIntLength();o++){
-			//	for(int h=0; h<7; h++){
-			//		Log.print(cloudletList.get(0).interfMetrics.getIntByLine(o)[h]+" ");
-			//	}
-			//	Log.print("\n");
-			//}
-			
+			// for(int o=0; o<cloudletList.get(0).interfMetrics.getIntLength();o++){
+			// for(int h=0; h<7; h++){
+			// Log.print(cloudletList.get(0).interfMetrics.getIntByLine(o)[h]+" ");
+			// }
+			// Log.print("\n");
+			// }
+
 			containerList = createContainerList(brokerId, NUMBER_CLOUDLETS);
 			vmList = createVmList(brokerId, NUMBER_VMS);
 			/**
@@ -286,11 +289,10 @@ public class ContainerCloudSimExampleInterference {
 			String logAddress = "~/Results";
 
 			@SuppressWarnings("unused")
-			PowerContainerDatacenter e = (PowerContainerDatacenter) createDatacenter("datacenter",
-					PowerContainerDatacenterCM.class, hostList, vmAllocationPolicy, containerAllocationPolicy,
-					getExperimentName("ContainerCloudSimExample-1", String.valueOf(overBookingFactor)),
+			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter",
+					 IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "aa",
 					SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY);
-
+			 
 			/**
 			 * 11- Submitting the cloudlet's , container's , and VM's lists to the broker.
 			 */
@@ -301,9 +303,9 @@ public class ContainerCloudSimExampleInterference {
 			 * 12- Determining the simulation termination time according to the cloudlet's
 			 * workload.
 			 */
-			
-			//CloudSim.terminateSimulation(86400.00);
-			
+
+			// CloudSim.terminateSimulation(86400.00);
+
 			/**
 			 * 13- Starting the simualtion.
 			 */
@@ -352,12 +354,13 @@ public class ContainerCloudSimExampleInterference {
 	 * @param overBookingFactor
 	 * @return the datacenter broker
 	 */
-	private static ContainerDatacenterBroker createBroker(int overBookingFactor) {
+	private static IntContainerDataCenterBroker createBroker(String name) {
 
-		ContainerDatacenterBroker broker = null;
+		IntContainerDataCenterBroker broker = null;
+
 
 		try {
-			broker = new ContainerDatacenterBroker("Broker", overBookingFactor);
+			broker = new IntContainerDataCenterBroker(name,0);
 		} catch (Exception var2) {
 			var2.printStackTrace();
 			System.exit(0);
@@ -408,7 +411,7 @@ public class ContainerCloudSimExampleInterference {
 
 		for (int i = 0; i < containerVmsNumber; ++i) {
 			ArrayList<ContainerPe> peList = new ArrayList<ContainerPe>();
-			//int vmType = i / (int) Math.ceil((double) containerVmsNumber / 4.0D);
+			// int vmType = i / (int) Math.ceil((double) containerVmsNumber / 4.0D);
 			int vmType = 0;
 			for (int j = 0; j < VM_PES[vmType]; ++j) {
 				peList.add(new ContainerPe(j, new CotainerPeProvisionerSimple((double) VM_MIPS[vmType])));
@@ -435,7 +438,8 @@ public class ContainerCloudSimExampleInterference {
 	public static List<ContainerHost> createHostList(int hostsNumber) {
 		ArrayList<ContainerHost> hostList = new ArrayList<ContainerHost>();
 		for (int i = 0; i < hostsNumber; ++i) {
-			//int hostType = i / (int) Math.ceil((double) hostsNumber / 3.0D); /// para deixar um tipo só, homogeneo
+			// int hostType = i / (int) Math.ceil((double) hostsNumber / 3.0D); /// para
+			// deixar um tipo só, homogeneo
 			int hostType = 0;
 			ArrayList<ContainerVmPe> peList = new ArrayList<ContainerVmPe>();
 			for (int j = 0; j < HOST_PES[hostType]; ++j) {
@@ -480,7 +484,7 @@ public class ContainerCloudSimExampleInterference {
 		double costPerBw = 0.0D;
 		ContainerDatacenterCharacteristics characteristics = new ContainerDatacenterCharacteristics(arch, os, vmm,
 				hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
-		ContainerDatacenter datacenter = new PowerContainerDatacenterCM(name, characteristics, vmAllocationPolicy,
+		ContainerDatacenter datacenter = new IntContainerDataCenter(name, characteristics, vmAllocationPolicy,
 				containerAllocationPolicy, new LinkedList<Storage>(), schedulingInterval, experimentName, logAddress,
 				VMStartupDelay, ContainerStartupDelay);
 
@@ -510,9 +514,9 @@ public class ContainerCloudSimExampleInterference {
 
 		return containers;
 	}
-	
+
 	/**
-	 * Creating the cloudlet list that are going to run on containers 
+	 * Creating the cloudlet list that are going to run on containers
 	 *
 	 * @param brokerId
 	 * @param numberOfCloudlets
@@ -521,13 +525,14 @@ public class ContainerCloudSimExampleInterference {
 	 */
 	public static List<IntContainerCloudlet> createIntContainerCloudletList(int brokerId, int numberOfCloudlets)
 			throws FileNotFoundException {
-		//pasta com os traces de interferência
-		String inputFolderName = System.getProperty("user.dir")+"/src/resources/workload/interference";//ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
-		//System.out.println(inputFolderName);
-		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>(); // criar um ArrayList de IntContainerCloudlet
+		// pasta com os traces de interferência
+		String inputFolderName = System.getProperty("user.dir") + "/src/resources/workload/interference";// ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
+		// System.out.println(inputFolderName);
+		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>(); // criar um ArrayList de
+																								// IntContainerCloudlet
 		long fileSize = 300L;
 		long outputSize = 300L;
-		UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); //Modo NULO (simples)
+		UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); // Modo NULO (simples)
 		java.io.File inputFolder1 = new java.io.File(inputFolderName);
 		java.io.File[] files1 = inputFolder1.listFiles();
 		int createdCloudlets = 0;

@@ -1,11 +1,12 @@
 package cloudsim.interference;
 
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.container.core.ContainerCloudlet;
 
 public class IntContainerCloudlet extends ContainerCloudlet{
 
-protected Interference interfMetrics = new Interference();
+public Interference interfMetrics;
 	
 	public IntContainerCloudlet(int cloudletId, long cloudletLength, int pesNumber, long cloudletFileSize,
 			long cloudletOutputSize, UtilizationModel utilizationModelCpu, UtilizationModel utilizationModelRam,
@@ -15,6 +16,7 @@ protected Interference interfMetrics = new Interference();
 		// TODO Auto-generated constructor stub
 		
 		this.interfMetrics = interfMetrics;
+
 	}
 	
 

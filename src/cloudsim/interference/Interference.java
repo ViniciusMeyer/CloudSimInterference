@@ -133,15 +133,12 @@ public class Interference {
 	}
 
 	public int[] getIntByLine(int number) {
-		// int[] result = new int[7];
-
-		// for (int i = 0; i < result.length; i++) {
-		// result[i] = interf.get(number)[i];
-		// }
-
-		// return result;
-
 		return interf.get(number);
 	}
+	
+	public int getIntLength() {
+			return interf.size();
+	}
+	
 
 }

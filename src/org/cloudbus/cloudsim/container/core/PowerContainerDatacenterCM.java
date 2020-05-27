@@ -50,9 +50,9 @@ public class PowerContainerDatacenterCM extends PowerContainerDatacenter {
     }
 
     @Override
-    protected void updateCloudletProcessing() {
+    protected void updateCloudletProcessing() { // descobrir quem chama essa funcao
 
-        //        Log.printLine("Power data center is Updating the cloudlet processing");
+               Log.printLine("Power data center is Updating the cloudlet processing");
         if (getCloudletSubmitted() == -1 || getCloudletSubmitted() == CloudSim.clock()) {
             CloudSim.cancelAll(getId(), new PredicateType(CloudSimTags.VM_DATACENTER_EVENT));
             schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_DATACENTER_EVENT);
@@ -258,6 +258,8 @@ public class PowerContainerDatacenterCM extends PowerContainerDatacenter {
 
             if (result) {
                 Log.printLine(String.format("%s VM ID #%d is created on Host #%d", CloudSim.clock(), containerVm.getId(), host.getId()));
+                
+                                              
                 incrementNewlyCreatedVmsCount();
                 getContainerVmList().add(containerVm);
 

@@ -1,5 +1,7 @@
-package org.cloudbus.cloudsim.container.core;
+package cloudsim.interference;
 
+import org.cloudbus.cloudsim.container.core.*;
+import org.cloudbus.cloudsim.container.core.Container;
 import org.cloudbus.cloudsim.container.lists.ContainerList;
 import org.cloudbus.cloudsim.container.lists.ContainerVmList;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
@@ -18,12 +20,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * Created by sareh on 15/07/15.
  */
 
-public class ContainerDatacenterBroker extends SimEntity {
+public class IntContainerDataCenterBroker extends SimEntity {
 
+	
 	/**
 	 * The vm list.
 	 */
@@ -41,7 +50,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	/**
 	 * The cloudlet list.
 	 */
-	protected List<? extends ContainerCloudlet> cloudletList;
+	protected List<? extends IntContainerCloudlet> cloudletList;
 	/**
 	 * The container list
 	 */
@@ -51,12 +60,12 @@ public class ContainerDatacenterBroker extends SimEntity {
 	/**
 	 * The cloudlet submitted list.
 	 */
-	protected List<? extends ContainerCloudlet> cloudletSubmittedList;
+	protected List<? extends IntContainerCloudlet> cloudletSubmittedList;
 
 	/**
 	 * The cloudlet received list.
 	 */
-	protected List<? extends ContainerCloudlet> cloudletReceivedList;
+	protected List<? extends IntContainerCloudlet> cloudletReceivedList;
 
 	/**
 	 * The cloudlets submitted.
@@ -127,16 +136,16 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @pre name != null
 	 * @post $none
 	 */
-	public ContainerDatacenterBroker(String name, double overBookingfactor) throws Exception {
+	public IntContainerDataCenterBroker(String name, double overBookingfactor) throws Exception {
 		super(name);
 
 		setVmList(new ArrayList<ContainerVm>());
 		setContainerList(new ArrayList<Container>());
 		setVmsCreatedList(new ArrayList<ContainerVm>());
 		setContainersCreatedList(new ArrayList<Container>());
-		setCloudletList(new ArrayList<ContainerCloudlet>());
-		setCloudletSubmittedList(new ArrayList<ContainerCloudlet>());
-		setCloudletReceivedList(new ArrayList<ContainerCloudlet>());
+		setCloudletList(new ArrayList<IntContainerCloudlet>());
+		setCloudletSubmittedList(new ArrayList<IntContainerCloudlet>());
+		setCloudletReceivedList(new ArrayList<IntContainerCloudlet>());
 		cloudletsSubmitted = 0;
 		setVmsRequested(0);
 		setVmsAcks(0);
@@ -171,7 +180,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @pre list !=null
 	 * @post $none
 	 */
-	public void submitCloudletList(List<? extends ContainerCloudlet> list) {
+	public void submitCloudletList(List<? extends IntContainerCloudlet> list) {
 		getCloudletList().addAll(list);
 	}
 
@@ -258,6 +267,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 				Log.printConcatLine("Error : Where is the VM");
 			} else {
 				getContainersToVmsMap().put(containerId, vmId);
+				//getContainersCreatedList().add(ContainerList.getById(getContainerList(), containerId));
 				getContainersCreatedList().add(ContainerList.getById(getContainerList(), containerId));
 
 				// ContainerVm p= ContainerVmList.getById(getVmsCreatedList(), vmId);
@@ -402,7 +412,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processCloudletReturn(SimEvent ev) {
-		ContainerCloudlet cloudlet = (ContainerCloudlet) ev.getData();
+		IntContainerCloudlet cloudlet = (IntContainerCloudlet) ev.getData();
 		getCloudletReceivedList().add(cloudlet);
 		Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Cloudlet ", cloudlet.getCloudletId(), " returned");
 		Log.printConcatLine(CloudSim.clock(), ": ", getName(), "The number of finished Cloudlets is:",
@@ -474,8 +484,8 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 */
 	protected void submitCloudlets() {
 		int containerIndex = 0;
-		List<ContainerCloudlet> successfullySubmitted = new ArrayList<>();
-		for (ContainerCloudlet cloudlet : getCloudletList()) {
+		List<IntContainerCloudlet> successfullySubmitted = new ArrayList<>();
+		for (IntContainerCloudlet cloudlet : getCloudletList()) {
 			// Log.printLine("Containers Created" + getContainersCreated());
 			if (containerIndex < getContainersCreated()) {
 				// Log.printLine("Container Index" + containerIndex);
@@ -525,8 +535,8 @@ public class ContainerDatacenterBroker extends SimEntity {
 //            containerIndex = (containerIndex + 1) % getVmsCreatedList().size();
 
 //          int vmIndex = 0;
-//        List<ContainerCloudlet> successfullySubmitted = new ArrayList<ContainerCloudlet>();
-//        for (ContainerCloudlet cloudlet : getCloudletList()) {
+//        List<IntContainerCloudlet> successfullySubmitted = new ArrayList<IntContainerCloudlet>();
+//        for (IntContainerCloudlet cloudlet : getCloudletList()) {
 //            ContainerVm vm;
 //            // if user didn't bind this cloudlet and it has not been executed yet
 //            if (cloudlet.getVmId() == -1) {
@@ -583,7 +593,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 		List<Container> successfullySubmitted = new ArrayList<>();
 		int i = 0;
 		for (Container container : getContainerList()) {
-			ContainerCloudlet cloudlet = getCloudletList().get(i);
+			IntContainerCloudlet cloudlet = getCloudletList().get(i);
 			// Log.printLine("Containers Created" + getContainersCreated());
 
 			if (cloudlet.getUtilizationModelCpu() instanceof UtilizationModelPlanetLabInMemory) {
@@ -690,7 +700,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @return the cloudlet list
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends ContainerCloudlet> List<T> getCloudletList() {
+	public <T extends IntContainerCloudlet> List<T> getCloudletList() {
 		return (List<T>) cloudletList;
 	}
 
@@ -700,7 +710,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @param <T>          the generic type
 	 * @param cloudletList the new cloudlet list
 	 */
-	protected <T extends ContainerCloudlet> void setCloudletList(List<T> cloudletList) {
+	protected <T extends IntContainerCloudlet> void setCloudletList(List<T> cloudletList) {
 		this.cloudletList = cloudletList;
 	}
 
@@ -711,7 +721,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @return the cloudlet submitted list
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends ContainerCloudlet> List<T> getCloudletSubmittedList() {
+	public <T extends IntContainerCloudlet> List<T> getCloudletSubmittedList() {
 		return (List<T>) cloudletSubmittedList;
 	}
 
@@ -721,7 +731,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @param <T>                   the generic type
 	 * @param cloudletSubmittedList the new cloudlet submitted list
 	 */
-	protected <T extends ContainerCloudlet> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
+	protected <T extends IntContainerCloudlet> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
 		this.cloudletSubmittedList = cloudletSubmittedList;
 	}
 
@@ -732,7 +742,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @return the cloudlet received list
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends ContainerCloudlet> List<T> getCloudletReceivedList() {
+	public <T extends IntContainerCloudlet> List<T> getCloudletReceivedList() {
 		return (List<T>) cloudletReceivedList;
 	}
 
@@ -742,7 +752,7 @@ public class ContainerDatacenterBroker extends SimEntity {
 	 * @param <T>                  the generic type
 	 * @param cloudletReceivedList the new cloudlet received list
 	 */
-	protected <T extends ContainerCloudlet> void setCloudletReceivedList(List<T> cloudletReceivedList) {
+	protected <T extends IntContainerCloudlet> void setCloudletReceivedList(List<T> cloudletReceivedList) {
 		this.cloudletReceivedList = cloudletReceivedList;
 	}
 
