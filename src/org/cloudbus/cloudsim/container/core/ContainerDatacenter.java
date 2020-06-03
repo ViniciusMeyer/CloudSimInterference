@@ -875,7 +875,7 @@ public class ContainerDatacenter extends SimEntity {
             Log.printLine(String.format("%s.processCloudletSubmit(): Exception error.", getName()));
             e.printStackTrace();
         }
-
+        
         checkCloudletCompletion();
     }
 
@@ -1150,7 +1150,8 @@ public class ContainerDatacenter extends SimEntity {
      */
     @Override
     public void startEntity() {
-        Log.printConcatLine(getName(), " is starting...");
+    	Log.printLine("@startEntity");
+    	Log.printConcatLine(getName(), " is starting...");
         // this resource should register to regional GIS.
         // However, if not specified, then register to system GIS (the
         // default CloudInformationService) entity.

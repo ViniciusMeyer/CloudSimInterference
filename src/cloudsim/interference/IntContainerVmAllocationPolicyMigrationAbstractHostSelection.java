@@ -5,16 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cloudbus.cloudsim.container.core.ContainerDatacenter;
-import org.cloudbus.cloudsim.container.core.ContainerHost;
-import org.cloudbus.cloudsim.container.core.ContainerHostList;
-import org.cloudbus.cloudsim.container.core.ContainerVm;
-import org.cloudbus.cloudsim.container.core.PowerContainerHost;
-import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicy;
+import org.cloudbus.cloudsim.Log;
 
 public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extends IntContainerVmAllocationPolicyMigrationAbstract {
 
-    private HostSelectionPolicy hostSelectionPolicy;
+    private IntHostSelectionPolicy hostSelectionPolicy;
     private double utilizationThreshold = 0.9;
     private double underUtilizationThreshold = 0.7;
 
@@ -25,7 +20,7 @@ public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extend
      * @param hostList            the host list
      * @param vmSelectionPolicy   the vm selection policy
      */
-    public IntContainerVmAllocationPolicyMigrationAbstractHostSelection(List<? extends ContainerHost> hostList, IntContainerVmSelectionPolicy vmSelectionPolicy, HostSelectionPolicy hostSelectionPolicy, double OlThreshold, double UlThreshold) {
+    public IntContainerVmAllocationPolicyMigrationAbstractHostSelection(List<? extends IntContainerHost> hostList, IntContainerVmSelectionPolicy vmSelectionPolicy, IntHostSelectionPolicy hostSelectionPolicy, double OlThreshold, double UlThreshold) {
         super(hostList, vmSelectionPolicy);
         setHostSelectionPolicy(hostSelectionPolicy);
         setUtilizationThreshold(OlThreshold);
@@ -40,19 +35,19 @@ public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extend
      * @param excludedHosts the excluded hosts
      * @return the power host
      */
-    public PowerContainerHost findHostForVm(ContainerVm vm, Set<? extends ContainerHost> excludedHosts) {
-        PowerContainerHost allocatedHost = null;
+    public IntContainerHost findHostForVm(IntContainerVm vm, Set<? extends IntContainerHost> excludedHosts) {
+        IntContainerHost allocatedHost = null;
         Boolean find = false;
-        Set<ContainerHost> excludedHost1 = new HashSet<>();
+        Set<IntContainerHost> excludedHost1 = new HashSet<>();
         excludedHost1.addAll(excludedHosts);
         while (!find) {
-            ContainerHost host = getHostSelectionPolicy().getHost(getContainerHostList(), vm, excludedHost1);
+            IntContainerHost host = getHostSelectionPolicy().getHost(getContainerHostList(), vm, excludedHost1);
             if (host == null) {
                 return allocatedHost;
             }
             if (host.isSuitableForContainerVm(vm)) {
                 find = true;
-                allocatedHost = (PowerContainerHost) host;
+                allocatedHost = (IntContainerHost) host;
             } else {
                 excludedHost1.add(host);
                 if (getContainerHostList().size() == excludedHost1.size()) {
@@ -65,13 +60,15 @@ public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extend
         }
         return allocatedHost;
     }
+    
+    
 
 
-    public HostSelectionPolicy getHostSelectionPolicy() {
+    public IntHostSelectionPolicy getHostSelectionPolicy() {
         return hostSelectionPolicy;
     }
 
-    public void setHostSelectionPolicy(HostSelectionPolicy hostSelectionPolicy) {
+    public void setHostSelectionPolicy(IntHostSelectionPolicy hostSelectionPolicy) {
         this.hostSelectionPolicy = hostSelectionPolicy;
     }
 
@@ -83,18 +80,21 @@ public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extend
      * @return true, if is host over utilized
      */
     @Override
-    protected boolean isHostOverUtilized(PowerContainerHost host) {
-        addHistoryEntry(host, getUtilizationThreshold());
+    protected boolean isHostOverUtilized(IntContainerHost host) {
+        
+    	Log.printLine("ERRRRO");
+    	/*addHistoryEntry(host, getUtilizationThreshold());
         double totalRequestedMips = 0;
-        for (ContainerVm vm : host.getVmList()) {
+        for (IntContainerVm vm : host.getVmList()) {
             totalRequestedMips += vm.getCurrentRequestedTotalMips();
         }
         double utilization = totalRequestedMips / host.getTotalMips();
-        return utilization > getUtilizationThreshold();
+        return utilization > getUtilizationThreshold();*/
+    	return true;
     }
 
     @Override
-    protected boolean isHostUnderUtilized(PowerContainerHost host) {
+    protected boolean isHostUnderUtilized(IntContainerHost host) {
         return false;
     }
 
@@ -132,16 +132,16 @@ public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extend
      * @param excludedHosts the excluded hosts
      * @return the under utilized host
      */
-    protected PowerContainerHost getUnderUtilizedHost(Set<? extends ContainerHost> excludedHosts) {
+    protected IntContainerHost getUnderUtilizedHost(Set<? extends IntContainerHost> excludedHosts) {
 
-        List<ContainerHost> underUtilizedHostList = getUnderUtilizedHostList(excludedHosts);
+        List<IntContainerHost> underUtilizedHostList = getUnderUtilizedHostList(excludedHosts);
         if (underUtilizedHostList.size() == 0) {
 
             return null;
         }
-        ContainerHostList.sortByCpuUtilizationDescending(underUtilizedHostList);
+        IntContainerHostList.sortByCpuUtilizationDescending(underUtilizedHostList);
 //        Log.print(String.format("The under Utilized Hosts are %d", underUtilizedHostList.size()));
-        PowerContainerHost underUtilizedHost = (PowerContainerHost) underUtilizedHostList.get(0);
+        IntContainerHost underUtilizedHost = (IntContainerHost) underUtilizedHostList.get(0);
 
         return underUtilizedHost;
     }
@@ -153,22 +153,24 @@ public class IntContainerVmAllocationPolicyMigrationAbstractHostSelection extend
      * @param excludedHosts the excluded hosts
      * @return the under utilized host
      */
-    protected List<ContainerHost> getUnderUtilizedHostList(Set<? extends ContainerHost> excludedHosts) {
-        List<ContainerHost> underUtilizedHostList = new ArrayList<>();
-        for (PowerContainerHost host : this.<PowerContainerHost>getContainerHostList()) {
+    protected List<IntContainerHost> getUnderUtilizedHostList(Set<? extends IntContainerHost> excludedHosts) {
+        Log.printLine("ERRRRO");
+    	List<IntContainerHost> underUtilizedHostList = new ArrayList<>();
+        for (IntContainerHost host : this.<IntContainerHost>getContainerHostList()) {
             if (excludedHosts.contains(host)) {
                 continue;
             }
-            double utilization = host.getUtilizationOfCpu();
-            if (!areAllVmsMigratingOutOrAnyVmMigratingIn(host) && utilization < getUnderUtilizationThreshold() && !areAllContainersMigratingOutOrAnyContainersMigratingIn(host)) {
-                underUtilizedHostList.add(host);
-            }
+            //double utilization = host.getUtilizationOfCpu();
+            
+            //if (!areAllVmsMigratingOutOrAnyVmMigratingIn(host) && utilization < getUnderUtilizationThreshold() && !areAllContainersMigratingOutOrAnyContainersMigratingIn(host)) {
+            //    underUtilizedHostList.add(host);
+            //}
         }
         return underUtilizedHostList;
     }
 
 
     @Override
-    public void setDatacenter(ContainerDatacenter datacenter) {
+    public void setDatacenter(IntContainerDataCenter datacenter) {
     }
 }

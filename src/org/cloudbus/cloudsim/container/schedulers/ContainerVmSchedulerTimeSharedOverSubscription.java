@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.container.schedulers;
 
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmPe;
 import org.cloudbus.cloudsim.container.lists.ContainerVmPeList;
 
@@ -19,7 +20,6 @@ public class ContainerVmSchedulerTimeSharedOverSubscription extends  ContainerVm
     @Override
     public boolean allocatePesForVm(String vmUid, List<Double> mipsShareRequested) {
         double totalRequestedMips = 0;
-
         // if the requested mips is bigger than the capacity of a single PE, we cap
         // the request to the PE's capacity
         List<Double> mipsShareRequestedCapped = new ArrayList<Double>();

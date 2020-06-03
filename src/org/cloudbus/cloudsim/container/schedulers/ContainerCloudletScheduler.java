@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.container.schedulers;
 
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.ResCloudlet;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public abstract class ContainerCloudletScheduler {
          * @post $none
          */
         public ContainerCloudletScheduler() {
-            setPreviousTime(0.0);
+        	setPreviousTime(0.0);
             cloudletWaitingList = new ArrayList<ResCloudlet>();
             cloudletExecList = new ArrayList<ResCloudlet>();
             cloudletPausedList = new ArrayList<ResCloudlet>();

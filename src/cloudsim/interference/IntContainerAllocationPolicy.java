@@ -28,7 +28,7 @@ public abstract class IntContainerAllocationPolicy {
 		/**
 		 * The Vm list.
 		 */
-		private List<? extends ContainerVm> containerVmList;
+		private List<? extends IntContainerVm> containerVmList;
 
 		/**
 		 * Allocates a new VmAllocationPolicy object.
@@ -37,7 +37,7 @@ public abstract class IntContainerAllocationPolicy {
 		 * @post $none
 		 */
 		public IntContainerAllocationPolicy() {
-			setContainerVmList(new ArrayList<ContainerVm>());
+			setContainerVmList(new ArrayList<IntContainerVm>());
 		}
 
 		/**
@@ -49,7 +49,7 @@ public abstract class IntContainerAllocationPolicy {
 		 * @pre $none
 		 * @post $none
 		 */
-		public abstract boolean allocateVmForContainer(Container container,List<ContainerVm> containerVmList);
+		public abstract boolean allocateVmForContainer(IntContainer container,List<IntContainerVm> containerVmList);
 
 		/**
 		 * Allocates a specified host for a given VM.
@@ -59,7 +59,7 @@ public abstract class IntContainerAllocationPolicy {
 		 * @pre $none
 		 * @post $none
 		 */
-		public abstract boolean allocateVmForContainer(Container container, ContainerVm vm);
+		public abstract boolean allocateVmForContainer(IntContainer container, IntContainerVm vm);
 
 		/**
 		 * Optimize allocation of the VMs according to current utilization.
@@ -69,7 +69,7 @@ public abstract class IntContainerAllocationPolicy {
 		 //     * @param time             the time
 		 * @return the array list< hash map< string, object>>
 		 */
-		public abstract List<Map<String, Object>> optimizeAllocation(List<? extends Container> containerList);
+		public abstract List<Map<String, Object>> optimizeAllocation(List<? extends IntContainer> containerList);
 
 		/**
 		 * Releases the host used by a VM.
@@ -78,7 +78,7 @@ public abstract class IntContainerAllocationPolicy {
 		 * @pre $none
 		 * @post $none
 		 */
-		public abstract void deallocateVmForContainer(Container container);
+		public abstract void deallocateVmForContainer(IntContainer container);
 
 		/**
 		 * Get the host that is executing the given VM belonging to the given user.
@@ -88,7 +88,7 @@ public abstract class IntContainerAllocationPolicy {
 		 * @pre $none
 		 * @post $none
 		 */
-		public abstract ContainerVm getContainerVm(Container container);
+		public abstract IntContainerVm getContainerVm(IntContainer container);
 
 		/**
 		 * Get the host that is executing the given VM belonging to the given user.
@@ -99,14 +99,14 @@ public abstract class IntContainerAllocationPolicy {
 		 * @pre $none
 		 * @post $none
 		 */
-		public abstract ContainerVm getContainerVm(int containerId, int userId);
+		public abstract IntContainerVm getContainerVm(int containerId, int userId);
 
 		/**
 		 * Sets the host list.
 		 *
 		 * @param containerVmList the new host list
 		 */
-		protected void setContainerVmList(List<? extends ContainerVm> containerVmList) {
+		protected void setContainerVmList(List<? extends IntContainerVm> containerVmList) {
 			this.containerVmList = containerVmList;
 		}
 
@@ -116,7 +116,7 @@ public abstract class IntContainerAllocationPolicy {
 		 * @return the host list
 		 */
 		@SuppressWarnings("unchecked")
-		public <T extends ContainerVm> List<T> getContainerVmList() {
+		public <T extends IntContainerVm> List<T> getContainerVmList() {
 			return (List<T>) this.containerVmList;
 		}
 

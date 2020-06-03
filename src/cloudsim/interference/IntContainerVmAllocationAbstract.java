@@ -11,17 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class IntContainerVmAllocationAbstract extends ContainerVmAllocationPolicy{
+public abstract class IntContainerVmAllocationAbstract extends IntContainerVmAllocationPolicy{
 
         /** The vm table. */
-        private final Map<String, ContainerHost> vmTable = new HashMap<String, ContainerHost>();
+        private final Map<String, IntContainerHost> vmTable = new HashMap<String, IntContainerHost>();
 
         /**
          * Instantiates a new vm allocation policy abstract.
          *
          * @param list the list
          */
-        public IntContainerVmAllocationAbstract(List<? extends ContainerHost> list) {
+        public IntContainerVmAllocationAbstract(List<? extends IntContainerHost> list) {
             super(list);
         }
 
@@ -30,7 +30,7 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * @see org.cloudbus.cloudsim.VmAllocationPolicy#allocateHostForVm(org.cloudbus.cloudsim.Vm)
          */
         @Override
-        public boolean allocateHostForVm(ContainerVm containerVm) {
+        public boolean allocateHostForVm(IntContainerVm containerVm) {
             return allocateHostForVm(containerVm, findHostForVm(containerVm));
         }
 
@@ -40,7 +40,7 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * org.cloudbus.cloudsim.Host)
          */
         @Override
-        public boolean allocateHostForVm(ContainerVm containerVm, ContainerHost host) {
+        public boolean allocateHostForVm(IntContainerVm containerVm, IntContainerHost host) {
             if (host == null) {
                 Log.formatLine("%.2f: No suitable host found for VM #" + containerVm.getId() + "\n", CloudSim.clock());
                 return false;
@@ -64,8 +64,8 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * @param containerVm the vm
          * @return the host
          */
-        public ContainerHost findHostForVm(ContainerVm containerVm) {
-            for (ContainerHost host : this.<ContainerHost> getContainerHostList()) {
+        public IntContainerHost findHostForVm(IntContainerVm containerVm) {
+            for (IntContainerHost host : this.<IntContainerHost> getContainerHostList()) {
                 if (host.isSuitableForContainerVm(containerVm)) {
                     return host;
                 }
@@ -78,8 +78,8 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * @see org.cloudbus.cloudsim.VmAllocationPolicy#deallocateHostForVm(org.cloudbus.cloudsim.Vm)
          */
         @Override
-        public void deallocateHostForVm(ContainerVm containerVm) {
-            ContainerHost host = getVmTable().remove(containerVm.getUid());
+        public void deallocateHostForVm(IntContainerVm containerVm) {
+            IntContainerHost host = getVmTable().remove(containerVm.getUid());
             if (host != null) {
                 host.containerVmDestroy(containerVm);
             }
@@ -90,7 +90,7 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * @see org.cloudbus.cloudsim.VmAllocationPolicy#getHost(org.cloudbus.cloudsim.Vm)
          */
         @Override
-        public ContainerHost getHost(ContainerVm vm) {
+        public IntContainerHost getHost(IntContainerVm vm) {
             return getVmTable().get(vm.getUid());
         }
 
@@ -99,8 +99,8 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          * @see org.cloudbus.cloudsim.VmAllocationPolicy#getHost(int, int)
          */
         @Override
-        public ContainerHost getHost(int vmId, int userId) {
-            return getVmTable().get(ContainerVm.getUid(userId, vmId));
+        public IntContainerHost getHost(int vmId, int userId) {
+            return getVmTable().get(IntContainerVm.getUid(userId, vmId));
         }
 
         /**
@@ -108,14 +108,14 @@ public abstract class IntContainerVmAllocationAbstract extends ContainerVmAlloca
          *
          * @return the vm table
          */
-        public Map<String, ContainerHost> getVmTable() {
+        public Map<String, IntContainerHost> getVmTable() {
             return vmTable;
         }
 
-    public List<ContainerVm> getOverUtilizedVms() {
-        List<ContainerVm> vmList = new ArrayList<ContainerVm>();
-        for (ContainerHost host : getContainerHostList()) {
-            for (ContainerVm vm : host.getVmList()) {
+    public List<IntContainerVm> getOverUtilizedVms() {
+        List<IntContainerVm> vmList = new ArrayList<IntContainerVm>();
+        for (IntContainerHost host : getContainerHostList()) {
+            for (IntContainerVm vm : host.getVmList()) {
                 if (vm.getTotalUtilizationOfCpuMips(CloudSim.clock()) > vm.getTotalMips()) {
                     vmList.add(vm);
 

@@ -10,8 +10,6 @@ package cloudsim.interference.examples;
  */
 
 import org.cloudbus.cloudsim.Cloudlet;
-import cloudsim.interference.IntContainerDataCenterBroker;
-import cloudsim.interference.IntContainerDataCenter;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.UtilizationModelNull;
@@ -65,8 +63,8 @@ public class XXContainerCloudSimExampleInterference2 {
 	 */
 	static final boolean ENABLE_OUTPUT = true;
 	static final boolean OUTPUT_CSV = false;
-	static final double SCHEDULING_INTERVAL = 300.0D;
-	// static final double SIMULATION_LIMIT = 87400.0D;
+	static final double SCHEDULING_INTERVAL = 60.0D;
+	 static final double SIMULATION_LIMIT = 600.0D;
 	/**
 	 * Cloudlet specs
 	 */
@@ -86,9 +84,6 @@ public class XXContainerCloudSimExampleInterference2 {
 	static final int VM_TYPES = 1;
 	static final double[] VM_MIPS = new double[] { 400 };
 	static final int[] VM_PES = new int[] { 4 };
-	static final float[] VM_RAM = new float[] { (float) 2048 };// **MB*
-	static final int VM_BW = 100000;
-	static final int VM_SIZE = 2500;
 
 	/**
 	 * The available types of container along with the specs.
@@ -97,8 +92,6 @@ public class XXContainerCloudSimExampleInterference2 {
 	static final int CONTAINER_TYPES = 1;
 	static final int[] CONTAINER_MIPS = new int[] { 200 };
 	static final int[] CONTAINER_PES = new int[] { 2 };
-	static final int[] CONTAINER_RAM = new int[] { 1024 };
-	static final int CONTAINER_BW = 2500;
 
 	/**
 	 * The available types of hosts along with the specs.
@@ -107,10 +100,6 @@ public class XXContainerCloudSimExampleInterference2 {
 	static final int HOST_TYPES = 1;
 	static final int[] HOST_MIPS = new int[] { 400 };
 	static final int[] HOST_PES = new int[] { 4 };
-	static final int[] HOST_RAM = new int[] { 2048 };
-	static final int HOST_BW = 1000000;
-	static final int HOST_STORAGE = 1000000;
-	static final PowerModel[] HOST_POWER = new PowerModel[] { new PowerModelSpecPowerHpProLiantMl110G3PentiumD930() };
 
 	/**
 	 * The population of hosts, containers, and VMs are specified. The containers
@@ -131,19 +120,19 @@ public class XXContainerCloudSimExampleInterference2 {
 	/**
 	 * The vmlist.
 	 */
-	private static List<ContainerVm> vmList;
+	private static List<IntContainerVm> vmList;
 
 	/**
 	 * The vmlist.
 	 */
 
-	private static List<Container> containerList;
+	private static List<IntContainer> containerList;
 
 	/**
 	 * The hostList.
 	 */
 
-	private static List<ContainerHost> hostList;
+	private static List<IntContainerHost> hostList;
 
 	/**
 	 * Creates main() to run this example.
@@ -182,7 +171,7 @@ public class XXContainerCloudSimExampleInterference2 {
 
 			// ContainerAllocationPolicy containerAllocationPolicy = new
 			// PowerContainerAllocationPolicySimple();
-			ContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
+			IntContainerAllocationPolicy containerAllocationPolicy = new IntContainerAllocationPolicySimple();
 
 			/**
 			 * 3- Defining the VM selection Policy. This policy determines which VMs should
@@ -199,7 +188,7 @@ public class XXContainerCloudSimExampleInterference2 {
 			 *
 			 */
 			// HostSelectionPolicy hostSelectionPolicy = new HostSelectionPolicyFirstFit();
-			HostSelectionPolicy hostSelectionPolicy = new IntHostSelectionPolicyFirstFit();
+			IntHostSelectionPolicy hostSelectionPolicy = new IntHostSelectionPolicyFirstFit();
 			/**
 			 * 5- Defining the thresholds for selecting the under-utilized and over-utilized
 			 * hosts.
@@ -211,53 +200,17 @@ public class XXContainerCloudSimExampleInterference2 {
 			 * 6- The host list is created considering the number of hosts, and host types
 			 * which are specified in the {@link ConstantsExamples}.
 			 */
-			hostList = new ArrayList<ContainerHost>();
+			hostList = new ArrayList<IntContainerHost>();
 			hostList = createHostList(NUMBER_HOSTS);
 			cloudletList = new ArrayList<IntContainerCloudlet>();
-			vmList = new ArrayList<ContainerVm>();
+			vmList = new ArrayList<IntContainerVm>();
 
 			/**
 			 * 7- The container allocation policy which defines the allocation of VMs to
 			 * containers.
 			 */
-			/*
-			 * ContainerVmAllocationPolicy vmAllocationPolicy = new
-			 * PowerContainerVmAllocationPolicyMigrationAbstractHostSelection( hostList,
-			 * vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
-			 * underUtilizationThreshold);
-			 * 
-			 * não sei pq foi utilizado PowerContainer como referencia, mas dentro de
-			 * IntContainerVmAllocationPolicyMigrationAbstractHostSelection (nossa versão de
-			 * vmAllocationPolicy) tem funções importantes, como: (muitas nao serão
-			 * utilizadadas) findHostForVm vmSelectionPolicy (esse objeto vai dentro do
-			 * ContainerVmALlocationPollicy)
-			 *
-			 * Essa classe extende IntContainerVmAllocationPolicyMigrationAbstract que tem
-			 * várias funções importantes, como:
-			 *
-			 * optimizeAllocation (Optimize allocation of the VMs according to current
-			 * utilization.) getMigrationMapFromUnderUtilizedHosts (Gets the migration map
-			 * from under utilized hosts) printOverUtilizedHosts (Prints the over utilized
-			 * hosts.) findHostForVm (Find host for vm.) isHostOverUtilizedAfterAllocation
-			 * (Checks if is host over utilized after allocation.) findHostForVm (Find host
-			 * for vm.) extractHostListFromMigrationMap (Extract host list from migration
-			 * map.) getNewVmPlacement (Gets the new vm placement.)
-			 * getNewVmPlacementFromUnderUtilizedHost (Gets the new vm placement from under
-			 * utilized host.) getVmsToMigrateFromHosts (Gets the vms to migrate from
-			 * hosts.) getVmsToMigrateFromUnderUtilizedHost (Gets the vms to migrate from
-			 * under utilized host.) getOverUtilizedHosts (Gets the over utilized hosts.)
-			 * getSwitchedOffHosts ( Gets the switched off host.) getUnderUtilizedHost (Gets
-			 * the under utilized host.) reAllVmsMigratingOutOrAnyVmMigratingIn (Checks
-			 * whether all vms are in migration.)
-			 * areAllContainersMigratingOutOrAnyContainersMigratingIn (Checks whether all
-			 * vms are in migration.) históricos de tempo de alterações (migrações etc)
-			 * outros ...
-			 *
-			 */
-
-			ContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(
-					hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
-					underUtilizationThreshold);
+			
+			IntContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,underUtilizationThreshold);
 
 			/**
 			 * 8- The overbooking factor for allocating containers to VMs. This factor is
@@ -273,12 +226,12 @@ public class XXContainerCloudSimExampleInterference2 {
 			cloudletList = createIntContainerCloudletList(brokerId, NUMBER_CLOUDLETS);
 
 			// imprimir um trace de interferencia
-			// for(int o=0; o<cloudletList.get(0).interfMetrics.getIntLength();o++){
-			// for(int h=0; h<7; h++){
-			// Log.print(cloudletList.get(0).interfMetrics.getIntByLine(o)[h]+" ");
-			// }
-			// Log.print("\n");
-			// }
+			 //for(int o=0; o<cloudletList.get(0).interfMetrics.getIntLength();o++){
+			 //for(int h=0; h<7; h++){
+			 //Log.print(cloudletList.get(0).interfMetrics.getIntByLine(o)[h]+" ");
+			 //}
+			 //Log.print("\n");
+			 //}
 
 			containerList = createContainerList(brokerId, NUMBER_CLOUDLETS);
 			vmList = createVmList(brokerId, NUMBER_VMS);
@@ -289,9 +242,10 @@ public class XXContainerCloudSimExampleInterference2 {
 			String logAddress = "~/Results";
 
 			@SuppressWarnings("unused")
-			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter",
-					 IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "aa",
-					SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY);
+			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "AA", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY); 
+			
+			
+			//createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "aa", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY);
 			 
 			/**
 			 * 11- Submitting the cloudlet's , container's , and VM's lists to the broker.
@@ -299,13 +253,16 @@ public class XXContainerCloudSimExampleInterference2 {
 			broker.submitCloudletList(cloudletList.subList(0, containerList.size()));
 			broker.submitContainerList(containerList);
 			broker.submitVmList(vmList);
+			
+
 			/**
 			 * 12- Determining the simulation termination time according to the cloudlet's
 			 * workload.
 			 */
 
-			// CloudSim.terminateSimulation(86400.00);
+			 CloudSim.terminateSimulation(SIMULATION_LIMIT);
 
+				
 			/**
 			 * 13- Starting the simualtion.
 			 */
@@ -360,7 +317,7 @@ public class XXContainerCloudSimExampleInterference2 {
 
 
 		try {
-			broker = new IntContainerDataCenterBroker(name,0);
+			broker = new IntContainerDataCenterBroker(name, 0); // original overBookingFactor
 		} catch (Exception var2) {
 			var2.printStackTrace();
 			System.exit(0);
@@ -406,24 +363,27 @@ public class XXContainerCloudSimExampleInterference2 {
 	 * @param brokerId
 	 * @param containerVmsNumber
 	 */
-	private static ArrayList<ContainerVm> createVmList(int brokerId, int containerVmsNumber) {
-		ArrayList<ContainerVm> containerVms = new ArrayList<ContainerVm>();
+	private static ArrayList<IntContainerVm> createVmList(int brokerId, int containerVmsNumber) {
+		ArrayList<IntContainerVm> containerVms = new ArrayList<IntContainerVm>();
 
 		for (int i = 0; i < containerVmsNumber; ++i) {
-			ArrayList<ContainerPe> peList = new ArrayList<ContainerPe>();
+			ArrayList<IntContainerPe> peList = new ArrayList<IntContainerPe>();
 			// int vmType = i / (int) Math.ceil((double) containerVmsNumber / 4.0D);
 			int vmType = 0;
 			for (int j = 0; j < VM_PES[vmType]; ++j) {
-				peList.add(new ContainerPe(j, new CotainerPeProvisionerSimple((double) VM_MIPS[vmType])));
+				peList.add(new IntContainerPe(j, new IntContainerPeProvisionerSimple((double) VM_MIPS[vmType])));
 			}
-			containerVms.add(new PowerContainerVm(IDs.pollId(ContainerVm.class), brokerId, (double) VM_MIPS[vmType],
-					(float) VM_RAM[vmType], VM_BW, VM_SIZE, "Xen",
-					new ContainerSchedulerTimeSharedOverSubscription(peList),
-					new ContainerRamProvisionerSimple(VM_RAM[vmType]), new ContainerBwProvisionerSimple(VM_BW), peList,
-					SCHEDULING_INTERVAL));
+			containerVms.add(new IntContainerVm(IntIDs.pollId(IntContainerVm.class), brokerId, (double) VM_MIPS[vmType],new IntContainerSchedulerTimeShared(peList),peList));
+					//SCHEDULING_INTERVAL
 
 		}
 
+		//imprimir Vms criadas
+	//	for (int i = 0; i < containerVmsNumber; ++i) {
+		//Log.printLine("Vm"+containerVms.get(i).getId() +" toal mips "+containerVms.get(i).getTotalMips());
+	//	}
+		
+		
 		return containerVms;
 	}
 
@@ -435,21 +395,18 @@ public class XXContainerCloudSimExampleInterference2 {
 	 * @return
 	 */
 
-	public static List<ContainerHost> createHostList(int hostsNumber) {
-		ArrayList<ContainerHost> hostList = new ArrayList<ContainerHost>();
+	public static List<IntContainerHost> createHostList(int hostsNumber) {
+		ArrayList<IntContainerHost> hostList = new ArrayList<IntContainerHost>();
 		for (int i = 0; i < hostsNumber; ++i) {
 			// int hostType = i / (int) Math.ceil((double) hostsNumber / 3.0D); /// para
 			// deixar um tipo só, homogeneo
 			int hostType = 0;
-			ArrayList<ContainerVmPe> peList = new ArrayList<ContainerVmPe>();
+			ArrayList<IntContainerVmPe> peList = new ArrayList<IntContainerVmPe>();
 			for (int j = 0; j < HOST_PES[hostType]; ++j) {
-				peList.add(new ContainerVmPe(j, new ContainerVmPeProvisionerSimple((double) HOST_MIPS[hostType])));
+				peList.add(new IntContainerVmPe(j, new IntContainerVmPeProvisionerSimple((double) HOST_MIPS[hostType])));
 			}
 
-			hostList.add(new PowerContainerHostUtilizationHistory(IDs.pollId(ContainerHost.class),
-					new ContainerVmRamProvisionerSimple(HOST_RAM[hostType]),
-					new ContainerVmBwProvisionerSimple(1000000L), 1000000L, peList,
-					new ContainerVmSchedulerTimeSharedOverSubscription(peList), HOST_POWER[hostType]));
+			hostList.add(new IntContainerHost(IntIDs.pollId(IntContainerHost.class), peList, new IntContainerVmSchedulerTimeShared(peList)));
 		}
 
 		return hostList;
@@ -469,9 +426,9 @@ public class XXContainerCloudSimExampleInterference2 {
 	 * @throws Exception
 	 */
 
-	public static ContainerDatacenter createDatacenter(String name,
-			Class<? extends ContainerDatacenter> datacenterClass, List<ContainerHost> hostList,
-			ContainerVmAllocationPolicy vmAllocationPolicy, ContainerAllocationPolicy containerAllocationPolicy,
+	public static IntContainerDataCenter createDatacenter(String name,
+			Class<? extends IntContainerDataCenter> datacenterClass, List<IntContainerHost> hostList,
+			IntContainerVmAllocationPolicy vmAllocationPolicy, IntContainerAllocationPolicy containerAllocationPolicy,
 			String experimentName, double schedulingInterval, String logAddress, double VMStartupDelay,
 			double ContainerStartupDelay) throws Exception {
 		String arch = "x86";
@@ -482,9 +439,10 @@ public class XXContainerCloudSimExampleInterference2 {
 		double costPerMem = 0.05D;
 		double costPerStorage = 0.001D;
 		double costPerBw = 0.0D;
-		ContainerDatacenterCharacteristics characteristics = new ContainerDatacenterCharacteristics(arch, os, vmm,
+		IntContainerDataCenterCharacteristics characteristics = new IntContainerDataCenterCharacteristics(arch, os, vmm,
 				hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
-		ContainerDatacenter datacenter = new IntContainerDataCenter(name, characteristics, vmAllocationPolicy,
+		
+		IntContainerDataCenter datacenter = new IntContainerDataCenter(name, characteristics, vmAllocationPolicy,
 				containerAllocationPolicy, new LinkedList<Storage>(), schedulingInterval, experimentName, logAddress,
 				VMStartupDelay, ContainerStartupDelay);
 
@@ -499,15 +457,14 @@ public class XXContainerCloudSimExampleInterference2 {
 	 * @return
 	 */
 
-	public static List<Container> createContainerList(int brokerId, int containersNumber) {
-		ArrayList<Container> containers = new ArrayList<Container>();
+	public static List<IntContainer> createContainerList(int brokerId, int containersNumber) {
+		ArrayList<IntContainer> containers = new ArrayList<IntContainer>();
 
 		for (int i = 0; i < containersNumber; ++i) {
-			int containerType = i / (int) Math.ceil((double) containersNumber / CONTAINER_TYPES);
+			int containerType =0; //i / (int) Math.ceil((double) containersNumber / CONTAINER_TYPES);
 
-			containers.add(new PowerContainer(IDs.pollId(Container.class), brokerId,
-					(double) CONTAINER_MIPS[containerType], CONTAINER_PES[containerType], CONTAINER_RAM[containerType],
-					CONTAINER_BW, 0L, "Xen", new ContainerCloudletSchedulerDynamicWorkload(
+			containers.add(new IntContainer(IntIDs.pollId(IntContainer.class), brokerId,
+					(double) CONTAINER_MIPS[containerType], CONTAINER_PES[containerType],"Xen", new ContainerCloudletSchedulerDynamicWorkload(
 							CONTAINER_MIPS[containerType], CONTAINER_PES[containerType]),
 					SCHEDULING_INTERVAL));
 		}
@@ -544,7 +501,7 @@ public class XXContainerCloudSimExampleInterference2 {
 					IntContainerCloudlet cloudlet = null;
 
 					try {
-						cloudlet = new IntContainerCloudlet(IDs.pollId(IntContainerCloudlet.class), CLOUDLET_LENGTH, 1,
+						cloudlet = new IntContainerCloudlet(IntIDs.pollId(IntContainerCloudlet.class), CLOUDLET_LENGTH, 1,
 								fileSize, outputSize, utilizationModelNull, utilizationModelNull, utilizationModelNull,
 								new Interference(files[i].getAbsolutePath()));
 //						System.out.println(files[i].getAbsolutePath().toString());

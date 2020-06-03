@@ -1,58 +1,34 @@
-package org.cloudbus.cloudsim.container.core;
+package cloudsim.interference;
 
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmBwProvisioner;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmRamProvisioner;
-import org.cloudbus.cloudsim.container.schedulers.ContainerVmScheduler;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmPe;
-import org.cloudbus.cloudsim.container.lists.ContainerVmPeList;
-import org.cloudbus.cloudsim.*;
-import org.cloudbus.cloudsim.core.CloudSim;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by sareh on 10/07/15.
- */
-public class ContainerHost {
+import cloudsim.interference.IntContainerDataCenter;
+import org.cloudbus.cloudsim.Log;
+import org.cloudbus.cloudsim.container.core.ContainerVm;
+import org.cloudbus.cloudsim.core.CloudSim;
 
-
-    /**
+public class IntContainerHost {
+	
+	/**
      * The id.
      */
     private int id;
 
     /**
-     * The storage.
-     */
-    private long storage;
-
-    /**
-     * The ram provisioner.
-     */
-    private ContainerVmRamProvisioner containerVmRamProvisioner;
-
-    /**
-     * The bw provisioner.
-     */
-    private ContainerVmBwProvisioner containerVmBwProvisioner;
-
-    /**
      * The allocation policy.
      */
-    private ContainerVmScheduler containerVmScheduler;
+    private IntContainerVmScheduler containerVmScheduler;
 
     /**
      * The vm list.
      */
-    private final List<? extends ContainerVm> vmList = new ArrayList<>();
-    /**
-     * The vm list.
-     */
-
+    private final List<? extends IntContainerVm> vmList = new ArrayList<>();
+    
     /**
      * The pe list.
      */
-    private List<? extends ContainerVmPe> peList;
+    private List<? extends IntContainerVmPe> peList;
 
     /**
      * Tells whether this machine is working properly or has failed.
@@ -62,33 +38,24 @@ public class ContainerHost {
     /**
      * The vms migrating in.
      */
-    private final List<ContainerVm> vmsMigratingIn = new ArrayList<>();
+    private final List<IntContainerVm> vmsMigratingIn = new ArrayList<>();
     /**
      * The datacenter where the host is placed.
      */
-    private ContainerDatacenter datacenter;
+    private IntContainerDataCenter datacenter;
 
-    /**
+/**
      * Instantiates a new host.
      *
      * @param id             the id
-     * @param containerVmRamProvisioner the ram provisioner
-     * @param containerVmBwProvisioner  the bw provisioner
-     * @param storage        the storage
      * @param peList         the pe list
      * @param containerVmScheduler    the vm scheduler
      */
-    public ContainerHost(
+    public IntContainerHost(
             int id,
-            ContainerVmRamProvisioner containerVmRamProvisioner,
-            ContainerVmBwProvisioner containerVmBwProvisioner,
-            long storage,
-            List<? extends ContainerVmPe> peList,
-            ContainerVmScheduler containerVmScheduler) {
+            List<? extends IntContainerVmPe> peList,
+            IntContainerVmScheduler containerVmScheduler) {
         setId(id);
-        setContainerVmRamProvisioner(containerVmRamProvisioner);
-        setContainerVmBwProvisioner(containerVmBwProvisioner);
-        setStorage(storage);
         setContainerVmScheduler(containerVmScheduler);
         setPeList(peList);
         setFailed(false);
@@ -107,7 +74,7 @@ public class ContainerHost {
     public double updateContainerVmsProcessing(double currentTime) {
         double smallerTime = Double.MAX_VALUE;
 
-        for (ContainerVm containerVm : getVmList()) {
+        for (IntContainerVm containerVm : getVmList()) {
             double time = containerVm.updateVmProcessing(currentTime, getContainerVmScheduler().getAllocatedMipsForContainerVm(containerVm));
             if (time > 0.0 && time < smallerTime) {
                 smallerTime = time;
@@ -122,37 +89,18 @@ public class ContainerHost {
      *
      * @param containerVm the vm
      */
-    public void addMigratingInContainerVm(ContainerVm containerVm) {
+    public void addMigratingInContainerVm(IntContainerVm containerVm) {
         //Log.printLine("Host: addMigratingInContainerVm:......");
         containerVm.setInMigration(true);
 
         if (!getVmsMigratingIn().contains(containerVm)) {
-            if (getStorage() < containerVm.getSize()) {
-                Log.printConcatLine("[VmScheduler.addMigratingInContainerVm] Allocation of VM #", containerVm.getId(), " to Host #",
-                        getId(), " failed by storage");
-                System.exit(0);
-            }
-
-            if (!getContainerVmRamProvisioner().allocateRamForContainerVm(containerVm, containerVm.getCurrentRequestedRam())) {
-                Log.printConcatLine("[VmScheduler.addMigratingInContainerVm] Allocation of VM #", containerVm.getId(), " to Host #",
-                        getId(), " failed by RAM");
-                System.exit(0);
-            }
-
-            if (!getContainerVmBwProvisioner().allocateBwForContainerVm(containerVm, containerVm.getCurrentRequestedBw())) {
-                Log.printConcatLine("[VmScheduler.addMigratingInContainerVm] Allocation of VM #", containerVm.getId(), " to Host #",
-                        getId(), " failed by BW");
-                System.exit(0);
-            }
-
-            getContainerVmScheduler().getVmsMigratingIn().add(containerVm.getUid());
+           
+        	getContainerVmScheduler().getVmsMigratingIn().add(containerVm.getUid());
             if (!getContainerVmScheduler().allocatePesForVm(containerVm, containerVm.getCurrentRequestedMips())) {
                 Log.printConcatLine("[VmScheduler.addMigratingInContainerVm] Allocation of VM #", containerVm.getId(), " to Host #",
                         getId(), " failed by MIPS");
                 System.exit(0);
             }
-
-            setStorage(getStorage() - containerVm.getSize());
 
             getVmsMigratingIn().add(containerVm);
             getVmList().add(containerVm);
@@ -166,7 +114,7 @@ public class ContainerHost {
          *
          * @param vm the vm
          */
-        public void removeMigratingInContainerVm(ContainerVm vm) {
+        public void removeMigratingInContainerVm(IntContainerVm vm) {
             containerVmDeallocate(vm);
             getVmsMigratingIn().remove(vm);
             getVmList().remove(vm);
@@ -178,17 +126,15 @@ public class ContainerHost {
      * Reallocate migrating in vms.
      */
     public void reallocateMigratingInContainerVms() {
-        for (ContainerVm containerVm : getVmsMigratingIn()) {
+        for (IntContainerVm containerVm : getVmsMigratingIn()) {
             if (!getVmList().contains(containerVm)) {
                 getVmList().add(containerVm);
             }
             if (!getContainerVmScheduler().getVmsMigratingIn().contains(containerVm.getUid())) {
                 getContainerVmScheduler().getVmsMigratingIn().add(containerVm.getUid());
             }
-            getContainerVmRamProvisioner().allocateRamForContainerVm(containerVm, containerVm.getCurrentRequestedRam());
-            getContainerVmBwProvisioner().allocateBwForContainerVm(containerVm, containerVm.getCurrentRequestedBw());
             getContainerVmScheduler().allocatePesForVm(containerVm, containerVm.getCurrentRequestedMips());
-            setStorage(getStorage() - containerVm.getSize());
+            
         }
     }
 
@@ -198,12 +144,10 @@ public class ContainerHost {
      * @param vm the vm
      * @return true, if is suitable for vm
      */
-    public boolean isSuitableForContainerVm(ContainerVm vm) {
+    public boolean isSuitableForContainerVm(IntContainerVm vm) {
         //Log.printLine("Host: Is suitable for VM???......");
         return (getContainerVmScheduler().getPeCapacity() >= vm.getCurrentRequestedMaxMips()
-                && getContainerVmScheduler().getAvailableMips() >= vm.getCurrentRequestedTotalMips()
-                && getContainerVmRamProvisioner().isSuitableForContainerVm(vm, vm.getCurrentRequestedRam()) && getContainerVmBwProvisioner()
-                .isSuitableForContainerVm(vm, vm.getCurrentRequestedBw()));
+                && getContainerVmScheduler().getAvailableMips() >= vm.getCurrentRequestedTotalMips());
     }
 
     /**
@@ -214,36 +158,15 @@ public class ContainerHost {
      * @pre $none
      * @post $none
      */
-    public boolean containerVmCreate(ContainerVm vm) {
-        Log.printLine("Host: Create VM???......" + vm.getId());
-        if (getStorage() < vm.getSize()) {
-            Log.printConcatLine("[VmScheduler.containerVmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by storage");
-            return false;
-        }
-
-        if (!getContainerVmRamProvisioner().allocateRamForContainerVm(vm, vm.getCurrentRequestedRam())) {
-            Log.printConcatLine("[VmScheduler.containerVmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by RAM");
-            return false;
-        }
-
-        if (!getContainerVmBwProvisioner().allocateBwForContainerVm(vm, vm.getCurrentRequestedBw())) {
-            Log.printConcatLine("[VmScheduler.containerVmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
-                    " failed by BW");
-            getContainerVmRamProvisioner().deallocateRamForContainerVm(vm);
-            return false;
-        }
-
+    public boolean containerVmCreate(IntContainerVm vm) {
+        //Log.printLine("Host: Create VM???......" + vm.getId());
+      
         if (!getContainerVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips())) {
             Log.printConcatLine("[VmScheduler.containerVmCreate] Allocation of VM #", vm.getId(), " to Host #", getId(),
                     " failed by MIPS");
-            getContainerVmRamProvisioner().deallocateRamForContainerVm(vm);
-            getContainerVmBwProvisioner().deallocateBwForContainerVm(vm);
             return false;
         }
 
-        setStorage(getStorage() - vm.getSize());
         getVmList().add(vm);
         vm.setHost(this);
         return true;
@@ -256,12 +179,12 @@ public class ContainerHost {
      * @pre $none
      * @post $none
      */
-    public void containerVmDestroy(ContainerVm containerVm) {
+    public void containerVmDestroy(IntContainerVm containerVm) {
         //Log.printLine("Host:  Destroy Vm:.... " + containerVm.getId());
         if (containerVm != null) {
             containerVmDeallocate(containerVm);
             getVmList().remove(containerVm);
-            containerVm.setHost(null);
+          containerVm.setHost(null);
         }
     }
 
@@ -274,9 +197,8 @@ public class ContainerHost {
     public void containerVmDestroyAll() {
         //Log.printLine("Host: Destroy all Vms");
         containerVmDeallocateAll();
-        for (ContainerVm containerVm : getVmList()) {
+        for (IntContainerVm containerVm : getVmList()) {
             containerVm.setHost(null);
-            setStorage(getStorage() + containerVm.getSize());
         }
         getVmList().clear();
     }
@@ -286,12 +208,9 @@ public class ContainerHost {
      *
      * @param containerVm the VM
      */
-    protected void containerVmDeallocate(ContainerVm containerVm) {
+    protected void containerVmDeallocate(IntContainerVm containerVm) {
         //Log.printLine("Host: Deallocated the VM:......" + containerVm.getId());
-        getContainerVmRamProvisioner().deallocateRamForContainerVm(containerVm);
-        getContainerVmBwProvisioner().deallocateBwForContainerVm(containerVm);
         getContainerVmScheduler().deallocatePesForVm(containerVm);
-        setStorage(getStorage() + containerVm.getSize());
     }
 
     /**
@@ -299,8 +218,6 @@ public class ContainerHost {
      */
     protected void containerVmDeallocateAll() {
         //Log.printLine("Host: Deallocate all the Vms......");
-        getContainerVmRamProvisioner().deallocateRamForAllContainerVms();
-        getContainerVmBwProvisioner().deallocateBwForAllContainerVms();
         getContainerVmScheduler().deallocatePesForAllContainerVms();
     }
 
@@ -313,10 +230,10 @@ public class ContainerHost {
      * @pre $none
      * @post $none
      */
-    public ContainerVm getContainerVm(int vmId, int userId) {
+    public IntContainerVm getContainerVm(int vmId, int userId) {
         //Log.printLine("Host: get the vm......" + vmId);
         //Log.printLine("Host: the vm list size:......" + getVmList().size());
-        for (ContainerVm containerVm : getVmList()) {
+        for (IntContainerVm containerVm : getVmList()) {
             if (containerVm.getId() == vmId && containerVm.getUserId() == userId) {
                 return containerVm;
             }
@@ -341,7 +258,7 @@ public class ContainerHost {
      */
     public int getNumberOfFreePes() {
         //Log.printLine("Host: get the free Pes......" + ContainerVmPeList.getNumberOfFreePes(getPeList()));
-        return ContainerVmPeList.getNumberOfFreePes(getPeList());
+        return IntContainerVmPeList.getNumberOfFreePes(getPeList());
     }
 
     /**
@@ -351,7 +268,7 @@ public class ContainerHost {
      */
     public int getTotalMips() {
         //Log.printLine("Host: get the total mips......" + ContainerVmPeList.getTotalMips(getPeList()));
-        return ContainerVmPeList.getTotalMips(getPeList());
+        return IntContainerVmPeList.getTotalMips(getPeList());
     }
 
     /**
@@ -363,7 +280,7 @@ public class ContainerHost {
      * @pre $none
      * @post $none
      */
-    public boolean allocatePesForContainerVm(ContainerVm containerVm, List<Double> mipsShare) {
+    public boolean allocatePesForContainerVm(IntContainerVm containerVm, List<Double> mipsShare) {
         //Log.printLine("Host: allocate Pes for Vm:......" + containerVm.getId());
         return getContainerVmScheduler().allocatePesForVm(containerVm, mipsShare);
     }
@@ -375,7 +292,7 @@ public class ContainerHost {
      * @pre $none
      * @post $none
      */
-    public void deallocatePesForContainerVm(ContainerVm containerVm) {
+    public void deallocatePesForContainerVm(IntContainerVm containerVm) {
         //Log.printLine("Host: deallocate Pes for Vm:......" + containerVm.getId());
         getContainerVmScheduler().deallocatePesForVm(containerVm);
     }
@@ -388,7 +305,7 @@ public class ContainerHost {
      * @pre $none
      * @post $none
      */
-    public List<Double> getAllocatedMipsForContainerVm(ContainerVm containerVm) {
+    public List<Double> getAllocatedMipsForContainerVm(IntContainerVm containerVm) {
         //Log.printLine("Host: get allocated Pes for Vm:......" + containerVm.getId());
         return getContainerVmScheduler().getAllocatedMipsForContainerVm(containerVm);
     }
@@ -399,7 +316,7 @@ public class ContainerHost {
      * @param containerVm the vm
      * @return the allocated mips for vm
      */
-    public double getTotalAllocatedMipsForContainerVm(ContainerVm containerVm) {
+    public double getTotalAllocatedMipsForContainerVm(IntContainerVm containerVm) {
         //Log.printLine("Host: total allocated Pes for Vm:......" + containerVm.getId());
         return getContainerVmScheduler().getTotalAllocatedMipsForContainerVm(containerVm);
     }
@@ -425,42 +342,6 @@ public class ContainerHost {
     }
 
     /**
-     * Gets the machine bw.
-     *
-     * @return the machine bw
-     * @pre $none
-     * @post $result > 0
-     */
-    public long getBw() {
-        //Log.printLine("Host: Get BW:......" + getContainerVmBwProvisioner().getBw());
-        return getContainerVmBwProvisioner().getBw();
-    }
-
-    /**
-     * Gets the machine memory.
-     *
-     * @return the machine memory
-     * @pre $none
-     * @post $result > 0
-     */
-    public float getRam() {
-        //Log.printLine("Host: Get Ram:......" + getContainerVmRamProvisioner().getRam());
-
-        return getContainerVmRamProvisioner().getRam();
-    }
-
-    /**
-     * Gets the machine storage.
-     *
-     * @return the machine storage
-     * @pre $none
-     * @post $result >= 0
-     */
-    public long getStorage() {
-        return storage;
-    }
-
-    /**
      * Gets the id.
      *
      * @return the id
@@ -479,47 +360,11 @@ public class ContainerHost {
     }
 
     /**
-     * Gets the ram provisioner.
-     *
-     * @return the ram provisioner
-     */
-    public ContainerVmRamProvisioner getContainerVmRamProvisioner() {
-        return containerVmRamProvisioner;
-    }
-
-    /**
-     * Sets the ram provisioner.
-     *
-     * @param containerVmRamProvisioner the new ram provisioner
-     */
-    protected void setContainerVmRamProvisioner(ContainerVmRamProvisioner containerVmRamProvisioner) {
-        this.containerVmRamProvisioner = containerVmRamProvisioner;
-    }
-
-    /**
-     * Gets the bw provisioner.
-     *
-     * @return the bw provisioner
-     */
-    public ContainerVmBwProvisioner getContainerVmBwProvisioner() {
-        return containerVmBwProvisioner;
-    }
-
-    /**
-     * Sets the bw provisioner.
-     *
-     * @param containerVmBwProvisioner the new bw provisioner
-     */
-    protected void setContainerVmBwProvisioner(ContainerVmBwProvisioner containerVmBwProvisioner) {
-        this.containerVmBwProvisioner = containerVmBwProvisioner;
-    }
-
-    /**
      * Gets the VM scheduler.
      *
      * @return the VM scheduler
      */
-    public ContainerVmScheduler getContainerVmScheduler() {
+    public IntContainerVmScheduler getContainerVmScheduler() {
         return containerVmScheduler;
     }
 
@@ -528,7 +373,7 @@ public class ContainerHost {
      *
      * @param vmScheduler the vm scheduler
      */
-    protected void setContainerVmScheduler(ContainerVmScheduler vmScheduler) {
+    protected void setContainerVmScheduler(IntContainerVmScheduler vmScheduler) {
         this.containerVmScheduler = vmScheduler;
     }
 
@@ -539,7 +384,7 @@ public class ContainerHost {
      * @return the pe list
      */
     @SuppressWarnings("unchecked")
-    public <T extends ContainerVmPe> List<T> getPeList() {
+    public <T extends IntContainerVmPe> List<T> getPeList() {
         return (List<T>) peList;
     }
 
@@ -549,7 +394,7 @@ public class ContainerHost {
      * @param <T>    the generic type
      * @param containerVmPeList the new pe list
      */
-    protected <T extends ContainerVmPe> void setPeList(List<T> containerVmPeList) {
+    protected <T extends IntContainerVmPe> void setPeList(List<T> containerVmPeList) {
         this.peList = containerVmPeList;
     }
 
@@ -560,17 +405,8 @@ public class ContainerHost {
      * @return the vm list
      */
     @SuppressWarnings("unchecked")
-    public <T extends ContainerVm> List<T> getVmList() {
+    public <T extends IntContainerVm> List<T> getVmList() {
         return (List<T>) vmList;
-    }
-
-    /**
-     * Sets the storage.
-     *
-     * @param storage the new storage
-     */
-    protected void setStorage(long storage) {
-        this.storage = storage;
     }
 
     /**
@@ -594,7 +430,7 @@ public class ContainerHost {
     public boolean setFailed(String resName, boolean failed) {
         // all the PEs are failed (or recovered, depending on fail)
         this.failed = failed;
-        ContainerVmPeList.setStatusFailed(getPeList(), resName, getId(), failed);
+        IntContainerVmPeList.setStatusFailed(getPeList(), resName, getId(), failed);
         return true;
     }
 
@@ -607,7 +443,7 @@ public class ContainerHost {
     public boolean setFailed(boolean failed) {
         // all the PEs are failed (or recovered, depending on fail)
         this.failed = failed;
-        ContainerVmPeList.setStatusFailed(getPeList(), failed);
+        IntContainerVmPeList.setStatusFailed(getPeList(), failed);
         return true;
     }
 
@@ -622,7 +458,7 @@ public class ContainerHost {
      * @post $none
      */
     public boolean setPeStatus(int peId, int status) {
-        return ContainerVmPeList.setPeStatus(getPeList(), peId, status);
+        return IntContainerVmPeList.setPeStatus(getPeList(), peId, status);
     }
 
     /**
@@ -630,7 +466,7 @@ public class ContainerHost {
      *
      * @return the vms migrating in
      */
-    public List<ContainerVm> getVmsMigratingIn() {
+    public List<IntContainerVm> getVmsMigratingIn() {
         return vmsMigratingIn;
     }
 
@@ -639,18 +475,19 @@ public class ContainerHost {
      *
      * @return the data center where the host runs
      */
-    public ContainerDatacenter getDatacenter() {
-        return datacenter;
+    public IntContainerDataCenter getDatacenter() {
+    	return datacenter;
     }
-
+    
     /**
      * Sets the data center.
      *
      * @param datacenter the data center from this host
      */
-    public void setDatacenter(ContainerDatacenter datacenter) {
-        this.datacenter = datacenter;
+    public void setDatacenter(IntContainerDataCenter datacenter) {
+    	this.datacenter = datacenter;
     }
+         
 
 
 }

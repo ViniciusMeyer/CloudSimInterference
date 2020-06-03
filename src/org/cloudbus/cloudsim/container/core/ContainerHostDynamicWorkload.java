@@ -55,7 +55,8 @@ public class ContainerHostDynamicWorkload extends ContainerHost{
          */
         @Override
         public double updateContainerVmsProcessing(double currentTime) {
-            double smallerTime = super.updateContainerVmsProcessing(currentTime);
+        
+        	double smallerTime = super.updateContainerVmsProcessing(currentTime);
             setPreviousUtilizationMips(getUtilizationMips());
             setUtilizationMips(0);
             double hostTotalRequestedMips = 0;
