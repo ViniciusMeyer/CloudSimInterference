@@ -230,6 +230,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@Override
 	public void processEvent(SimEvent ev) {
+		Log.printLine("BROKER:processEvent");
 		switch (ev.getTag()) {
 		// Resource characteristics request
 		case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:
@@ -623,8 +624,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 			// Log.printLine("Containers Created" + getContainersCreated());
 
 			if (cloudlet.getUtilizationModelCpu() instanceof UtilizationModelPlanetLabInMemory) {
-				UtilizationModelPlanetLabInMemory temp = (UtilizationModelPlanetLabInMemory) cloudlet
-						.getUtilizationModelCpu();
+				UtilizationModelPlanetLabInMemory temp = (UtilizationModelPlanetLabInMemory) cloudlet.getUtilizationModelCpu();
 				double[] cloudletUsage = temp.getData();
 				Percentile percentile = new Percentile();
 				double percentileUsage = percentile.evaluate(cloudletUsage, getOverBookingfactor());
@@ -641,6 +641,8 @@ public class IntContainerDataCenterBroker extends SimEntity {
 				}
 
 			}
+			cloudlet.setContainerId(container.getId());
+			Log.printConcatLine("Binding Cloudlet: ", cloudlet.getCloudletId(), " To Container: ",container.getId());
 			i++;
 
 		}

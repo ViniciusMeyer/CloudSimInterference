@@ -100,7 +100,7 @@ public class IntContainerDataCenter extends SimEntity {
             List<Storage> storageList,
             double schedulingInterval, String experimentName, String logAddress, Double vmStartupDelay, Double containerStartupDelay) throws Exception {
         super(name);
-
+		Log.printLine("\nDC: ==== INCIO - CRIAÇÃO OBJETO DC =====\n");
         setCharacteristics(characteristics);
         setVmAllocationPolicy(vmAllocationPolicy);
         setContainerAllocationPolicy(containerAllocationPolicy);
@@ -127,6 +127,8 @@ public class IntContainerDataCenter extends SimEntity {
         
     	this.vmStartupDelay = vmStartupDelay; //cont
         this.containerStartupDelay = containerStartupDelay; //cont
+        
+        Log.printLine("\nDC: ==== FIM - CRIAÇÃO OBJETO DC =====\n");
     }
 
     /**
@@ -149,6 +151,7 @@ public class IntContainerDataCenter extends SimEntity {
      */
     @Override
     public void processEvent(SimEvent ev) {
+    	Log.printLine("DC:processEvent");
         int srcId = -1;
 
         switch (ev.getTag()) {
@@ -293,6 +296,9 @@ public class IntContainerDataCenter extends SimEntity {
     }
 
     public void processContainerSubmit(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processContainerSubmit");
+    	Log.printLine(" ==== PAREI AQUI ======");
+    	
         List<IntContainer> containerList = (List<IntContainer>) ev.getData();
         
         
@@ -347,6 +353,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @param ack the ack
      */
     protected void processDataDelete(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processDataDelete");
         if (ev == null) {
             return;
         }
@@ -385,6 +392,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @param ack the ack
      */
     protected void processDataAdd(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processDataAdd");
         if (ev == null) {
             return;
         }
@@ -423,6 +431,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processPingRequest(SimEvent ev) {
+    	Log.printLine("DC:processPingRequest");
         InfoPacket pkt = (InfoPacket) ev.getData();
         pkt.setTag(CloudSimTags.INFOPKT_RETURN);
         pkt.setDestId(pkt.getSrcId());
@@ -440,6 +449,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudletStatus(SimEvent ev) {
+    	Log.printLine("DC:processCloudletStatus");
         int cloudletId = 0;
         int userId = 0;
         int vmId = 0;
@@ -497,6 +507,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processOtherEvent(SimEvent ev) {
+    	Log.printLine("DC:processOtherEvent");
         if (ev == null) {
             Log.printConcatLine(getName(), ".processOtherEvent(): Error - an event is null.");
         }
@@ -512,6 +523,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processVmCreate(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processVmCreate");
         IntContainerVm containerVm = (IntContainerVm) ev.getData();
 
         boolean result = getVmAllocationPolicy().allocateHostForVm(containerVm);
@@ -553,6 +565,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processVmDestroy(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processVmDestroy");
         IntContainerVm containerVm = (IntContainerVm) ev.getData();
         getVmAllocationPolicy().deallocateHostForVm(containerVm);
 
@@ -577,6 +590,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processVmMigrate(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processVmMigrate");
         Object tmp = ev.getData();
         if (!(tmp instanceof Map<?, ?>)) {
             throw new ClassCastException("The data object must be Map<String, Object>");
@@ -626,6 +640,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processContainerMigrate(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processContainerMigrate");
 
         Object tmp = ev.getData();
         if (!(tmp instanceof Map<?, ?>)) {
@@ -682,6 +697,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudlet(SimEvent ev, int type) {
+    	Log.printLine("DC:processCloudlet");
         int cloudletId = 0;
         int userId = 0;
         int vmId = 0;
@@ -751,6 +767,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudletMove(int[] receivedData, int type) {
+    	Log.printLine("DC:processCloudletMove");
         updateCloudletProcessing();
 
         int[] array = receivedData;
@@ -822,6 +839,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudletSubmit(SimEvent ev, boolean ack) {
+    	Log.printLine("DC:processCloudletSubmit");
         updateCloudletProcessing();
 
         try {
@@ -906,6 +924,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return the double
      */
     protected double predictFileTransferTime(List<String> requiredFiles) {
+    	Log.printLine("DC:predictFileTransferTime");
         double time = 0.0;
 
         for (String fileName : requiredFiles) {
@@ -932,6 +951,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudletResume(int cloudletId, int userId, int vmId, int containerId, boolean ack) {
+    	Log.printLine("DC:processCloudletResume");
         double eventTime = getVmAllocationPolicy().getHost(vmId, userId).getContainerVm(vmId, userId).getContainer(containerId, userId)
                 .getContainerCloudletScheduler().cloudletResume(cloudletId);
 
@@ -967,7 +987,8 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudletPause(int cloudletId, int userId, int vmId, int containerId, boolean ack) {
-        boolean status = getVmAllocationPolicy().getHost(vmId, userId).getContainerVm(vmId, userId).getContainer(containerId, userId)
+    	Log.printLine("DC:processCloudletPause");
+    	boolean status = getVmAllocationPolicy().getHost(vmId, userId).getContainerVm(vmId, userId).getContainer(containerId, userId)
                 .getContainerCloudletScheduler().cloudletPause(cloudletId);
 
         if (ack) {
@@ -993,7 +1014,8 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void processCloudletCancel(int cloudletId, int userId, int vmId, int containerId) {
-        Cloudlet cl = getVmAllocationPolicy().getHost(vmId, userId).getContainerVm(vmId, userId).getContainer(containerId, userId)
+    	Log.printLine("DC:processCloudletCancel");
+    	Cloudlet cl = getVmAllocationPolicy().getHost(vmId, userId).getContainerVm(vmId, userId).getContainer(containerId, userId)
                 .getContainerCloudletScheduler().cloudletCancel(cloudletId);
         sendNow(userId, CloudSimTags.CLOUDLET_CANCEL, cl);
     }
@@ -1007,10 +1029,11 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void updateCloudletProcessing() {
+    	Log.printLine("DC:updateCloudletProcessing");
         // if some time passed since last processing
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
-        if (CloudSim.clock() < 0.111 || CloudSim.clock() > getLastProcessTime() + CloudSim.getMinTimeBetweenEvents()) {
+    	if (CloudSim.clock() < 0.111 || CloudSim.clock() > getLastProcessTime() + CloudSim.getMinTimeBetweenEvents()) {
             List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
             double smallerTime = Double.MAX_VALUE;
             // for each host...
@@ -1042,6 +1065,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @post $none
      */
     protected void checkCloudletCompletion() {
+    	Log.printLine("DC:checkCloudletCompletion");
         List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
         for (int i = 0; i < list.size(); i++) {
             IntContainerHost host = list.get(i);
@@ -1066,6 +1090,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return a tag number denoting whether this operation is a success or not
      */
     public int addFile(File file) {
+    	Log.printLine("DC:addFile");
         if (file == null) {
             return DataCloudTags.FILE_ADD_ERROR_EMPTY;
         }
@@ -1101,6 +1126,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     protected boolean contains(File file) {
+      	Log.printLine("DC:contains");
         if (file == null) {
             return false;
         }
@@ -1141,6 +1167,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return the error message
      */
     private int deleteFileFromStorage(String fileName) {
+    	Log.printLine("DC:deleteFileFromStorage");
         Storage tempStorage = null;
         File tempFile = null;
         int msg = DataCloudTags.FILE_DELETE_ERROR;
@@ -1161,6 +1188,7 @@ public class IntContainerDataCenter extends SimEntity {
      */
     @Override
     public void shutdownEntity() {
+    	Log.printLine("DC:shutdownEntity");
         Log.printConcatLine(getName(), " is shutting down...");
     }
 
@@ -1170,7 +1198,7 @@ public class IntContainerDataCenter extends SimEntity {
      */
     @Override
     public void startEntity() {
-    	Log.printLine("@startEntity");
+    	Log.printLine("DC:startEntity");
     	Log.printConcatLine(getName(), " is starting...");
         // this resource should register to regional GIS.
         // However, if not specified, then register to system GIS (the
@@ -1193,6 +1221,7 @@ public class IntContainerDataCenter extends SimEntity {
      */
     @SuppressWarnings("unchecked")
     public <T extends IntContainerHost> List<T> getHostList() {
+    	//Log.printLine("DC:getHostList");
         return (List<T>) getCharacteristics().getHostList();
     }
 
@@ -1202,6 +1231,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return the characteristics
      */
     protected IntContainerDataCenterCharacteristics getCharacteristics() {
+    	//Log.printLine("DC:getCharacteristics");
         return characteristics;
     }
 
@@ -1211,6 +1241,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @param characteristics the new characteristics
      */
     protected void setCharacteristics(IntContainerDataCenterCharacteristics characteristics) {
+    	//Log.printLine("DC:setCharacteristics");
         this.characteristics = characteristics;
     }
 
@@ -1220,6 +1251,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return the regional cis name
      */
     protected String getRegionalCisName() {
+    	//Log.printLine("DC:getRegionalCisName");
         return regionalCisName;
     }
 
@@ -1229,6 +1261,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @param regionalCisName the new regional cis name
      */
     protected void setRegionalCisName(String regionalCisName) {
+    	//Log.printLine("DC:setRegionalCisName");
         this.regionalCisName = regionalCisName;
     }
 
@@ -1238,6 +1271,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @return the vm allocation policy
      */
     public IntContainerVmAllocationPolicy getVmAllocationPolicy() {
+    	//Log.printLine("DC:getVmAllocationPolicy");
         return vmAllocationPolicy;
     }
 
@@ -1247,6 +1281,7 @@ public class IntContainerDataCenter extends SimEntity {
      * @param vmAllocationPolicy the new vm allocation policy
      */
     protected void setVmAllocationPolicy(IntContainerVmAllocationPolicy vmAllocationPolicy) {
+    	//Log.printLine("DC:setVmAllocationPolicy");
         this.vmAllocationPolicy = vmAllocationPolicy;
     }
 
