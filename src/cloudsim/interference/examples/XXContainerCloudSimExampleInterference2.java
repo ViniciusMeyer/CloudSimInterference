@@ -12,35 +12,10 @@ package cloudsim.interference.examples;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.UtilizationModelNull;
-import org.cloudbus.cloudsim.container.containerProvisioners.ContainerBwProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerProvisioners.ContainerPe;
-import org.cloudbus.cloudsim.container.containerProvisioners.ContainerRamProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerProvisioners.CotainerPeProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmBwProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmPe;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmPeProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmRamProvisionerSimple;
-import org.cloudbus.cloudsim.container.core.*;
-import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicy;
-import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicyFirstFit;
-import org.cloudbus.cloudsim.container.resourceAllocatorMigrationEnabled.PowerContainerVmAllocationPolicyMigrationAbstractHostSelection;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerAllocationPolicy;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerAllocationPolicySimple;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerVmAllocationPolicy;
-import org.cloudbus.cloudsim.container.resourceAllocators.PowerContainerAllocationPolicySimple;
-import org.cloudbus.cloudsim.container.schedulers.ContainerCloudletSchedulerDynamicWorkload;
-import org.cloudbus.cloudsim.container.schedulers.ContainerSchedulerTimeSharedOverSubscription;
-import org.cloudbus.cloudsim.container.schedulers.ContainerVmSchedulerTimeSharedOverSubscription;
-import org.cloudbus.cloudsim.container.utils.IDs;
-import org.cloudbus.cloudsim.container.vmSelectionPolicies.PowerContainerVmSelectionPolicy;
-import org.cloudbus.cloudsim.container.vmSelectionPolicies.PowerContainerVmSelectionPolicyMaximumUsage;
+import org.cloudbus.cloudsim.UtilizationModelPlanetLabInMemory;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G3PentiumD930;
-import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G4Xeon3040;
-import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G5Xeon3075;
-import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerIbmX3550XeonX5670;
 
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
@@ -63,12 +38,12 @@ public class XXContainerCloudSimExampleInterference2 {
 	 */
 	static final boolean ENABLE_OUTPUT = true;
 	static final boolean OUTPUT_CSV = false;
-	static final double SCHEDULING_INTERVAL = 60.0D;
-	 static final double SIMULATION_LIMIT = 600.0D;
+	static final double SCHEDULING_INTERVAL = 1.0D;
+	 static final double SIMULATION_LIMIT = 99999999999.0D;//601.0D;
 	/**
 	 * Cloudlet specs
 	 */
-	static final int CLOUDLET_LENGTH = 30;
+	static final int CLOUDLET_LENGTH =60000;
 	static final int CLOUDLET_PES = 1;
 
 	/**
@@ -82,7 +57,7 @@ public class XXContainerCloudSimExampleInterference2 {
 	 */
 
 	static final int VM_TYPES = 1;
-	static final double[] VM_MIPS = new double[] { 400 };
+	static final double[] VM_MIPS = new double[] { 100 };
 	static final int[] VM_PES = new int[] { 4 };
 
 	/**
@@ -90,7 +65,7 @@ public class XXContainerCloudSimExampleInterference2 {
 	 */
 
 	static final int CONTAINER_TYPES = 1;
-	static final int[] CONTAINER_MIPS = new int[] { 200 };
+	static final int[] CONTAINER_MIPS = new int[] { 100 };
 	static final int[] CONTAINER_PES = new int[] { 2 };
 
 	/**
@@ -98,7 +73,7 @@ public class XXContainerCloudSimExampleInterference2 {
 	 */
 
 	static final int HOST_TYPES = 1;
-	static final int[] HOST_MIPS = new int[] { 400 };
+	static final int[] HOST_MIPS = new int[] { 100};
 	static final int[] HOST_PES = new int[] { 4 };
 
 	/**
@@ -108,9 +83,9 @@ public class XXContainerCloudSimExampleInterference2 {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS = 4;
-	static final int NUMBER_VMS = 4;
-	static final int NUMBER_CLOUDLETS = 8;
+	static final int NUMBER_HOSTS = 8;
+	static final int NUMBER_VMS = 8;
+	static final int NUMBER_CLOUDLETS = 16;
 
 	/**
 	 * The cloudlet list.
@@ -242,7 +217,7 @@ public class XXContainerCloudSimExampleInterference2 {
 			String logAddress = "~/Results";
 
 			@SuppressWarnings("unused")
-			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "AA", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY); 
+			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "AA", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY, cloudletList); 
 			
 			
 			//createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "aa", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY);
@@ -373,19 +348,20 @@ public class XXContainerCloudSimExampleInterference2 {
 			for (int j = 0; j < VM_PES[vmType]; ++j) {
 				peList.add(new IntContainerPe(j, new IntContainerPeProvisionerSimple((double) VM_MIPS[vmType])));
 			}
-			containerVms.add(new IntContainerVm(IntIDs.pollId(IntContainerVm.class), brokerId, (double) VM_MIPS[vmType],new IntContainerSchedulerTimeShared(peList),peList));
+			containerVms.add(new IntContainerVm(IntIDs.pollId(IntContainerVm.class), brokerId, (double) VM_MIPS[vmType],new IntContainerSchedulerTimeShared(peList),peList, SCHEDULING_INTERVAL));
 					//SCHEDULING_INTERVAL
 
 		}
 
 		//imprimir Vms criadas
-	//	for (int i = 0; i < containerVmsNumber; ++i) {
-		//Log.printLine("Vm"+containerVms.get(i).getId() +" toal mips "+containerVms.get(i).getTotalMips());
-	//	}
+		for (int i = 0; i < containerVmsNumber; ++i) {
+		Log.printLine("Vm"+containerVms.get(i).getId() +" toal mips "+containerVms.get(i).getTotalMips());
+		}
 		
 		
 		return containerVms;
 	}
+	
 
 	/**
 	 * Create the host list considering the specs listed in the
@@ -430,7 +406,7 @@ public class XXContainerCloudSimExampleInterference2 {
 			Class<? extends IntContainerDataCenter> datacenterClass, List<IntContainerHost> hostList,
 			IntContainerVmAllocationPolicy vmAllocationPolicy, IntContainerAllocationPolicy containerAllocationPolicy,
 			String experimentName, double schedulingInterval, String logAddress, double VMStartupDelay,
-			double ContainerStartupDelay) throws Exception {
+			double ContainerStartupDelay, List<IntContainerCloudlet> cloudletList) throws Exception {
 		String arch = "x86";
 		String os = "Linux";
 		String vmm = "Xen";
@@ -444,7 +420,7 @@ public class XXContainerCloudSimExampleInterference2 {
 		
 		IntContainerDataCenter datacenter = new IntContainerDataCenter(name, characteristics, vmAllocationPolicy,
 				containerAllocationPolicy, new LinkedList<Storage>(), schedulingInterval, experimentName, logAddress,
-				VMStartupDelay, ContainerStartupDelay);
+				VMStartupDelay, ContainerStartupDelay, cloudletList);
 
 		return datacenter;
 	}
@@ -464,9 +440,7 @@ public class XXContainerCloudSimExampleInterference2 {
 			int containerType =0; //i / (int) Math.ceil((double) containersNumber / CONTAINER_TYPES);
 
 			containers.add(new IntContainer(IntIDs.pollId(IntContainer.class), brokerId,
-					(double) CONTAINER_MIPS[containerType], CONTAINER_PES[containerType],"Xen", new ContainerCloudletSchedulerDynamicWorkload(
-							CONTAINER_MIPS[containerType], CONTAINER_PES[containerType]),
-					SCHEDULING_INTERVAL));
+					(double) CONTAINER_MIPS[containerType], CONTAINER_PES[containerType],"Xen", new IntContainerCloudletSchedulerDynamicWorkload(CONTAINER_MIPS[containerType], CONTAINER_PES[containerType]),	SCHEDULING_INTERVAL));
 		}
 
 		return containers;
@@ -489,7 +463,10 @@ public class XXContainerCloudSimExampleInterference2 {
 																								// IntContainerCloudlet
 		long fileSize = 300L;
 		long outputSize = 300L;
-		UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); // Modo NULO (simples)
+		//UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); // Modo NULO (simples)
+		UtilizationModelFull utilizationModelFull = new UtilizationModelFull();
+		//UtilizationModelPlanetLabInMemory = teste new UtilizationModelPlanetLabInMemory(inputPath, schedulingInterval);
+		
 		java.io.File inputFolder1 = new java.io.File(inputFolderName);
 		java.io.File[] files1 = inputFolder1.listFiles();
 		int createdCloudlets = 0;
@@ -502,7 +479,7 @@ public class XXContainerCloudSimExampleInterference2 {
 
 					try {
 						cloudlet = new IntContainerCloudlet(IntIDs.pollId(IntContainerCloudlet.class), CLOUDLET_LENGTH, 1,
-								fileSize, outputSize, utilizationModelNull, utilizationModelNull, utilizationModelNull,
+								fileSize, outputSize, utilizationModelFull, utilizationModelFull, utilizationModelFull,
 								new Interference(files[i].getAbsolutePath()));
 //						System.out.println(files[i].getAbsolutePath().toString());
 //                                new UtilizationModelPlanetLabInMemoryExtended(files[i].getAbsolutePath(), 300.0D),

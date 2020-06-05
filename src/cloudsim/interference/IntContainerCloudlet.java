@@ -15,9 +15,20 @@ public Interference interfMetrics;
 				utilizationModelRam, utilizationModelBw);
 		// TODO Auto-generated constructor stub
 		
-		this.interfMetrics = interfMetrics;
+		setInterferenceMetrics(interfMetrics);
 
 	}
+	
+	
+	public void setInterferenceMetrics(Interference interfMetrics){
+		this.interfMetrics = interfMetrics;	
+	}
+	
+	public Interference getInterferenceMetrics(){
+		return interfMetrics;	
+	}
+	
+	
 	
 
 

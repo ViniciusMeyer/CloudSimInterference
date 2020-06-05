@@ -5,8 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cloudsim.interference.IntContainerVm;
+
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.container.schedulers.ContainerCloudletScheduler;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 public class IntContainer {
@@ -49,7 +52,7 @@ public class IntContainer {
     /**
      * The ContainerCloudlet scheduler.
      */
-    private ContainerCloudletScheduler containerCloudletScheduler;
+    private IntContainerCloudletScheduler containerCloudletScheduler;
 
     /**
      * The ContainerVm.
@@ -118,7 +121,7 @@ public class IntContainer {
             double mips,
             int numberOfPes,
             String containerManager,
-            ContainerCloudletScheduler containerCloudletScheduler, double schedulingInterval) {
+            IntContainerCloudletScheduler containerCloudletScheduler, double schedulingInterval) {
         setWorkloadMips(mips);
         setId(id);
         setUserId(userId);
@@ -142,10 +145,26 @@ public class IntContainer {
      * next events
      * @pre currentTime >= 0
      * @post $none
-     */
-    public double updateContainerProcessing(double currentTime, List<Double> mipsShare) {
+     */  
+    /*public double updateContainerProcessing(final double currentTime, final List<Double> mipsShare) {
+         double time = updateContainerProcessing1(currentTime, mipsShare);
+         if (currentTime > getPreviousTime() && (currentTime - 0.2) % getSchedulingInterval() == 0) {
+             double utilization = getTotalUtilizationOfCpu(getContainerCloudletScheduler().getPreviousTime());
+             if (CloudSim.clock() != 0 || utilization != 0) {
+                 addUtilizationHistoryValue(utilization);
+             }
+             setPreviousTime(currentTime);
+         }
+         return time;
+     }*/
+
+   public double updateContainerProcessing(double currentTime, List<Double> mipsShare) {
+        double x;
         if (mipsShare != null) {
-            return getContainerCloudletScheduler().updateContainerProcessing(currentTime, mipsShare);
+            x = getContainerCloudletScheduler().updateContainerProcessing(currentTime, mipsShare);
+            Log.printLine(" eeeeeeeeeeee CONTAINERupdateContProcess  " + x + ", currentime "+ currentTime + ", MipsShare "+mipsShare);
+        	return x; 
+            
         }
         return 0.0;
     }
@@ -348,7 +367,7 @@ public class IntContainer {
      *
      * @return the containerCloudletScheduler
      */
-    public ContainerCloudletScheduler getContainerCloudletScheduler() {
+    public IntContainerCloudletScheduler getContainerCloudletScheduler() {
         return containerCloudletScheduler;
     }
 
@@ -368,7 +387,7 @@ public class IntContainer {
      *
      * @param containerCloudletScheduler the new Container Cloudlet Scheduler
      */
-    protected void setContainerCloudletScheduler(ContainerCloudletScheduler containerCloudletScheduler) {
+    protected void setContainerCloudletScheduler(IntContainerCloudletScheduler containerCloudletScheduler) {
         this.containerCloudletScheduler = containerCloudletScheduler;
     }
 

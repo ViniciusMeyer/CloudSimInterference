@@ -817,6 +817,7 @@ public class CloudSim {
 		running = true;
 		// Start all the entities
 		for (SimEntity ent : entities) {
+			//Log.printLine("AAAAAA");
 			ent.startEntity();
 		}
 

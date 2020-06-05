@@ -230,7 +230,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@Override
 	public void processEvent(SimEvent ev) {
-		Log.printLine("BROKER:processEvent");
+		Log.printLine("BROKER:processEvent   ===========   "+CloudSim.clock());
 		switch (ev.getTag()) {
 		// Resource characteristics request
 		case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:
@@ -278,7 +278,6 @@ public class IntContainerDataCenterBroker extends SimEntity {
 				Log.printConcatLine("Error : Where is the VM");
 			} else {
 				getContainersToVmsMap().put(containerId, vmId);
-				//getContainersCreatedList().add(ContainerList.getById(getContainerList(), containerId));
 				getContainersCreatedList().add(IntContainerList.getById(getContainerList(), containerId));
 
 				// ContainerVm p= ContainerVmList.getById(getVmsCreatedList(), vmId);
@@ -512,17 +511,18 @@ public class IntContainerDataCenterBroker extends SimEntity {
 		for (IntContainerCloudlet cloudlet : getCloudletList()) {
 			// Log.printLine("Containers Created" + getContainersCreated());
 			if (containerIndex < getContainersCreated()) {
-				// Log.printLine("Container Index" + containerIndex);
-                    int containerId = getContainersCreatedList().get(containerIndex).getId();
-                    bindCloudletToContainer(cloudlet.getCloudletId(), containerId);
+				Log.printLine("Container Index" + containerIndex);
+				//
+                    int containerId = getContainersCreatedList().get(containerIndex).getId();// descomentei do original
+                    bindCloudletToContainer(cloudlet.getCloudletId(), containerId);// descomentei do original
+                    
 				//Log.printLine("=== === " + getContainersToVmsMap().get(cloudlet.getContainerId()));
 				if (getContainersToVmsMap().get(cloudlet.getContainerId()) != null) {
 					int vmId = getContainersToVmsMap().get(cloudlet.getContainerId());
-                    bindCloudletToVm(cloudlet.getCloudletId(), vmId);
+                    //bindCloudletToVm(cloudlet.getCloudletId(), vmId); // descomentei do original
 					cloudlet.setVmId(vmId);
 //                    if(cloudlet.getVmId() != vmId){
 //                        Log.printConcatLine("The cloudlet Vm Id is ", cloudlet.getVmId(), "It should be", vmId);
-//
 //                    }
 					containerIndex++;
 					sendNow(getDatacenterIdsList().get(0), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
@@ -534,8 +534,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 
 				// Log.printLine("Container Id" + containerId);
 
-				// Log.printConcatLine("VM ID is: ",cloudlet.getVmId(), "Container ID:",
-				// cloudlet.getContainerId(), "cloudletId:", cloudlet.getCloudletId());
+				Log.printConcatLine("VM ID is: ",cloudlet.getVmId(), ", Container ID: ",cloudlet.getContainerId(), ", cloudletId: ", cloudlet.getCloudletId());
 
 //                cloudlet.setVmId(v.getId());
 				// if user didn't bind this cloudlet and it has not been executed yet

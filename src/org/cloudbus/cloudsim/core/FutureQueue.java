@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.cloudbus.cloudsim.Log;
+
 /**
  * This class implements the future event queue used by {@link CloudSim}. 
  * The event queue uses a {@link TreeSet} in order to store the events.
@@ -43,6 +45,7 @@ public class FutureQueue {
 	public void addEvent(SimEvent newEvent) {
 		newEvent.setSerial(serial++);
 		sortedSet.add(newEvent);
+		Log.printLine("ADD-NEW-EVENT");
 	}
 
 	/**

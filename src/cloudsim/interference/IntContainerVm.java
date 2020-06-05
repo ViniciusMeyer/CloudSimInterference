@@ -104,6 +104,11 @@ public class IntContainerVm {
 	 */
 	@SuppressWarnings("unused")
 	private IntContainerDataCenter datacenter;
+	
+    /**
+     * The scheduling interval.
+     */
+    private double schedulingInterval;
 
 	/**
 	 * Creates a new VMCharacteristics object.
@@ -122,7 +127,7 @@ public class IntContainerVm {
 	 */
 
 	public IntContainerVm(int id, int userId, double mips, IntContainerScheduler containerScheduler,
-			List<? extends IntContainerPe> peList) {
+			List<? extends IntContainerPe> peList, double schedulingInterval) {
 		setId(id);
 		setUserId(userId);
 		setUid(getUid(userId, id));
@@ -136,6 +141,9 @@ public class IntContainerVm {
 		setBeingInstantiated(true);
 
 		setCurrentAllocatedMips(null);
+		
+		setSchedulingInterval(schedulingInterval); // adapt
+		
 	}
 
 	/**
@@ -889,4 +897,22 @@ public class IntContainerVm {
 	public void setInWaiting(boolean inWaiting) {
 		this.inWaiting = inWaiting;
 	}
+	
+	 /**
+     * Gets the scheduling interval.
+     *
+     * @return the schedulingInterval
+     */
+    public double getSchedulingInterval() {
+        return schedulingInterval;
+    }
+
+    /**
+     * Sets the scheduling interval.
+     *
+     * @param schedulingInterval the schedulingInterval to set
+     */
+    protected void setSchedulingInterval(final double schedulingInterval) {
+        this.schedulingInterval = schedulingInterval;
+    }
 }
