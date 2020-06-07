@@ -1,0 +1,14 @@
+Datacenter file configuration
+app 1 ~/interference/r/linkbench/inc/source/inc.csv
+app 1 ~/interference/r/linkbench/dec/source/dec.csv
+app 1 ~/interference/r/linkbench/osc/source/osc.csv
+app 1 ~/interference/r/linkbench/con/source/con.csv
+app 1 ~/interference/r/tpch/inc/source/mysql.csv
+app 1 ~/interference/r/tpch/osc/source/mysql.csv
+app 1 ~/interference/r/tpch/dec/source/mysql.csv
+app 1 ~/interference/r/tpch/con/source/mysql.csv
+app 1 ~/interference/r/bench4q/MYSQL/inc/source/inc_new.csv
+app 1 ~/interference/r/bench4q/MYSQL/osc/source/osc_new.csv
+app 1 ~/interference/r/bench4q/MYSQL/inc/source/inc_new.csv
+app 1 ~/interference/r/bench4q/MYSQL/osc/source/osc_new.csv
+pm 12 100

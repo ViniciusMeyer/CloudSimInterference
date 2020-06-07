@@ -67,7 +67,7 @@ public class IntContainerCloudletSchedulerDynamicWorkload extends IntContainerCl
 
             
             double timeSpan = currentTime - getPreviousTime();
-            Log.printLine(" ++++ === CLSCHED: timeSpan "+timeSpan+", currenttime "+currentTime+", getPreviousTime "+getPreviousTime());
+            //Log.printLine(" ++++ === CLSCHED: timeSpan "+timeSpan+", currenttime "+currentTime+", getPreviousTime "+getPreviousTime());
             double nextEvent = Double.MAX_VALUE;
             List<ResCloudlet> cloudletsToFinish = new ArrayList<>();
 

@@ -1,14 +1,13 @@
 package cloudsim.interference;
 
 import org.cloudbus.cloudsim.container.core.containerCloudSimTags;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerAllocationPolicy;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerVmAllocationPolicy;
 import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
-import org.cloudbus.cloudsim.lists.CloudletList;
+import cloudsim.interference.MLCResult;
+import cloudsim.interference.MLClassifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +20,11 @@ import java.util.Map;
  */
 public class IntContainerDataCenter extends SimEntity {
 
+	private MLClassifier MLC = new MLClassifier(); // adapt
+	private MLCResult MLCR = new MLCResult(); // adapt
 	private List<IntContainerCloudlet> cloudletList; // adapt
-			
+	private boolean classify = false; // adapt
+	
 	/**
 	 * The characteristics.
 	 */
@@ -93,7 +95,8 @@ public class IntContainerDataCenter extends SimEntity {
 	public IntContainerDataCenter(String name, IntContainerDataCenterCharacteristics characteristics,
 			IntContainerVmAllocationPolicy vmAllocationPolicy, IntContainerAllocationPolicy containerAllocationPolicy,
 			List<Storage> storageList, double schedulingInterval, String experimentName, String logAddress,
-			Double vmStartupDelay, Double containerStartupDelay, List<IntContainerCloudlet> cloudletList) throws Exception {
+			Double vmStartupDelay, Double containerStartupDelay, List<IntContainerCloudlet> cloudletList)
+			throws Exception {
 		super(name);
 		Log.printLine("\nDC: ==== INCIO - CRIAÇÃO OBJETO DC =====\n");
 		setCharacteristics(characteristics);
@@ -122,7 +125,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 		this.vmStartupDelay = vmStartupDelay; // cont
 		this.containerStartupDelay = containerStartupDelay; // cont
-		
+
 		this.cloudletList = cloudletList;
 
 		Log.printLine("\nDC: ==== FIM - CRIAÇÃO OBJETO DC =====\n");
@@ -846,7 +849,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 		try {
 			IntContainerCloudlet cl = (IntContainerCloudlet) ev.getData();
-		
+
 			// checks whether this Cloudlet has finished or not
 			if (cl.isFinished()) {
 				String name = CloudSim.getEntityName(cl.getUserId());
@@ -1043,6 +1046,12 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	protected void updateCloudletProcessing() {
 		Log.printLine("DC:updateCloudletProcessing");
+		
+		if(!classify) {
+			InterferenceClassifier();
+			classify = true;
+		}
+		
 		// if some time passed since last processing
 		// R: for term is to allow loop at simulation start. Otherwise, one initial
 		// simulation step is skipped and schedulers are not properly initialized
@@ -1060,28 +1069,7 @@ public class IntContainerDataCenter extends SimEntity {
 					smallerTime = time;
 				}
 			}
-
-			// IntContainerCloudlet
-			Log.printLine("\n\n\n ==============================================================\n");
-
-			for (int i = 0; i < list.size(); i++) {
-				IntContainerHost host = list.get(i);
-				// inform VMs to update processing
-
-				for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
-
-					Log.printConcatLine("Host: ", host.getId(), ", Container: ",
-							host.getVmList().get(0).getContainerList().get(x).getId(),", Cloudlet: " ,cloudletList.get(host.getVmList().get(0).getContainerList().get(x).getId()-1).getCloudletId());
-
-				}
-
-			}
-	
-			
-			
-
-			Log.printLine("\n ============================================================== \n\n\n");
-
+		
 			// gurantees a minimal interval before scheduling the event
 			if (smallerTime < CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01) {
 				smallerTime = CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01;
@@ -1091,6 +1079,78 @@ public class IntContainerDataCenter extends SimEntity {
 			}
 			setLastProcessTime(CloudSim.clock());
 		}
+	}
+	
+	
+	
+	void InterferenceClassifier() {
+		
+		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
+		double smallerTime = Double.MAX_VALUE;
+		// for each host...
+		for (int i = 0; i < list.size(); i++) {
+			IntContainerHost host = list.get(i);
+			// inform VMs to update processing
+
+			double time = host.updateContainerVmsProcessing(CloudSim.clock());
+			// what time do we expect that the next cloudlet will finish?
+			if (time < smallerTime) {
+				smallerTime = time;
+			}
+		}
+
+		// IntContainerCloudlet
+		Log.printLine("\n\n\n ==============================================================\n");
+
+		
+		long startT = System.currentTimeMillis();
+		for (int i = 0; i < list.size(); i++) {
+			IntContainerHost host = list.get(i);
+			// inform VMs to update processing
+			
+			
+
+			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+				
+				long startT1 = System.currentTimeMillis();
+
+				Log.printConcatLine("Host: ", host.getId(), ", Container: ",
+						host.getVmList().get(0).getContainerList().get(x).getId(), ", Cloudlet: ",
+						cloudletList.get(host.getVmList().get(0).getContainerList().get(x).getId() - 1)
+								.getCloudletId());
+
+				MLCR = MLC.getMLClass(cloudletList.get(host.getVmList().get(0).getContainerList().get(x).getId() - 1)
+								.getInterferenceMetrics(), 1, 100);
+
+				Log.printLine("CPU: " + MLCR.getCpu());
+				Log.printLine("mem: " + MLCR.getMemory());
+				Log.printLine("net: " + MLCR.getNetwork());
+				Log.printLine("disk: " + MLCR.getDisk());
+				Log.printLine("cache: " + MLCR.getCache());
+				
+				long totalTime1 = System.currentTimeMillis() - startT1;
+				Log.printLine(
+						"Partial " + totalTime1 / 1000 / 60 + " min - " + totalTime1 / 1000 % 60 + " sec\n");
+
+			}
+
+		}
+		long totalTime = System.currentTimeMillis() - startT;
+		Log.printLine(
+				"End of R Session .. " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
+
+		Log.printLine("\n ============================================================== \n\n\n");
+
+		// for (int o = 0; o < cloudletList.get(15).interfMetrics.getIntLength(); o++) {
+		// for (int h = 0; h < 7; h++) {
+		// Log.print(cloudletList.get(15).interfMetrics.getIntByLine(o)[h] + " ");
+		// }
+		// Log.print("- "+o+"\n");
+		// }
+
+		Log.printLine("End of Simulation ...");
+		System.exit(0);
+		
 	}
 
 	/**
