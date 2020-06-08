@@ -77,6 +77,7 @@ public class xxIntExample {
 	static final int[] HOST_PES = new int[] { 4 };
 
 	/**
+	 *
 	 * The population of hosts, containers, and VMs are specified. The containers
 	 * population is equal to the cloudlets population as each cloudlet is mapped to
 	 * each container. However, depending on the simualtion scenario the container's
