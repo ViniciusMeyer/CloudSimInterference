@@ -4,7 +4,11 @@
 
 #training_dataset_folder <- str_replace_all(paste(project_folder_inside,"forced/")," ", "")
 total<-input_dataset(training_dataset_folder)
-modelo_svm <- svm(category ~ ., data = total , type='C-classification',  nu=0.10, scale=TRUE, kernel="polynomial")  
+
+if(firstTime==0){
+	modelo_svm <- svm(category ~ ., data = total , type='C-classification',  nu=0.10, scale=TRUE, kernel="polynomial")  
+	fisrtTime=1
+}
 
 classifier_percent<- function(a,b){
   

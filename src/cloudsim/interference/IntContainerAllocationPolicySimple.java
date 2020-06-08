@@ -46,19 +46,20 @@ public class IntContainerAllocationPolicySimple extends IntContainerAllocationPo
 //		the available container list is updated. It gets is from the data center.
 		setContainerVmList(containerVmList);
 
-		// ajuste para armazenar no getFreePes() apenas a primera vez 
+		// ajuste para armazenar no getFreePes() apenas a primera vez
 		// Caso sejam criadas mais Vms, deve-se alterar isso no ELSE
 		if (!this.control) {
 			for (IntContainerVm containerVm : getContainerVmList()) {
 				// armazena na lista FreePes a quantidade de Cores na VM
 				getFreePes().add(containerVm.getNumberOfPes());
 				// Log.printLine("z"+containerVm.getNumberOfPes());
-				//Log.printLine("AAA Container quer " + container.getNumberOfPes() + " e tem "+ containerVm.getNumberOfFreePes());
+				// Log.printLine("AAA Container quer " + container.getNumberOfPes() + " e tem "+
+				// containerVm.getNumberOfFreePes());
 
 			}
 			control = true;
-		}else {
-			//Atualizar getFreePes() com os Pe das nova(s) Vm(s)
+		} else {
+			// Atualizar getFreePes() com os Pe das nova(s) Vm(s)
 		}
 
 		// recebe a quantidade de Cores que o Container quer
@@ -74,7 +75,7 @@ public class IntContainerAllocationPolicySimple extends IntContainerAllocationPo
 		}
 
 		if (!getContainerVmTable().containsKey(container.getUid())) { // if this vm was not created
-			//Log.printLine("UID " + container.getUid());
+			// Log.printLine("UID " + container.getUid());
 
 			do {// we still trying until we find a host or until we try all of them
 				int moreFree = Integer.MIN_VALUE;
@@ -89,20 +90,18 @@ public class IntContainerAllocationPolicySimple extends IntContainerAllocationPo
 						idx = i;
 					}
 				}
-				
 
-				Log.printLine("Container quer " + container.getNumberOfPes() + " e tem "
-						+ getFreePes().get(idx));
+				//Log.printLine("Container quer " + container.getNumberOfPes() + " e tem " + getFreePes().get(idx));
 				IntContainerVm containerVm = getContainerVmList().get(idx);
 				result = containerVm.containerCreate(container);
 
 				if (result) { // if vm were succesfully created in the host
-					
+
 					getContainerVmTable().put(container.getUid(), containerVm);
 					getUsedPes().put(container.getUid(), requiredPes);
-					Log.printLine("id: "+idx+" quant "+ (getFreePes().get(idx)+ " - "+ requiredPes));
-					getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
-					
+					//Log.printLine("id: " + idx + " quant " + (getFreePes().get(idx) + " - " + requiredPes));
+					//getFreePes().set(idx, getFreePes().get(idx) - requiredPes);
+
 					result = true;
 					break;
 				} else {

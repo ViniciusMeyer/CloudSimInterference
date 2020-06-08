@@ -98,7 +98,7 @@ public class IntContainerDataCenter extends SimEntity {
 			Double vmStartupDelay, Double containerStartupDelay, List<IntContainerCloudlet> cloudletList)
 			throws Exception {
 		super(name);
-		Log.printLine("\nDC: ==== INCIO - CRIAÇÃO OBJETO DC =====\n");
+	//	Log.printLine("\nDC: ==== INCIO - CRIAÇÃO OBJETO DC =====\n");
 		setCharacteristics(characteristics);
 		setVmAllocationPolicy(vmAllocationPolicy);
 		setContainerAllocationPolicy(containerAllocationPolicy);
@@ -128,7 +128,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 		this.cloudletList = cloudletList;
 
-		Log.printLine("\nDC: ==== FIM - CRIAÇÃO OBJETO DC =====\n");
+	//	Log.printLine("\nDC: ==== FIM - CRIAÇÃO OBJETO DC =====\n");
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	@Override
 	public void processEvent(SimEvent ev) {
-		Log.printLine("DC:processEvent  ===========   " + CloudSim.clock());
+		//Log.printLine("DC:processEvent  ===========   " + CloudSim.clock());
 		int srcId = -1;
 
 		switch (ev.getTag()) {
@@ -297,7 +297,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 	public void processContainerSubmit(SimEvent ev, boolean ack) {
 		// processamento do evento para alocar VMs para Containers
-		Log.printLine("DC:processContainerSubmit -> VM para Container");
+		//Log.printLine("DC:processContainerSubmit -> VM para Container");
 
 		List<IntContainer> containerList = (List<IntContainer>) ev.getData();
 
@@ -333,7 +333,7 @@ public class IntContainerDataCenter extends SimEntity {
 					// processa o cloudlet tbm
 					container.updateContainerProcessing(CloudSim.clock(), getContainerAllocationPolicy()
 							.getContainerVm(container).getContainerScheduler().getAllocatedMipsForContainer(container));
-					Log.printLine("CLOUDSIM TIME: " + CloudSim.clock());
+					//Log.printLine("CLOUDSIM TIME: " + CloudSim.clock());
 				} else {
 					data[0] = -1;
 					// notAssigned.add(container);
@@ -844,7 +844,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void processCloudletSubmit(SimEvent ev, boolean ack) {
-		Log.printLine("DC:processCloudletSubmit");
+		//Log.printLine("DC:processCloudletSubmit");
 		updateCloudletProcessing();
 
 		try {
@@ -1045,7 +1045,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void updateCloudletProcessing() {
-		Log.printLine("DC:updateCloudletProcessing");
+		//Log.printLine("DC:updateCloudletProcessing");
 		
 		if(!classify) {
 			InterferenceClassifier();
@@ -1161,7 +1161,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void checkCloudletCompletion() {
-		Log.printLine("DC:checkCloudletCompletion");
+		//Log.printLine("DC:checkCloudletCompletion");
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		for (int i = 0; i < list.size(); i++) {
 			IntContainerHost host = list.get(i);
@@ -1187,7 +1187,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @return a tag number denoting whether this operation is a success or not
 	 */
 	public int addFile(File file) {
-		Log.printLine("DC:addFile");
+		//Log.printLine("DC:addFile");
 		if (file == null) {
 			return DataCloudTags.FILE_ADD_ERROR_EMPTY;
 		}
@@ -1223,7 +1223,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
 	 */
 	protected boolean contains(File file) {
-		Log.printLine("DC:contains");
+		//Log.printLine("DC:contains");
 		if (file == null) {
 			return false;
 		}
@@ -1264,7 +1264,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @return the error message
 	 */
 	private int deleteFileFromStorage(String fileName) {
-		Log.printLine("DC:deleteFileFromStorage");
+		//Log.printLine("DC:deleteFileFromStorage");
 		Storage tempStorage = null;
 		File tempFile = null;
 		int msg = DataCloudTags.FILE_DELETE_ERROR;
@@ -1286,7 +1286,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	@Override
 	public void shutdownEntity() {
-		Log.printLine("DC:shutdownEntity");
+		//Log.printLine("DC:shutdownEntity");
 		Log.printConcatLine(getName(), " is shutting down...");
 	}
 
@@ -1297,7 +1297,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	@Override
 	public void startEntity() {
-		Log.printLine("DC:startEntity");
+		//Log.printLine("DC:startEntity");
 		Log.printConcatLine(getName(), " is starting...");
 		// this resource should register to regional GIS.
 		// However, if not specified, then register to system GIS (the

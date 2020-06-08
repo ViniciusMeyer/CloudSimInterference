@@ -45,7 +45,7 @@ public class FutureQueue {
 	public void addEvent(SimEvent newEvent) {
 		newEvent.setSerial(serial++);
 		sortedSet.add(newEvent);
-		Log.printLine("ADD-NEW-EVENT");
+		//Log.printLine("ADD-NEW-EVENT");
 	}
 
 	/**

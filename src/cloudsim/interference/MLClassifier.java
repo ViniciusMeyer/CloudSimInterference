@@ -60,10 +60,12 @@ public class MLClassifier {
 		}
 	}
 
+
 	public Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
-	
-	public MLClassifier() {
+	private int firstTime;
 		
+	public MLClassifier() {
+		this.firstTime=0;
 	}
 
 	public MLCResult getMLClass(Interference interf, int start, int finish) {
@@ -91,6 +93,7 @@ public class MLClassifier {
 		re.eval("library(\"dplyr\")");
 		re.eval("library(\"fossil\")");
 
+		re.eval("firstTime<-"+firstTime);
 		re.eval("project_folder_inside <- \"" + project_folder + "\"");
 		re.eval("training_dataset_folder <- \"" + project_folder + "forced/\"");
 		re.eval("source(\"" + project_folder + "input_dataset.R\")");
@@ -131,6 +134,7 @@ public class MLClassifier {
 
 		MLCResult result = new MLCResult(gg);
 
+		firstTime=1;
 		re.stop();
 		return (result);
 

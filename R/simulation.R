@@ -14,7 +14,7 @@
 
 #rm(list=ls())
 
-library("changepoint")
+//library("changepoint")
 library("e1071")
 library("caret")
 library("stringr")

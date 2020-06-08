@@ -31,7 +31,7 @@ import cloudsim.interference.*;
  * A simple example showing how to create a data center with one host, one VM,
  * one container and run one cloudlet on it.
  */
-public class XXContainerCloudSimExampleInterference2 {
+public class xxIntExample {
 
 	/**
 	 * Simulation parameters including the interval and limit
@@ -355,7 +355,7 @@ public class XXContainerCloudSimExampleInterference2 {
 
 		//imprimir Vms criadas
 		for (int i = 0; i < containerVmsNumber; ++i) {
-		Log.printLine("Vm"+containerVms.get(i).getId() +" toal mips "+containerVms.get(i).getTotalMips());
+//		Log.printLine("Vm"+containerVms.get(i).getId() +" toal mips "+containerVms.get(i).getTotalMips());
 		}
 		
 		
@@ -457,8 +457,11 @@ public class XXContainerCloudSimExampleInterference2 {
 	public static List<IntContainerCloudlet> createIntContainerCloudletList(int brokerId, int numberOfCloudlets)
 			throws FileNotFoundException {
 		// pasta com os traces de interferência
-		String inputFolderName = System.getProperty("user.dir") + "/src/resources/workload/interference";// ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
-		// System.out.println(inputFolderName);
+		//String inputFolderName = System.getProperty("user.dir") + "/src/resources/workload/interference";// ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
+		String inputFolderName = xxIntExample.class.getClassLoader().getResource("resources/workload/interference").getPath();
+		
+		//String inputFolderName = "/home/vinicius/git/CloudSimInterference/src/resources/workload/interference";
+		//Log.printLine("========"+inputFolderName);
 		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>(); // criar um ArrayList de
 																								// IntContainerCloudlet
 		long fileSize = 300L;

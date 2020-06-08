@@ -140,7 +140,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	public IntContainerDataCenterBroker(String name, double overBookingfactor) throws Exception {
 		super(name);
 		
-		Log.printLine("\nBROKER: ==== INCIO - CRIAÇÃO OBJETO BROKER =====\n");
+		//Log.printLine("\nBROKER: ==== INCIO - CRIAÇÃO OBJETO BROKER =====\n");
 		setVmList(new ArrayList<IntContainerVm>());
 		setContainerList(new ArrayList<IntContainer>()); // cont
 		setVmsCreatedList(new ArrayList<IntContainerVm>());
@@ -161,7 +161,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 		setContainersToDatacentersMap(new HashMap<Integer, Integer>()); // cont
 		setDatacenterCharacteristicsList(new HashMap<Integer, IntContainerDataCenterCharacteristics>());
 		setNumberOfCreatedVMs(0); //cont
-		Log.printLine("\nBROKER: ==== FIM - CRIAÇÃO OBJETO BROKER =====\n");
+		//Log.printLine("\nBROKER: ==== FIM - CRIAÇÃO OBJETO BROKER =====\n");
 	
 	}
 
@@ -174,7 +174,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	public void submitVmList(List<? extends IntContainerVm> list) {
-		Log.printLine("BROKER:submitVmList");
+		//Log.printLine("BROKER:submitVmList");
 		getVmList().addAll(list);
 		
 	}
@@ -187,7 +187,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	public void submitCloudletList(List<? extends IntContainerCloudlet> list) {
-		Log.printLine("BROKER:submitCloudletList");
+		//Log.printLine("BROKER:submitCloudletList");
 		getCloudletList().addAll(list);
 	}
 
@@ -201,7 +201,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	public void bindCloudletToVm(int cloudletId, int vmId) {
-		Log.printLine("BROKER:bindCloudletToVm");
+		//Log.printLine("BROKER:bindCloudletToVm");
 		CloudletList.getById(getCloudletList(), cloudletId).setVmId(vmId);
 //        Log.printConcatLine("The Vm ID is ",  CloudletList.getById(getCloudletList(), cloudletId).getVmId(), "should be", vmId);
 	}
@@ -216,7 +216,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	public void bindCloudletToContainer(int cloudletId, int containerId) {
-		Log.printLine("BROKER:bindCloudletToContainer");
+		//Log.printLine("BROKER:bindCloudletToContainer");
 		CloudletList.getById(getCloudletList(), cloudletId).setContainerId(containerId);
 		
 	}
@@ -230,7 +230,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@Override
 	public void processEvent(SimEvent ev) {
-		Log.printLine("BROKER:processEvent   ===========   "+CloudSim.clock());
+		//Log.printLine("BROKER:processEvent   ===========   "+CloudSim.clock());
 		switch (ev.getTag()) {
 		// Resource characteristics request
 		case CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST:
@@ -267,7 +267,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	}
 
 	public void processContainerCreate(SimEvent ev) {
-		Log.printLine("BROKER:processContainerCreate");
+		//Log.printLine("BROKER:processContainerCreate");
 		int[] data = (int[]) ev.getData();
 		int vmId = data[0];
 		int containerId = data[1];
@@ -309,7 +309,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processResourceCharacteristics(SimEvent ev) {
-		Log.printLine("BROKER:processResourceCharacteristics");
+		//Log.printLine("BROKER:processResourceCharacteristics");
 		IntContainerDataCenterCharacteristics characteristics = (IntContainerDataCenterCharacteristics) ev.getData();
 		getDatacenterCharacteristicsList().put(characteristics.getId(), characteristics);
 		
@@ -331,7 +331,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processResourceCharacteristicsRequest(SimEvent ev) {
-		Log.printLine("BROKER:processResourceCharacteristicsRequest");
+		//Log.printLine("BROKER:processResourceCharacteristicsRequest");
 		setDatacenterIdsList(CloudSim.getCloudResourceList());
 		setDatacenterCharacteristicsList(new HashMap<Integer, IntContainerDataCenterCharacteristics>());
 
@@ -343,7 +343,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	}
 
 	protected void processNewVmCreate(SimEvent ev) {
-		Log.printLine("BROKER:processNewVmCreate");
+		//Log.printLine("BROKER:processNewVmCreate");
 		Map<String, Object> map = (Map<String, Object>) ev.getData();
 		int datacenterId = (int) map.get("datacenterID");
 		int result = (int) map.get("result");
@@ -369,7 +369,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processVmCreate(SimEvent ev) {
-		Log.printLine("BROKER:processVmCreate");
+		//Log.printLine("BROKER:processVmCreate");
 		int[] data = (int[]) ev.getData();
 		int datacenterId = data[0];
 		int vmId = data[1];
@@ -430,7 +430,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processCloudletReturn(SimEvent ev) {
-		Log.printLine("BROKER:processCloudletReturn");
+		//Log.printLine("BROKER:processCloudletReturn");
 		IntContainerCloudlet cloudlet = (IntContainerCloudlet) ev.getData();
 		getCloudletReceivedList().add(cloudlet);
 		Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Cloudlet ", cloudlet.getCloudletId(), " returned");
@@ -461,7 +461,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void processOtherEvent(SimEvent ev) {
-		Log.printLine("BROKER:processOtherEvent");
+		//Log.printLine("BROKER:processOtherEvent");
 		if (ev == null) {
 			Log.printConcatLine(getName(), ".processOtherEvent(): ", "Error - an event is null.");
 			return;
@@ -478,7 +478,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void createVmsInDatacenter(int datacenterId) {
-		Log.printLine("BROKER:createVmsInDatacenter");
+		//Log.printLine("BROKER:createVmsInDatacenter");
 		// send as much vms as possible for this datacenter before trying the next one
 		int requestedVms = 0;
 		String datacenterName = CloudSim.getEntityName(datacenterId);
@@ -505,13 +505,13 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void submitCloudlets() {
-		Log.printLine("BROKER:submitCloudlets");
+		//Log.printLine("BROKER:submitCloudlets");
 		int containerIndex = 0;
 		List<IntContainerCloudlet> successfullySubmitted = new ArrayList<>();
 		for (IntContainerCloudlet cloudlet : getCloudletList()) {
 			// Log.printLine("Containers Created" + getContainersCreated());
 			if (containerIndex < getContainersCreated()) {
-				Log.printLine("Container Index" + containerIndex);
+				//Log.printLine("Container Index" + containerIndex);
 				//
                     int containerId = getContainersCreatedList().get(containerIndex).getId();// descomentei do original
                     bindCloudletToContainer(cloudlet.getCloudletId(), containerId);// descomentei do original
@@ -534,7 +534,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 
 				// Log.printLine("Container Id" + containerId);
 
-				Log.printConcatLine("VM ID is: ",cloudlet.getVmId(), ", Container ID: ",cloudlet.getContainerId(), ", cloudletId: ", cloudlet.getCloudletId());
+				//Log.printConcatLine("VM ID is: ",cloudlet.getVmId(), ", Container ID: ",cloudlet.getContainerId(), ", cloudletId: ", cloudlet.getCloudletId());
 
 //                cloudlet.setVmId(v.getId());
 				// if user didn't bind this cloudlet and it has not been executed yet
@@ -602,7 +602,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void clearDatacenters() {
-		Log.printLine("BROKER:clearDatacenters");
+		//Log.printLine("BROKER:clearDatacenters");
 		for (IntContainerVm vm : getVmsCreatedList()) {
 //            Log.printConcatLine(CloudSim.clock(), ": " + getName(), ": Destroying VM #", vm.getId());
 			sendNow(getVmsToDatacentersMap().get(vm.getId()), CloudSimTags.VM_DESTROY, vm);
@@ -615,7 +615,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 *
 	 */
 	protected void submitContainers() {
-		Log.printLine("BROKER:submitContainers");
+		//Log.printLine("BROKER:submitContainers");
 		List<IntContainer> successfullySubmitted = new ArrayList<>();
 		int i = 0;
 		for (IntContainer container : getContainerList()) {
@@ -676,7 +676,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	protected void finishExecution() {
-		Log.printLine("BROKER:finishExecution");
+		//Log.printLine("BROKER:finishExecution");
 		sendNow(getId(), CloudSimTags.END_OF_SIMULATION);
 	}
 
@@ -687,7 +687,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@Override
 	public void shutdownEntity() {
-		Log.printLine("BROKER:shutdownEntity");
+		//Log.printLine("BROKER:shutdownEntity");
 		Log.printConcatLine(getName(), " is shutting down...");
 	}
 
@@ -698,7 +698,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@Override
 	public void startEntity() {
-		Log.printLine("BROKER:startEntity");
+		//Log.printLine("BROKER:startEntity");
 		Log.printConcatLine(getName(), " is starting...");
 		schedule(getId(), 0, CloudSimTags.RESOURCE_CHARACTERISTICS_REQUEST);
 	}
@@ -711,7 +711,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IntContainerVm> List<T> getVmList() {
-		Log.printLine("BROKER:getVmList");
+		//Log.printLine("BROKER:getVmList");
 		return (List<T>) vmList;
 	}
 
@@ -722,7 +722,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param vmList the new vm list
 	 */
 	protected <T extends IntContainerVm> void setVmList(List<T> vmList) {
-		Log.printLine("BROKER:setVmList");
+		//Log.printLine("BROKER:setVmList");
 		this.vmList = vmList;
 	}
 
@@ -734,7 +734,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IntContainerCloudlet> List<T> getCloudletList() {
-		Log.printLine("BROKER:getCloudletList");
+		//Log.printLine("BROKER:getCloudletList");
 		return (List<T>) cloudletList;
 	}
 
@@ -745,7 +745,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param cloudletList the new cloudlet list
 	 */
 	protected <T extends IntContainerCloudlet> void setCloudletList(List<T> cloudletList) {
-		Log.printLine("BROKER:setCloudletList");
+		//Log.printLine("BROKER:setCloudletList");
 		this.cloudletList = cloudletList;
 	}
 
@@ -757,7 +757,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IntContainerCloudlet> List<T> getCloudletSubmittedList() {
-		Log.printLine("BROKER:getCloudletSubmittedList");
+		//Log.printLine("BROKER:getCloudletSubmittedList");
 		return (List<T>) cloudletSubmittedList;
 	}
 
@@ -768,7 +768,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param cloudletSubmittedList the new cloudlet submitted list
 	 */
 	protected <T extends IntContainerCloudlet> void setCloudletSubmittedList(List<T> cloudletSubmittedList) {
-		Log.printLine("BROKER:setCloudletSubmittedList");
+		//Log.printLine("BROKER:setCloudletSubmittedList");
 		this.cloudletSubmittedList = cloudletSubmittedList;
 	}
 
@@ -780,7 +780,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IntContainerCloudlet> List<T> getCloudletReceivedList() {
-		Log.printLine("BROKER:getCloudletReceivedList");
+		//Log.printLine("BROKER:getCloudletReceivedList");
 		return (List<T>) cloudletReceivedList;
 	}
 
@@ -791,7 +791,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param cloudletReceivedList the new cloudlet received list
 	 */
 	protected <T extends IntContainerCloudlet> void setCloudletReceivedList(List<T> cloudletReceivedList) {
-		Log.printLine("BROKER:setCloudletReceivedList");
+		//Log.printLine("BROKER:setCloudletReceivedList");
 		this.cloudletReceivedList = cloudletReceivedList;
 	}
 
@@ -803,7 +803,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends IntContainerVm> List<T> getVmsCreatedList() {
-		Log.printLine("BROKER:getVmsCreatedList");
+		//Log.printLine("BROKER:getVmsCreatedList");
 		return (List<T>) vmsCreatedList;
 	}
 
@@ -814,7 +814,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param vmsCreatedList the vms created list
 	 */
 	protected <T extends IntContainerVm> void setVmsCreatedList(List<T> vmsCreatedList) {
-		Log.printLine("BROKER:setVmsCreatedList");
+		//Log.printLine("BROKER:setVmsCreatedList");
 		this.vmsCreatedList = vmsCreatedList;
 	}
 
@@ -824,7 +824,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the vms requested
 	 */
 	protected int getVmsRequested() {
-		Log.printLine("BROKER:getVmsRequested");
+		//Log.printLine("BROKER:getVmsRequested");
 		return vmsRequested;
 	}
 
@@ -834,7 +834,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param vmsRequested the new vms requested
 	 */
 	protected void setVmsRequested(int vmsRequested) {
-		Log.printLine("BROKER:setVmsRequested");
+		//Log.printLine("BROKER:setVmsRequested");
 		this.vmsRequested = vmsRequested;
 	}
 
@@ -844,7 +844,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the vms acks
 	 */
 	protected int getVmsAcks() {
-		Log.printLine("BROKER:getVmsAcks");
+		//Log.printLine("BROKER:getVmsAcks");
 		return vmsAcks;
 	}
 
@@ -854,7 +854,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param vmsAcks the new vms acks
 	 */
 	protected void setVmsAcks(int vmsAcks) {
-		Log.printLine("BROKER:setVmsAcks");
+		//Log.printLine("BROKER:setVmsAcks");
 		this.vmsAcks = vmsAcks;
 	}
 
@@ -862,7 +862,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * Increment vms acks.
 	 */
 	protected void incrementVmsAcks() {
-		Log.printLine("BROKER:incrementVmsAcks");
+		//Log.printLine("BROKER:incrementVmsAcks");
 		vmsAcks++;
 	}
 
@@ -870,7 +870,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * Increment vms acks.
 	 */
 	protected void incrementContainersAcks() {
-		Log.printLine("BROKER:incrementContainersAcks");
+		//Log.printLine("BROKER:incrementContainersAcks");
 		setContainersAcks(getContainersAcks() + 1);
 	}
 
@@ -880,7 +880,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the vms destroyed
 	 */
 	protected int getVmsDestroyed() {
-		Log.printLine("BROKER:getVmsDestroyed");
+		//Log.printLine("BROKER:getVmsDestroyed");
 		return vmsDestroyed;
 	}
 
@@ -890,7 +890,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param vmsDestroyed the new vms destroyed
 	 */
 	protected void setVmsDestroyed(int vmsDestroyed) {
-		Log.printLine("BROKER:setVmsDestroyed");
+		//Log.printLine("BROKER:setVmsDestroyed");
 		this.vmsDestroyed = vmsDestroyed;
 	}
 
@@ -900,7 +900,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the datacenter ids list
 	 */
 	protected List<Integer> getDatacenterIdsList() {
-		Log.printLine("BROKER:getDatacenterIdsList");
+		//Log.printLine("BROKER:getDatacenterIdsList");
 		return datacenterIdsList;
 	}
 
@@ -910,7 +910,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param datacenterIdsList the new datacenter ids list
 	 */
 	protected void setDatacenterIdsList(List<Integer> datacenterIdsList) {
-		Log.printLine("BROKER:setDatacenterIdsList");
+		//Log.printLine("BROKER:setDatacenterIdsList");
 		this.datacenterIdsList = datacenterIdsList;
 	}
 
@@ -920,7 +920,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the vms to datacenters map
 	 */
 	protected Map<Integer, Integer> getVmsToDatacentersMap() {
-		Log.printLine("BROKER:getVmsToDatacentersMap");
+		//Log.printLine("BROKER:getVmsToDatacentersMap");
 		return vmsToDatacentersMap;
 	}
 
@@ -930,7 +930,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param vmsToDatacentersMap the vms to datacenters map
 	 */
 	protected void setVmsToDatacentersMap(Map<Integer, Integer> vmsToDatacentersMap) {
-		Log.printLine("BROKER:setVmsToDatacentersMap");
+		//Log.printLine("BROKER:setVmsToDatacentersMap");
 		this.vmsToDatacentersMap = vmsToDatacentersMap;
 	}
 
@@ -940,7 +940,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the datacenter characteristics list
 	 */
 	protected Map<Integer, IntContainerDataCenterCharacteristics> getDatacenterCharacteristicsList() {
-		Log.printLine("BROKER:getDatacenterCharacteristicsList");
+		//Log.printLine("BROKER:getDatacenterCharacteristicsList");
 		return datacenterCharacteristicsList;
 	}
 
@@ -951,7 +951,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 */
 	protected void setDatacenterCharacteristicsList(
 			Map<Integer, IntContainerDataCenterCharacteristics> datacenterCharacteristicsList) {
-		Log.printLine("BROKER:setDatacenterCharacteristicsList");
+		//Log.printLine("BROKER:setDatacenterCharacteristicsList");
 		this.datacenterCharacteristicsList = datacenterCharacteristicsList;
 	}
 
@@ -961,7 +961,7 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @return the datacenter requested ids list
 	 */
 	protected List<Integer> getDatacenterRequestedIdsList() {
-		Log.printLine("BROKER:getDatacenterRequestedIdsList");
+		//Log.printLine("BROKER:getDatacenterRequestedIdsList");
 		return datacenterRequestedIdsList;
 	}
 
@@ -971,20 +971,20 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @param datacenterRequestedIdsList the new datacenter requested ids list
 	 */
 	protected void setDatacenterRequestedIdsList(List<Integer> datacenterRequestedIdsList) {
-		Log.printLine("BROKER:setDatacenterRequestedIdsList");
+		//Log.printLine("BROKER:setDatacenterRequestedIdsList");
 		this.datacenterRequestedIdsList = datacenterRequestedIdsList;
 	}
 
 //------------------------------------------------
 
 	public <T extends IntContainer> List<T> getContainerList() {
-		Log.printLine("BROKER:getContainerList");
+		//Log.printLine("BROKER:getContainerList");
 
 		return (List<T>) containerList;
 	}
 
 	public void setContainerList(List<? extends IntContainer> containerList) {
-		Log.printLine("BROKER:setContainerList");
+		//Log.printLine("BROKER:setContainerList");
 		this.containerList = containerList;
 	}
 
@@ -997,67 +997,67 @@ public class IntContainerDataCenterBroker extends SimEntity {
 	 * @post $none
 	 */
 	public void submitContainerList(List<? extends IntContainer> list) {
-		Log.printLine("BROKER:submitContainerList");
+		//Log.printLine("BROKER:submitContainerList");
 		getContainerList().addAll(list);
 	}
 
 	public Map<Integer, Integer> getContainersToVmsMap() {
-		Log.printLine("BROKER:getContainersToVmsMap");
+		//Log.printLine("BROKER:getContainersToVmsMap");
 		return containersToDatacentersMap;
 	}
 
 	public void setContainersToDatacentersMap(Map<Integer, Integer> containersToDatacentersMap) {		
-		Log.printLine("BROKER:setContainersToDatacentersMap");
+		//Log.printLine("BROKER:setContainersToDatacentersMap");
 		this.containersToDatacentersMap = containersToDatacentersMap;
 	}
 
 	public <T extends IntContainer> List<T> getContainersCreatedList() {
-		Log.printLine("BROKER:getContainersCreatedList");
+		//Log.printLine("BROKER:getContainersCreatedList");
 		return (List<T>) containersCreatedList;
 	}
 
 	public void setContainersCreatedList(List<? extends IntContainer> containersCreatedList) {
-		Log.printLine("BROKER:setContainersCreatedList");
+		//Log.printLine("BROKER:setContainersCreatedList");
 		this.containersCreatedList = containersCreatedList;
 	}
 
 	public int getContainersAcks() {
-		Log.printLine("BROKER:getContainersAcks");
+		//Log.printLine("BROKER:getContainersAcks");
 		return containersAcks;
 	}
 
 	public void setContainersAcks(int containersAcks) {
-		Log.printLine("BROKER:setContainersAcks");
+		//Log.printLine("BROKER:setContainersAcks");
 		this.containersAcks = containersAcks;
 	}
 
 	public int getContainersCreated() {
-		Log.printLine("BROKER:getContainersCreated");
+		//Log.printLine("BROKER:getContainersCreated");
 		return containersCreated;
 	}
 
 	public void setContainersCreated(int containersCreated) {
-		Log.printLine("BROKER:setContainersCreated");
+		//Log.printLine("BROKER:setContainersCreated");
 		this.containersCreated = containersCreated;
 	}
 
 	public double getOverBookingfactor() {
-		Log.printLine("BROKER:getOverBookingfactor");
+		//Log.printLine("BROKER:getOverBookingfactor");
 		return overBookingfactor;
 	}
 
 	public void setOverBookingfactor(double overBookingfactor) {
-		Log.printLine("BROKER:setOverBookingfactor");
+		//Log.printLine("BROKER:setOverBookingfactor");
 		this.overBookingfactor = overBookingfactor;
 	}
 
 	public int getNumberOfCreatedVMs() {
-		Log.printLine("BROKER:getNumberOfCreatedVMs");
+		//Log.printLine("BROKER:getNumberOfCreatedVMs");
 		return numberOfCreatedVMs;
 	}
 
 	public void setNumberOfCreatedVMs(int numberOfCreatedVMs) {
-		Log.printLine("BROKER:setNumberOfCreatedVMs");
+		//Log.printLine("BROKER:setNumberOfCreatedVMs");
 		this.numberOfCreatedVMs = numberOfCreatedVMs;
 	}
 }

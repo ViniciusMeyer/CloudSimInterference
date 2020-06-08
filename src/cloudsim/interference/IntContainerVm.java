@@ -870,8 +870,7 @@ public class IntContainerVm {
 	public boolean containerCreate(IntContainer container) {
         //Log.printLine("Host: Create VM???......" + container.getId());
 		if (!getContainerScheduler().allocatePesForContainer(container, container.getCurrentRequestedMips())) {
-			Log.printConcatLine("[ContainerScheduler.ContainerCreate] Allocation of Container #", container.getId(),
-					" to VM #", getId(), " failed by MIPS");
+			//Log.printConcatLine("[ContainerScheduler.ContainerCreate] Allocation of Container #", container.getId()," to VM #", getId(), " failed by MIPS");
 			return false;
 		}
 

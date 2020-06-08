@@ -162,7 +162,7 @@ public class IntContainer {
         double x;
         if (mipsShare != null) {
             x = getContainerCloudletScheduler().updateContainerProcessing(currentTime, mipsShare);
-            Log.printLine(" eeeeeeeeeeee CONTAINERupdateContProcess  " + x + ", currentime "+ currentTime + ", MipsShare "+mipsShare);
+            //Log.printLine(" eeeeeeeeeeee CONTAINERupdateContProcess  " + x + ", currentime "+ currentTime + ", MipsShare "+mipsShare);
         	return x; 
             
         }
