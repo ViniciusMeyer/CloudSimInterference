@@ -31,7 +31,7 @@ public class IntContainerDataCenter extends SimEntity {
 	private MLCResult MLCR = new MLCResult(); // adapt
 	private List<IntContainerCloudlet> cloudletList; // adapt
 	private boolean classify = false; // adapt
-	
+
 	/**
 	 * The characteristics.
 	 */
@@ -105,7 +105,7 @@ public class IntContainerDataCenter extends SimEntity {
 			Double vmStartupDelay, Double containerStartupDelay, List<IntContainerCloudlet> cloudletList)
 			throws Exception {
 		super(name);
-	//	Log.printLine("\nDC: ==== INCIO - CRIAÇÃO OBJETO DC =====\n");
+		// Log.printLine("\nDC: ==== INCIO - CRIAÇÃO OBJETO DC =====\n");
 		setCharacteristics(characteristics);
 		setVmAllocationPolicy(vmAllocationPolicy);
 		setContainerAllocationPolicy(containerAllocationPolicy);
@@ -135,7 +135,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 		this.cloudletList = cloudletList;
 
-	//	Log.printLine("\nDC: ==== FIM - CRIAÇÃO OBJETO DC =====\n");
+		// Log.printLine("\nDC: ==== FIM - CRIAÇÃO OBJETO DC =====\n");
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	@Override
 	public void processEvent(SimEvent ev) {
-		//Log.printLine("DC:processEvent  ===========   " + CloudSim.clock());
+		// Log.printLine("DC:processEvent =========== " + CloudSim.clock());
 		int srcId = -1;
 
 		switch (ev.getTag()) {
@@ -304,7 +304,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 	public void processContainerSubmit(SimEvent ev, boolean ack) {
 		// processamento do evento para alocar VMs para Containers
-		//Log.printLine("DC:processContainerSubmit -> VM para Container");
+		// Log.printLine("DC:processContainerSubmit -> VM para Container");
 
 		List<IntContainer> containerList = (List<IntContainer>) ev.getData();
 
@@ -340,7 +340,7 @@ public class IntContainerDataCenter extends SimEntity {
 					// processa o cloudlet tbm
 					container.updateContainerProcessing(CloudSim.clock(), getContainerAllocationPolicy()
 							.getContainerVm(container).getContainerScheduler().getAllocatedMipsForContainer(container));
-					//Log.printLine("CLOUDSIM TIME: " + CloudSim.clock());
+					// Log.printLine("CLOUDSIM TIME: " + CloudSim.clock());
 				} else {
 					data[0] = -1;
 					// notAssigned.add(container);
@@ -851,7 +851,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void processCloudletSubmit(SimEvent ev, boolean ack) {
-		//Log.printLine("DC:processCloudletSubmit");
+		// Log.printLine("DC:processCloudletSubmit");
 		updateCloudletProcessing();
 
 		try {
@@ -1052,13 +1052,13 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void updateCloudletProcessing() {
-		//Log.printLine("DC:updateCloudletProcessing");
-		
-		if(!classify) {
+		// Log.printLine("DC:updateCloudletProcessing");
+
+		if (!classify) {
 			InterferenceClassifier();
 			classify = true;
 		}
-		
+
 		// if some time passed since last processing
 		// R: for term is to allow loop at simulation start. Otherwise, one initial
 		// simulation step is skipped and schedulers are not properly initialized
@@ -1076,7 +1076,7 @@ public class IntContainerDataCenter extends SimEntity {
 					smallerTime = time;
 				}
 			}
-		
+
 			// gurantees a minimal interval before scheduling the event
 			if (smallerTime < CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01) {
 				smallerTime = CloudSim.clock() + CloudSim.getMinTimeBetweenEvents() + 0.01;
@@ -1087,66 +1087,79 @@ public class IntContainerDataCenter extends SimEntity {
 			setLastProcessTime(CloudSim.clock());
 		}
 	}
-	
-	
-	
+
 	void InterferenceClassifier() {
 		
-		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
-		double smallerTime = Double.MAX_VALUE;
-		// for each host...
-		for (int i = 0; i < list.size(); i++) {
-			IntContainerHost host = list.get(i);
-			// inform VMs to update processing
-
-			double time = host.updateContainerVmsProcessing(CloudSim.clock());
-			// what time do we expect that the next cloudlet will finish?
-			if (time < smallerTime) {
-				smallerTime = time;
-			}
-		}
-
-		// IntContainerCloudlet
-		Log.printLine("\n\n\n ==============================================================\n");
-
+		int interval = 60, start=1, end=0, total=700;
 		
-		long startT = System.currentTimeMillis();
-		for (int i = 0; i < list.size(); i++) {
-			IntContainerHost host = list.get(i);
-			// inform VMs to update processing
-			
-			
-
-			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
-				
-				long startT1 = System.currentTimeMillis();
-
-				Log.printConcatLine("Host: ", host.getId(), ", Container: ",
-						host.getVmList().get(0).getContainerList().get(x).getId(), ", Cloudlet: ",
-						cloudletList.get(host.getVmList().get(0).getContainerList().get(x).getId() - 1)
-								.getCloudletId());
-
-				MLCR = MLC.getMLClass(cloudletList.get(host.getVmList().get(0).getContainerList().get(x).getId() - 1)
-								.getInterferenceMetrics(),1,600);
-
-				Log.printLine("CPU: " + MLCR.getCpu());
-				Log.printLine("mem: " + MLCR.getMemory());
-				Log.printLine("net: " + MLCR.getNetwork());
-				Log.printLine("disk: " + MLCR.getDisk());
-				Log.printLine("cache: " + MLCR.getCache());
-				
-				long totalTime1 = System.currentTimeMillis() - startT1;
-				Log.printLine(
-						"Partial " + totalTime1 / 1000 / 60 + " min - " + totalTime1 / 1000 % 60 + " sec\n");
-
-			}
-
+	for(int second = 1; second<=total; second ++) {
+		
+		if(second==total) {
+			start=total -(total%interval);
+			end = total;
+			Log.printLine("\nTotal Cost of interval "+start+" and "+end+": "+ getInterferenceCost(start, end)+"\n");
 		}
-		long totalTime = System.currentTimeMillis() - startT;
-		Log.printLine(
-				"End of R Session .. " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
+		if(second % interval==0) {
+			end+=interval;
+			Log.printLine("\nTotal Cost of interval "+start+" and "+end+": "+ getInterferenceCost(start, end)+"\n");
+			//interval+=interval;
+			start+=interval;
+			
+		}
+		
+	}
 
-		Log.printLine("\n ============================================================== \n\n\n");
+	
+		
+		
+		
+		/*
+		 * long startT = System.currentTimeMillis(); List<? extends IntContainerHost>
+		 * list = getVmAllocationPolicy().getContainerHostList(); // for each host...
+		 * 
+		 * Log.
+		 * printLine("\n\n\n ==============================================================\n"
+		 * );
+		 * 
+		 * for (int i = 0; i < list.size(); i++) {
+		 * 
+		 * double cost=1; IntContainerHost host = list.get(i); // inform VMs to update
+		 * processing
+		 * 
+		 * for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+		 * long startT1 = System.currentTimeMillis(); IntContainer container =
+		 * host.getVmList().get(0).getContainerList().get(x); IntContainerCloudlet
+		 * cloudlet = cloudletList.get(container.getId() - 1);//container.getCloudlet();
+		 * 
+		 * Log.printConcatLine("Host: ", host.getId(), ", Container: ",
+		 * container.getId(), ", Cloudlet: ", cloudlet.getCloudletId());
+		 * 
+		 * 
+		 * 
+		 * MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), 1 ,200);
+		 * 
+		 * Log.printLine("cpu[" + MLCR.getCpu() + "]  mem[" + MLCR.getMemory() +
+		 * "]  net[" + MLCR.getNetwork() + "]  disk[" + MLCR.getDisk() + "]  cache[" +
+		 * MLCR.getCache() + "]"); Log.printLine("Total Cost: " + String.format("%.3f",
+		 * MLCR.getCloudletCost()));
+		 * 
+		 * cost*=MLCR.getCloudletCost();
+		 * 
+		 * long totalTime1 = System.currentTimeMillis() - startT1;
+		 * Log.printLine("Partial " + totalTime1 / 1000 / 60 + " min - " + totalTime1 /
+		 * 1000 % 60 + " sec\n");
+		 * 
+		 * } Log.printLine("===Host:"+host.getId()+
+		 * " Total Cost:"+String.format("%.3f",cost)+"\n"); cost=1;
+		 * 
+		 * } long totalTime = System.currentTimeMillis() - startT;
+		 * Log.printLine("Total time .. " + totalTime / 1000 / 60 + " min - " +
+		 * totalTime / 1000 % 60 + " sec");
+		 * 
+		 * Log.
+		 * printLine("\n ============================================================== \n\n\n"
+		 * );
+		 */
 
 		// for (int o = 0; o < cloudletList.get(15).interfMetrics.getIntLength(); o++) {
 		// for (int h = 0; h < 7; h++) {
@@ -1157,7 +1170,38 @@ public class IntContainerDataCenter extends SimEntity {
 
 		Log.printLine("End of Simulation ...");
 		System.exit(0);
+
+	}
+
+	public double getInterferenceCost(int start, int end) {
+		 long startT = System.currentTimeMillis();
+		double hostcost = 1;
+		double totalcost = 1;
+
+		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
+		// for each host...
+		for (int i = 0; i < list.size(); i++) {
+			long startT1 = System.currentTimeMillis();
+			IntContainerHost host = list.get(i);
+			// for each container/cloudlet (in given VM)
+			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
+				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
+
+				MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
+				hostcost *= MLCR.getCloudletCost()+ (host.getNumberOfPes() / container.getNumberOfPes());
+			
+			}
+			totalcost *= hostcost;
+			hostcost = 1;
+			long totalTime1 = System.currentTimeMillis() - startT1;
+			 Log.printLine("Host "+(i+1)+" : " + totalTime1 / 1000 / 60 + " min - " + totalTime1 /1000 % 60 + " sec");
+		}
 		
+		long totalTime = System.currentTimeMillis() - startT;
+		Log.printLine("Total time .. " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
+		 
+		return totalcost;
 	}
 
 	/**
@@ -1167,8 +1211,9 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @pre $none
 	 * @post $none
 	 */
+
 	protected void checkCloudletCompletion() {
-		//Log.printLine("DC:checkCloudletCompletion");
+		// Log.printLine("DC:checkCloudletCompletion");
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		for (int i = 0; i < list.size(); i++) {
 			IntContainerHost host = list.get(i);
@@ -1194,7 +1239,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @return a tag number denoting whether this operation is a success or not
 	 */
 	public int addFile(File file) {
-		//Log.printLine("DC:addFile");
+		// Log.printLine("DC:addFile");
 		if (file == null) {
 			return DataCloudTags.FILE_ADD_ERROR_EMPTY;
 		}
@@ -1230,7 +1275,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
 	 */
 	protected boolean contains(File file) {
-		//Log.printLine("DC:contains");
+		// Log.printLine("DC:contains");
 		if (file == null) {
 			return false;
 		}
@@ -1271,7 +1316,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @return the error message
 	 */
 	private int deleteFileFromStorage(String fileName) {
-		//Log.printLine("DC:deleteFileFromStorage");
+		// Log.printLine("DC:deleteFileFromStorage");
 		Storage tempStorage = null;
 		File tempFile = null;
 		int msg = DataCloudTags.FILE_DELETE_ERROR;
@@ -1293,7 +1338,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	@Override
 	public void shutdownEntity() {
-		//Log.printLine("DC:shutdownEntity");
+		// Log.printLine("DC:shutdownEntity");
 		Log.printConcatLine(getName(), " is shutting down...");
 	}
 
@@ -1304,7 +1349,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 */
 	@Override
 	public void startEntity() {
-		//Log.printLine("DC:startEntity");
+		// Log.printLine("DC:startEntity");
 		Log.printConcatLine(getName(), " is starting...");
 		// this resource should register to regional GIS.
 		// However, if not specified, then register to system GIS (the

@@ -101,9 +101,9 @@ public class xxIntExample {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS = 8;
-	static final int NUMBER_VMS = 8;
-	static final int NUMBER_CLOUDLETS = 16;
+	static final int NUMBER_HOSTS = 10;
+	static final int NUMBER_VMS = 10;
+	static final int NUMBER_CLOUDLETS = 20;
 
 	/**
 	 * The cloudlet list.
@@ -243,6 +243,7 @@ public class xxIntExample {
 			/**
 			 * 11- Submitting the cloudlet's , container's , and VM's lists to the broker.
 			 */
+			//Log.printLine("======" +containerList.size()+" ====== "+cloudletList.size());
 			broker.submitCloudletList(cloudletList.subList(0, containerList.size()));
 			broker.submitContainerList(containerList);
 			broker.submitVmList(vmList);
@@ -482,6 +483,7 @@ public class xxIntExample {
 		//Log.printLine("========"+inputFolderName);
 		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>(); // criar um ArrayList de
 																								// IntContainerCloudlet
+		int count = 1;
 		long fileSize = 300L;
 		long outputSize = 300L;
 		//UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); // Modo NULO (simples)
@@ -490,6 +492,7 @@ public class xxIntExample {
 		
 		java.io.File inputFolder1 = new java.io.File(inputFolderName);
 		java.io.File[] files1 = inputFolder1.listFiles();
+		//Log.printLine("======== "+files1.length);
 		int createdCloudlets = 0;
 		for (java.io.File aFiles1 : files1) {
 			java.io.File inputFolder = new java.io.File(aFiles1.toString());
@@ -502,6 +505,8 @@ public class xxIntExample {
 						cloudlet = new IntContainerCloudlet(IntIDs.pollId(IntContainerCloudlet.class), CLOUDLET_LENGTH, 1,
 								fileSize, outputSize, utilizationModelFull, utilizationModelFull, utilizationModelFull,
 								new Interference(files[i].getAbsolutePath()));
+						Log.printLine("Cloudlet "+count+" <- interf. traces: \"" + files[i].getAbsolutePath()+"\"");
+						count++;
 //						System.out.println(files[i].getAbsolutePath().toString());
 //                                new UtilizationModelPlanetLabInMemoryExtended(files[i].getAbsolutePath(), 300.0D),
 
@@ -517,8 +522,9 @@ public class xxIntExample {
 
 					return cloudletList;
 				}
+				
 			}
-
+			
 		}
 		return cloudletList;
 	}

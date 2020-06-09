@@ -39,7 +39,14 @@ public class MLCResult {
 	public String getDisk() {
 		return this.result.get("disk");
 	}
-	
+
+	public double getCloudletCost() {
+		double cost = 0;
+		cost = Degradation.getCpu(getCpu()) * Degradation.getMem(getMemory()) * Degradation.getDisk(getDisk()) * Degradation.getCache(getCache()) * Degradation.getNet(getNetwork());
+					
+		return cost>1 ? cost : 1;
+		
+	}
 	
 	/*
 	 * public String getCpu() { for (int i = 0; i < getNumberOfResources(); i++) {

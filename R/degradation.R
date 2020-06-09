@@ -14,7 +14,7 @@ deg_mem <- c(
   hig = 1.74
 )
 #Disk
-deg_dis <- c(. 0
+deg_dis <- c(
   abs = 1.00,
   low = 1.12,
   mod = 1.82,

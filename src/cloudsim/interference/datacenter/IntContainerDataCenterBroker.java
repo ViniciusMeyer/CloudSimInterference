@@ -284,6 +284,8 @@ public class IntContainerDataCenterBroker extends SimEntity {
 			} else {
 				getContainersToVmsMap().put(containerId, vmId);
 				getContainersCreatedList().add(IntContainerList.getById(getContainerList(), containerId));
+				
+			
 
 				// ContainerVm p= ContainerVmList.getById(getVmsCreatedList(), vmId);
 				int hostId = IntContainerVmList.getById(getVmsCreatedList(), vmId).getHost().getId();
@@ -639,13 +641,19 @@ public class IntContainerDataCenterBroker extends SimEntity {
 //                    double newmips = maxUsage * container.getMips();
 				container.setWorkloadMips(newmips);
 //                    bindCloudletToContainer(cloudlet.getCloudletId(), container.getId());
+			
+				// ==================================================
+				// getContainerList().get(container.getId()).setCloudlet(cloudlet); // adapt
+				// ==================================================
+				
 				cloudlet.setContainerId(container.getId());
 				if (cloudlet.getContainerId() != container.getId()) {
 //                        Log.printConcatLine("Binding Cloudlet: ", cloudlet.getCloudletId(), "To Container: ",container.getId() , "Now it is", cloudlet.getContainerId());
 				}
 
 			}
-			cloudlet.setContainerId(container.getId());
+			//cloudlet.setContainerId(container.getId());
+					
 			Log.printConcatLine("Binding Cloudlet: ", cloudlet.getCloudletId(), " To Container: ",container.getId());
 			i++;
 
