@@ -83,7 +83,7 @@ public class MLClassifier {
 			System.out.println("Hostname can not be resolved");
 		}
 
-		// Log.printLine("=======" + hostname);
+		 //Log.printLine("=======" + hostname);
 		// usar R para classificar ....
 		String project_folder = null;
 		if (hostname.equals("vinicius-desktop")) {
