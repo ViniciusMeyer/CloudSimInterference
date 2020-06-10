@@ -94,8 +94,13 @@ public class MLClassifier {
 			project_folder = "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
 			re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows	
 		}
+		if (hostname.equals("pantana01")) {
+			project_folder = "/home/student/vinicius/CloudSimInterference/R/"; //pantanal
+			re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')"); //pantanal	
+		}
 		
-		// String project_folder = "/home/student/vinicius/CloudSimInterference/R/";
+		
+
 		// //ubuntuSERV
 		// Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
 
@@ -106,7 +111,7 @@ public class MLClassifier {
 		// re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
 		// re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')");
 		// //ubuntu
-		// re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')");
+
 		// //ubuntuSERV
 		// re.eval("install.packages('e1071')");
 		// re.eval("install.packages('caret')");
