@@ -1,6 +1,8 @@
 package cloudsim.interference;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.awt.Frame;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.logging.Logger;
 import cloudsim.interference.Interference;
 import cloudsim.interference.util;
 
+import org.cloudbus.cloudsim.Log;
 import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.RList;
 import org.rosuda.JRI.RMainLoopCallbacks;
@@ -60,30 +63,51 @@ public class MLClassifier {
 		}
 	}
 
-
-	public Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
+	public Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
 	private int firstTime;
 	private int firstTimeK;
-		
+
 	public MLClassifier() {
-		this.firstTime=0;
-		this.firstTimeK=0;
+		this.firstTime = 0;
+		this.firstTimeK = 0;
 	}
 
 	public MLCResult getMLClass(Interference interf, int start, int finish) {
+		String hostname = "Unknown";
+
+		try {
+			InetAddress addr;
+			addr = InetAddress.getLocalHost();
+			hostname = addr.getHostName();
+		} catch (UnknownHostException ex) {
+			System.out.println("Hostname can not be resolved");
+		}
+
+		// Log.printLine("=======" + hostname);
 		// usar R para classificar ....
-		//String project_folder = "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
-		String project_folder = "/home/vinicius/git/CloudSimInterference/R/"; //ubuntu
-		//String project_folder = "/home/student/vinicius/CloudSimInterference/R/"; //ubuntuSERV
-		//Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
+		String project_folder = null;
+		if (hostname.equals("vinicius-desktop")) {
+			project_folder = "/home/vinicius/git/CloudSimInterference/R/"; // ubuntu
+			re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
+		}
+		if (hostname.equals("DESKTOP-DO0SJES")) {
+			project_folder = "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
+			re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows	
+		}
+		
+		// String project_folder = "/home/student/vinicius/CloudSimInterference/R/";
+		// //ubuntuSERV
+		// Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
 
 		// Logger log = Logger.getLogger("test");
 
 		// Rengine re = new R engine(new String[] {"--no-save"}, false, new
 		// LoggingConsole(log));
-		 //re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
-		 re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')");  //ubuntu
-		 //re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')");  //ubuntuSERV
+		// re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
+		// re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')");
+		// //ubuntu
+		// re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')");
+		// //ubuntuSERV
 		// re.eval("install.packages('e1071')");
 		// re.eval("install.packages('caret')");
 		// re.eval("install.packages('stringr')");
@@ -96,8 +120,8 @@ public class MLClassifier {
 		re.eval("library(\"dplyr\")");
 		re.eval("library(\"fossil\")");
 
-		re.eval("firstTime<-"+firstTime);
-		re.eval("firstTimeK<-"+firstTimeK);
+		re.eval("firstTime<-" + firstTime);
+		re.eval("firstTimeK<-" + firstTimeK);
 		re.eval("project_folder_inside <- \"" + project_folder + "\"");
 		re.eval("training_dataset_folder <- \"" + project_folder + "forced/\"");
 		re.eval("source(\"" + project_folder + "input_dataset.R\")");
@@ -129,7 +153,7 @@ public class MLClassifier {
 
 		REXP hh = re.eval("abc <-svm_classifier_level(teste," + start + "," + finish + ")");
 		RVector ff = hh.asVector();
-		
+
 		Map<String, String> gg = new HashMap<String, String>();
 
 		for (int i = 0; i < ff.at(1).asStringArray().length; i++) {
@@ -138,7 +162,7 @@ public class MLClassifier {
 
 		MLCResult result = new MLCResult(gg);
 
-		firstTime=1;
+		firstTime = 1;
 		re.stop();
 		return (result);
 
@@ -146,20 +170,21 @@ public class MLClassifier {
 
 	public MLCResult getMLClass(Interference interf) {
 
-		//String project_folder = "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
-				String project_folder = "/home/vinicius/git/CloudSimInterference/R/"; //ubuntu
+		// String project_folder =
+		// "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
+		String project_folder = "/home/vinicius/git/CloudSimInterference/R/"; // ubuntu
 //				String project_folder = "/home/student/vinicius/CloudSimInterference/R/"; //ubuntuSERV
-				//Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
+		// Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
 
-				// Logger log = Logger.getLogger("test");
+		// Logger log = Logger.getLogger("test");
 
-				// Rengine re = new Rengine(new String[] {"--no-save"}, false, new
-				// LoggingConsole(log));
-				 //re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
-				 re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')");  //ubuntu
-				// re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')");  //ubuntuSERV
+		// Rengine re = new Rengine(new String[] {"--no-save"}, false, new
+		// LoggingConsole(log));
+		// re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
+		re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
+		// re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')");
+		// //ubuntuSERV
 
-		 
 		// re.eval("install.packages('e1071')");
 		// re.eval("install.packages('caret')");
 		// re.eval("install.packages('stringr')");
@@ -172,8 +197,8 @@ public class MLClassifier {
 		re.eval("library(\"dplyr\")");
 		re.eval("library(\"fossil\")");
 
-		re.eval("firstTime<-"+firstTime);
-		re.eval("firstTimeK<-"+firstTimeK);
+		re.eval("firstTime<-" + firstTime);
+		re.eval("firstTimeK<-" + firstTimeK);
 		re.eval("project_folder_inside <- \"" + project_folder + "\"");
 		re.eval("training_dataset_folder <- \"" + project_folder + "forced/\"");
 		re.eval("source(\"" + project_folder + "input_dataset.R\")");
@@ -207,11 +232,11 @@ public class MLClassifier {
 		RVector ff = hh.asVector();
 
 		Map<String, String> gg = new HashMap<String, String>();
-		
+
 		for (int i = 0; i < ff.at(1).asStringArray().length; i++) {
 			gg.put(ff.at(1).asStringArray()[i], ff.at(2).asStringArray()[i]);
 		}
-		
+
 		MLCResult result = new MLCResult(gg);
 
 		re.stop();
