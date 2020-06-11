@@ -4,6 +4,7 @@
 #training_dataset_folder <- "~/interference/r/simulation/forced/"
 #total<-input_dataset(training_dataset_folder)
 
+
 if(firstTimeK==0){
 cpu <- data.frame()
 mem <- data.frame()
@@ -11,7 +12,7 @@ disk <- data.frame()
 net <- data.frame()
 cache <- data.frame()
 
-  for(i in 1:nrow(total)){
+for(i in 1:nrow(total)){
     if(total[i,8]=="cpu"){
       cpu<-bind_rows(cpu, total[i,]) 
     }
@@ -26,8 +27,11 @@ cache <- data.frame()
     }
     if(total[i,8]=="cache"){
       cache<-bind_rows(cache, total[i,]) 
-    }
-  }
+	}
+}
+  
+  
+  
 
   cl_cpu <- kmeans(cpu[1:7],3, nstart = 20)
   cl_mem <- kmeans(mem[1:7],3, nstart = 20)
@@ -36,6 +40,23 @@ cache <- data.frame()
   cl_cache <- kmeans(cache[1:7], 3, nstart = 20)
   firstTimeK=1;
   
+  save(cl_cpu, file=paste(project_folder_inside, "cpuk.rda", sep = ""))
+  save(cl_mem, file=paste(project_folder_inside, "memk.rda", sep = ""))
+  save(cl_disk, file=paste(project_folder_inside, "diskk.rda", sep = ""))
+  save(cl_net, file=paste(project_folder_inside, "netk.rda", sep = ""))
+  save(cl_cache, file=paste(project_folder_inside, "cachek.rda", sep = ""))
+  
+  
+  fisrtTimeK=2
+  
+}
+if(firstTimeK==1){
+  load(paste(project_folder_inside, "cpuk.rda", sep = ""))
+  load(paste(project_folder_inside, "memk.rda", sep = ""))
+  load(paste(project_folder_inside, "diskk.rda", sep = ""))
+  load(paste(project_folder_inside, "netk.rda", sep = ""))
+  load(paste(project_folder_inside, "cachek.rda", sep = ""))
+  firstTimeK=2
 }
 
 

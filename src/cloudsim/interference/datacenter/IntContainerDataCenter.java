@@ -1173,8 +1173,8 @@ public class IntContainerDataCenter extends SimEntity {
 
 	public double getInterferenceCost(int start, int end) {
 		long startT = System.currentTimeMillis();
-		double hostcost = 1;
-		double totalcost = 1;
+		double hostcost = 0;
+		double totalcost = 0;
 
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		// for each host...
@@ -1187,17 +1187,16 @@ public class IntContainerDataCenter extends SimEntity {
 				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
 
 				MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
-				hostcost *= MLCR.getCloudletCost();// * ((double) container.getNumberOfPes() / (double)
-													// host.getNumberOfPes());
+				hostcost += MLCR.getCloudletCost() / ( (double)container.getNumberOfPes() / (double)host.getNumberOfPes() );
 				Log.printLine("Host" + host.getId() + " " + String.format("%.2f", hostcost) + " cloudlet"
-						+ cloudlet.getCloudletId() + " " + String.format("%.2f", MLCR.getCloudletCost()));
+						+ cloudlet.getCloudletId() + " " + String.format("%.2f", MLCR.getCloudletCost() / ( (double)container.getNumberOfPes() / (double)host.getNumberOfPes() )));
 			}
-			totalcost *= hostcost;
+			totalcost += hostcost;
 			Log.printLine("Total cost: " + String.format("%.2f", totalcost));
 			long totalTime1 = System.currentTimeMillis() - startT1;
 			Log.printLine("Host #" + (i + 1) + " " + String.format("%.2f", hostcost) + "  :" + totalTime1 / 1000 / 60
 					+ " min - " + totalTime1 / 1000 % 60 + " sec");
-			hostcost = 1;
+			hostcost = 0;
 		}
 
 		long totalTime = System.currentTimeMillis() - startT;

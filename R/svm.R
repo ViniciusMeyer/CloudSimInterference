@@ -3,11 +3,19 @@
 #source("~/interference/r/simulation/kmeans.R")
 
 #training_dataset_folder <- str_replace_all(paste(project_folder_inside,"forced/")," ", "")
+
 total<-input_dataset(training_dataset_folder)
 
 if(firstTime==0){
+
 	modelo_svm <- svm(category ~ ., data = total , type='C-classification',  nu=0.10, scale=TRUE, kernel="polynomial")  
-	fisrtTime=1
+  	save(modelo_svm, file=paste(project_folder_inside, "svm_model.rda", sep = ""))
+	fisrtTime=2
+	
+}
+if(firstTime==1){
+	load(paste(project_folder_inside, "svm_model.rda", sep = ""))
+	firstTime=2
 }
 
 classifier_percent<- function(a,b){

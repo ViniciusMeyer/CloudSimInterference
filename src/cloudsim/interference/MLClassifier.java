@@ -25,7 +25,7 @@ import org.rosuda.JRI.Rengine;
 import org.rosuda.REngine.*;
 
 public class MLClassifier {
-
+	
 	static class LoggingConsole implements RMainLoopCallbacks {
 		private Logger log;
 
@@ -63,13 +63,17 @@ public class MLClassifier {
 		}
 	}
 
-	public Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
+	//Logger log = Logger.getLogger("test"); //with log
+	//Rengine re = new Rengine(new String[] {"--no-save"}, false, new LoggingConsole(log)); // with log
+	
+	Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
+	
 	private int firstTime;
 	private int firstTimeK;
 
 	public MLClassifier() {
-		this.firstTime = 0;
-		this.firstTimeK = 0;
+		this.firstTime = 1;  // 0 treina sempre a primeira exec ---- 1 usa sempre o modelo já salvo (rda)
+		this.firstTimeK = 1;
 	}
 
 	public MLCResult getMLClass(Interference interf, int start, int finish) {
@@ -104,10 +108,9 @@ public class MLClassifier {
 		// //ubuntuSERV
 		// Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
 
-		// Logger log = Logger.getLogger("test");
+		
 
-		// Rengine re = new R engine(new String[] {"--no-save"}, false, new
-		// LoggingConsole(log));
+		
 		// re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
 		// re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')");
 		// //ubuntu
@@ -124,7 +127,9 @@ public class MLClassifier {
 		re.eval("library(\"stringr\")");
 		re.eval("library(\"dplyr\")");
 		re.eval("library(\"fossil\")");
-
+		
+		
+		
 		re.eval("firstTime<-" + firstTime);
 		re.eval("firstTimeK<-" + firstTimeK);
 		re.eval("project_folder_inside <- \"" + project_folder + "\"");
@@ -175,21 +180,31 @@ public class MLClassifier {
 
 	public MLCResult getMLClass(Interference interf) {
 
-		// String project_folder =
-		// "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
-		String project_folder = "/home/vinicius/git/CloudSimInterference/R/"; // ubuntu
-//				String project_folder = "/home/student/vinicius/CloudSimInterference/R/"; //ubuntuSERV
-		// Rengine re = new Rengine(new String[] {"--no-save"}, false, null);
+		String hostname = "Unknown";
 
-		// Logger log = Logger.getLogger("test");
+		try {
+			InetAddress addr;
+			addr = InetAddress.getLocalHost();
+			hostname = addr.getHostName();
+		} catch (UnknownHostException ex) {
+			System.out.println("Hostname can not be resolved");
+		}
 
-		// Rengine re = new Rengine(new String[] {"--no-save"}, false, new
-		// LoggingConsole(log));
-		// re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows
-		re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
-		// re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')");
-		// //ubuntuSERV
-
+		
+		String project_folder = null;
+		if (hostname.equals("vinicius-desktop")) {
+			project_folder = "/home/vinicius/git/CloudSimInterference/R/"; // ubuntu
+			re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
+		}
+		if (hostname.equals("DESKTOP-DO0SJES")) {
+			project_folder = "C:/Users/Nadia/eclipse-workspace/IntegrationRandJava/R/"; //windows
+			re.eval(".libPaths('c:/users/Nadia/Documents/R/win-library/3.5')"); //windows	
+		}
+		if (hostname.equals("pantana01")) {
+			project_folder = "/home/student/vinicius/CloudSimInterference/R/"; //pantanal
+			re.eval(".libPaths('/home/student/R/x86_64-pc-linux-gnu-library/3.6')"); //pantanal	
+		}
+		
 		// re.eval("install.packages('e1071')");
 		// re.eval("install.packages('caret')");
 		// re.eval("install.packages('stringr')");
