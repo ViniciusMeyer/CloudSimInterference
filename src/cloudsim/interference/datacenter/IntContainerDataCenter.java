@@ -1098,12 +1098,12 @@ public class IntContainerDataCenter extends SimEntity {
 				start = total - (total % interval);
 				end = total;
 				Log.printLine("\nTotal Cost of interval " + start + " and " + end + ": "
-						+ String.format("%.2f", getInterferenceCost(start, end)) + "\n");
+						+ String.format("%.2f", getInterferenceCost(start, end, total, interval)) + "\n");
 			}
 			if (second % interval == 0) {
 				end += interval;
 				Log.printLine("\nTotal Cost of interval " + start + " and " + end + ": "
-						+ String.format("%.2f", getInterferenceCost(start, end)) + "\n");
+						+ String.format("%.2f", getInterferenceCost(start, end, total, interval)) + "\n");
 				// interval+=interval;
 				start += interval;
 
@@ -1187,9 +1187,12 @@ public class IntContainerDataCenter extends SimEntity {
 				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
 
 				MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
-				hostcost += MLCR.getCloudletCost() / ( (double)container.getNumberOfPes() / (double)host.getNumberOfPes() );
+
+				hostcost += MLCR.getCloudletCost()
+						/ ((double) container.getNumberOfPes() / (double) host.getNumberOfPes());
 				Log.printLine("Host" + host.getId() + " " + String.format("%.2f", hostcost) + " cloudlet"
-						+ cloudlet.getCloudletId() + " " + String.format("%.2f", MLCR.getCloudletCost() / ( (double)container.getNumberOfPes() / (double)host.getNumberOfPes() )));
+						+ cloudlet.getCloudletId() + " " + String.format("%.2f", MLCR.getCloudletCost()
+								/ ((double) container.getNumberOfPes() / (double) host.getNumberOfPes())));
 			}
 			totalcost += hostcost;
 			Log.printLine("Total cost: " + String.format("%.2f", totalcost));
@@ -1203,6 +1206,42 @@ public class IntContainerDataCenter extends SimEntity {
 		Log.printLine("Total time .. " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
 
 		return totalcost;
+	}
+
+	public double getInterferenceCost(int start, int end, int ttime, int interval) {
+		long startT = System.currentTimeMillis();
+		double hostcost = 0;
+		double totalcost = 0;
+
+		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
+		// for each host...
+		for (int i = 0; i < list.size(); i++) {
+			long startT1 = System.currentTimeMillis();
+			IntContainerHost host = list.get(i);
+			// for each container/cloudlet (in given VM)
+			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
+				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
+
+				MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
+				hostcost += MLCR.getCloudletCost()
+						/ ((double) container.getNumberOfPes() / (double) host.getNumberOfPes());
+				Log.printLine("Host" + host.getId() + " " + String.format("%.2f", hostcost) + " cloudlet"
+						+ cloudlet.getCloudletId() + " " + String.format("%.2f", MLCR.getCloudletCost()
+								/ ((double) container.getNumberOfPes() / (double) host.getNumberOfPes())));
+			}
+			totalcost += hostcost;
+			Log.printLine("Total cost: " + String.format("%.2f", totalcost));
+			long totalTime1 = System.currentTimeMillis() - startT1;
+			Log.printLine("Host #" + (i + 1) + " " + String.format("%.2f", hostcost) + "  :" + totalTime1 / 1000 / 60
+					+ " min - " + totalTime1 / 1000 % 60 + " sec");
+			hostcost = 0;
+		}
+
+		long totalTime = System.currentTimeMillis() - startT;
+		Log.printLine("Total time .. " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
+
+		return (totalcost * interval)/ttime;
 	}
 
 	/**
