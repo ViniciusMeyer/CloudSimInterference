@@ -75,7 +75,7 @@ public class xxIntExample {
 
 	static final int VM_TYPES = 1;
 	static final double[] VM_MIPS = new double[] { 100 };
-	static final int[] VM_PES = new int[] { 4 };
+	static final int[] VM_PES = new int[] { 8 };
 
 	/**
 	 * The available types of container along with the specs.
@@ -91,7 +91,7 @@ public class xxIntExample {
 
 	static final int HOST_TYPES = 1;
 	static final int[] HOST_MIPS = new int[] { 100};
-	static final int[] HOST_PES = new int[] { 4 };
+	static final int[] HOST_PES = new int[] { 8 };
 
 	/**
 	 *
@@ -102,8 +102,8 @@ public class xxIntExample {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS = 10;
-	static final int NUMBER_VMS = 10;
+	static final int NUMBER_HOSTS = 5;
+	static final int NUMBER_VMS = 5;
 	static final int NUMBER_CLOUDLETS = 20;
 
 	/**

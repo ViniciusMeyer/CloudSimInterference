@@ -12,6 +12,7 @@ import cloudsim.interference.IntContainerAllocationPolicy;
 import cloudsim.interference.IntContainerHost;
 import cloudsim.interference.MLCResult;
 import cloudsim.interference.MLClassifier;
+import cloudsim.interference.Solution;
 import cloudsim.interference.cloudlet.IntContainerCloudlet;
 import cloudsim.interference.vm.IntContainerVm;
 import cloudsim.interference.vm.IntContainerVmAllocationPolicy;
@@ -31,6 +32,7 @@ public class IntContainerDataCenter extends SimEntity {
 	private MLCResult MLCR = new MLCResult(); // adapt
 	private List<IntContainerCloudlet> cloudletList; // adapt
 	private boolean classify = false; // adapt
+	private List<Solution> solutionList = new ArrayList<Solution>(); // adapt
 
 	/**
 	 * The characteristics.
@@ -1089,24 +1091,23 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	void InterferenceClassifier() {
-
-		int interval = 60, start = 1, end = 0, total = 700;
+		int interval = 50, start = 1, end = 0, total = 700, count=1;
 
 		for (int second = 1; second <= total; second++) {
 
 			if (second == total) {
-				start = total - (total % interval);
+				//start = total - (total % interval);
 				end = total;
-				Log.printLine("\nTotal Cost of interval " + start + " and " + end + ": "
-						+ String.format("%.2f", getInterferenceCost(start, end, total, interval)) + "\n");
+				solutionList.add(fillSolution(start, end, interval, total));
+				Log.printLine("Total cost of interval "+count+" ("+start+" "+end+") -   "+solutionList.get(solutionList.size()-1).getTotalInterferenceCost());
+				break;
 			}
 			if (second % interval == 0) {
 				end += interval;
-				Log.printLine("\nTotal Cost of interval " + start + " and " + end + ": "
-						+ String.format("%.2f", getInterferenceCost(start, end, total, interval)) + "\n");
-				// interval+=interval;
+				solutionList.add(fillSolution(start, end, interval, total));
+				Log.printLine("Total cost of interval "+count+" ("+start+" "+end+") -   "+solutionList.get(solutionList.size()-1).getTotalInterferenceCost());
 				start += interval;
-
+				count++;
 			}
 
 		}
@@ -1171,6 +1172,29 @@ public class IntContainerDataCenter extends SimEntity {
 
 	}
 
+	public Solution fillSolution(int start, int end, int interval, int ttime) {
+		
+		Solution solution = new Solution();
+		
+		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
+		// for each host...
+		for (int i = 0; i < list.size(); i++) {
+			IntContainerHost host = list.get(i);
+			// for each container/cloudlet (in given VM)
+			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
+				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
+
+				MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
+				solution.addCloudletToSolution(host.getId(), host.getNumberOfPes(), cloudlet.getCloudletId(), container.getNumberOfPes(), MLCR.getCloudletCost());
+
+			}
+		}
+		solution.setAdditionalParameters(start, end, ttime);
+
+		return solution;
+	}
+
 	public double getInterferenceCost(int start, int end) {
 		long startT = System.currentTimeMillis();
 		double hostcost = 0;
@@ -1216,6 +1240,7 @@ public class IntContainerDataCenter extends SimEntity {
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		// for each host...
 		for (int i = 0; i < list.size(); i++) {
+			int justOne = 0;
 			long startT1 = System.currentTimeMillis();
 			IntContainerHost host = list.get(i);
 			// for each container/cloudlet (in given VM)
@@ -1229,8 +1254,20 @@ public class IntContainerDataCenter extends SimEntity {
 				Log.printLine("Host" + host.getId() + " " + String.format("%.2f", hostcost) + " cloudlet"
 						+ cloudlet.getCloudletId() + " " + String.format("%.2f", MLCR.getCloudletCost()
 								/ ((double) container.getNumberOfPes() / (double) host.getNumberOfPes())));
+				justOne++;
 			}
+
+			if (justOne < 1) {
+				Log.printLine(" @@@@ ERROR (getInterferenceCost) : LESS THAN ONE CLOUDLET PER CONTAINER");
+			}
+			// if there is only one cloudlet(container) inside a given host(vm),
+			// there will be no interference incidence, hence the host cost is lead to 0.
+			if (justOne == 1) {
+				hostcost = 0;
+			}
+
 			totalcost += hostcost;
+
 			Log.printLine("Total cost: " + String.format("%.2f", totalcost));
 			long totalTime1 = System.currentTimeMillis() - startT1;
 			Log.printLine("Host #" + (i + 1) + " " + String.format("%.2f", hostcost) + "  :" + totalTime1 / 1000 / 60
@@ -1241,7 +1278,7 @@ public class IntContainerDataCenter extends SimEntity {
 		long totalTime = System.currentTimeMillis() - startT;
 		Log.printLine("Total time .. " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
 
-		return (totalcost * interval)/ttime;
+		return (totalcost * interval) / ttime;
 	}
 
 	/**

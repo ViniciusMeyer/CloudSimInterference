@@ -129,7 +129,6 @@ public class MLClassifier {
 		re.eval("library(\"fossil\")");
 		
 		
-		
 		re.eval("firstTime<-" + firstTime);
 		re.eval("firstTimeK<-" + firstTimeK);
 		re.eval("project_folder_inside <- \"" + project_folder + "\"");
@@ -172,7 +171,6 @@ public class MLClassifier {
 
 		MLCResult result = new MLCResult(gg);
 
-		firstTime = 1;
 		re.stop();
 		return (result);
 
