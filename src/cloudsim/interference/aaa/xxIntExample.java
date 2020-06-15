@@ -48,7 +48,6 @@ import cloudsim.interference.vm.IntContainerVmSelectionPolicySimple;
  * one container and run one cloudlet on it.
  */
 public class xxIntExample {
-	
 
 	/**
 	 * Simulation parameters including the interval and limit
@@ -56,11 +55,11 @@ public class xxIntExample {
 	static final boolean ENABLE_OUTPUT = true;
 	static final boolean OUTPUT_CSV = false;
 	static final double SCHEDULING_INTERVAL = 1.0D;
-	 static final double SIMULATION_LIMIT = 99999999999.0D;//601.0D;
+	static final double SIMULATION_LIMIT = 99999999999.0D;// 601.0D;
 	/**
 	 * Cloudlet specs
 	 */
-	static final int CLOUDLET_LENGTH =60000;
+	static final int CLOUDLET_LENGTH = 60000;
 	static final int CLOUDLET_PES = 1;
 
 	/**
@@ -75,7 +74,7 @@ public class xxIntExample {
 
 	static final int VM_TYPES = 1;
 	static final double[] VM_MIPS = new double[] { 100 };
-	static final int[] VM_PES = new int[] { 8 };
+	static final int[] VM_PES = new int[] { 12 };
 
 	/**
 	 * The available types of container along with the specs.
@@ -83,15 +82,15 @@ public class xxIntExample {
 
 	static final int CONTAINER_TYPES = 1;
 	static final int[] CONTAINER_MIPS = new int[] { 100 };
-	static final int[] CONTAINER_PES = new int[] { 2 };
+	static final int[] CONTAINER_PES = new int[] { 3 };
 
 	/**
 	 * The available types of hosts along with the specs.
 	 */
 
 	static final int HOST_TYPES = 1;
-	static final int[] HOST_MIPS = new int[] { 100};
-	static final int[] HOST_PES = new int[] { 8 };
+	static final int[] HOST_MIPS = new int[] { 100 };
+	static final int[] HOST_PES = new int[] { 12 };
 
 	/**
 	 *
@@ -102,9 +101,9 @@ public class xxIntExample {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS = 5;
-	static final int NUMBER_VMS = 5;
-	static final int NUMBER_CLOUDLETS = 20;
+	static final int NUMBER_HOSTS = 12;
+	static final int NUMBER_VMS = 12;
+	static final int NUMBER_CLOUDLETS = 48;
 
 	/**
 	 * The cloudlet list.
@@ -204,8 +203,10 @@ public class xxIntExample {
 			 * 7- The container allocation policy which defines the allocation of VMs to
 			 * containers.
 			 */
-			
-			IntContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,underUtilizationThreshold);
+
+			IntContainerVmAllocationPolicy vmAllocationPolicy = new IntContainerVmAllocationPolicyMigrationAbstractHostSelection(
+					hostList, vmSelectionPolicy, hostSelectionPolicy, overUtilizationThreshold,
+					underUtilizationThreshold);
 
 			/**
 			 * 8- The overbooking factor for allocating containers to VMs. This factor is
@@ -221,12 +222,12 @@ public class xxIntExample {
 			cloudletList = createIntContainerCloudletList(brokerId, NUMBER_CLOUDLETS);
 
 			// imprimir um trace de interferencia
-			 //for(int o=0; o<cloudletList.get(0).interfMetrics.getIntLength();o++){
-			 //for(int h=0; h<7; h++){
-			 //Log.print(cloudletList.get(0).interfMetrics.getIntByLine(o)[h]+" ");
-			 //}
-			 //Log.print("\n");
-			 //}
+			// for(int o=0; o<cloudletList.get(0).interfMetrics.getIntLength();o++){
+			// for(int h=0; h<7; h++){
+			// Log.print(cloudletList.get(0).interfMetrics.getIntByLine(o)[h]+" ");
+			// }
+			// Log.print("\n");
+			// }
 
 			containerList = createContainerList(brokerId, NUMBER_CLOUDLETS);
 			vmList = createVmList(brokerId, NUMBER_VMS);
@@ -237,28 +238,29 @@ public class xxIntExample {
 			String logAddress = "~/Results";
 
 			@SuppressWarnings("unused")
-			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "AA", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY, cloudletList); 
-			
-			
-			//createDatacenter("datacenter", IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "aa", SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY);
-			 
+			IntContainerDataCenter e = (IntContainerDataCenter) createDatacenter("datacenter",
+					IntContainerDataCenter.class, hostList, vmAllocationPolicy, containerAllocationPolicy, "AA",
+					SCHEDULING_INTERVAL, logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY, cloudletList);
+
+			// createDatacenter("datacenter", IntContainerDataCenter.class, hostList,
+			// vmAllocationPolicy, containerAllocationPolicy, "aa", SCHEDULING_INTERVAL,
+			// logAddress, VM_STARTTUP_DELAY, CONTAINER_STARTTUP_DELAY);
+
 			/**
 			 * 11- Submitting the cloudlet's , container's , and VM's lists to the broker.
 			 */
-			//Log.printLine("======" +containerList.size()+" ====== "+cloudletList.size());
+			// Log.printLine("======" +containerList.size()+" ====== "+cloudletList.size());
 			broker.submitCloudletList(cloudletList.subList(0, containerList.size()));
 			broker.submitContainerList(containerList);
 			broker.submitVmList(vmList);
-			
 
 			/**
 			 * 12- Determining the simulation termination time according to the cloudlet's
 			 * workload.
 			 */
 
-			 CloudSim.terminateSimulation(SIMULATION_LIMIT);
+			CloudSim.terminateSimulation(SIMULATION_LIMIT);
 
-				
 			/**
 			 * 13- Starting the simualtion.
 			 */
@@ -310,7 +312,6 @@ public class xxIntExample {
 	private static IntContainerDataCenterBroker createBroker(String name) {
 
 		IntContainerDataCenterBroker broker = null;
-
 
 		try {
 			broker = new IntContainerDataCenterBroker(name, 0); // original overBookingFactor
@@ -369,20 +370,19 @@ public class xxIntExample {
 			for (int j = 0; j < VM_PES[vmType]; ++j) {
 				peList.add(new IntContainerPe(j, new IntContainerPeProvisionerSimple((double) VM_MIPS[vmType])));
 			}
-			containerVms.add(new IntContainerVm(IntIDs.pollId(IntContainerVm.class), brokerId, (double) VM_MIPS[vmType],new IntContainerSchedulerTimeShared(peList),peList, SCHEDULING_INTERVAL));
-					//SCHEDULING_INTERVAL
+			containerVms.add(new IntContainerVm(IntIDs.pollId(IntContainerVm.class), brokerId, (double) VM_MIPS[vmType],
+					new IntContainerSchedulerTimeShared(peList), peList, SCHEDULING_INTERVAL));
+			// SCHEDULING_INTERVAL
 
 		}
 
-		//imprimir Vms criadas
+		// imprimir Vms criadas
 		for (int i = 0; i < containerVmsNumber; ++i) {
 //		Log.printLine("Vm"+containerVms.get(i).getId() +" toal mips "+containerVms.get(i).getTotalMips());
 		}
-		
-		
+
 		return containerVms;
 	}
-	
 
 	/**
 	 * Create the host list considering the specs listed in the
@@ -400,10 +400,12 @@ public class xxIntExample {
 			int hostType = 0;
 			ArrayList<IntContainerVmPe> peList = new ArrayList<IntContainerVmPe>();
 			for (int j = 0; j < HOST_PES[hostType]; ++j) {
-				peList.add(new IntContainerVmPe(j, new IntContainerVmPeProvisionerSimple((double) HOST_MIPS[hostType])));
+				peList.add(
+						new IntContainerVmPe(j, new IntContainerVmPeProvisionerSimple((double) HOST_MIPS[hostType])));
 			}
 
-			hostList.add(new IntContainerHost(IntIDs.pollId(IntContainerHost.class), peList, new IntContainerVmSchedulerTimeShared(peList)));
+			hostList.add(new IntContainerHost(IntIDs.pollId(IntContainerHost.class), peList,
+					new IntContainerVmSchedulerTimeShared(peList)));
 		}
 
 		return hostList;
@@ -438,7 +440,7 @@ public class xxIntExample {
 		double costPerBw = 0.0D;
 		IntContainerDataCenterCharacteristics characteristics = new IntContainerDataCenterCharacteristics(arch, os, vmm,
 				hostList, time_zone, cost, costPerMem, costPerStorage, costPerBw);
-		
+
 		IntContainerDataCenter datacenter = new IntContainerDataCenter(name, characteristics, vmAllocationPolicy,
 				containerAllocationPolicy, new LinkedList<Storage>(), schedulingInterval, experimentName, logAddress,
 				VMStartupDelay, ContainerStartupDelay, cloudletList);
@@ -458,10 +460,13 @@ public class xxIntExample {
 		ArrayList<IntContainer> containers = new ArrayList<IntContainer>();
 
 		for (int i = 0; i < containersNumber; ++i) {
-			int containerType =0; //i / (int) Math.ceil((double) containersNumber / CONTAINER_TYPES);
+			int containerType = 0; // i / (int) Math.ceil((double) containersNumber / CONTAINER_TYPES);
 
 			containers.add(new IntContainer(IntIDs.pollId(IntContainer.class), brokerId,
-					(double) CONTAINER_MIPS[containerType], CONTAINER_PES[containerType],"Xen", new IntContainerCloudletSchedulerDynamicWorkload(CONTAINER_MIPS[containerType], CONTAINER_PES[containerType]),	SCHEDULING_INTERVAL));
+					(double) CONTAINER_MIPS[containerType], CONTAINER_PES[containerType], "Xen",
+					new IntContainerCloudletSchedulerDynamicWorkload(CONTAINER_MIPS[containerType],
+							CONTAINER_PES[containerType]),
+					SCHEDULING_INTERVAL));
 		}
 
 		return containers;
@@ -478,23 +483,29 @@ public class xxIntExample {
 	public static List<IntContainerCloudlet> createIntContainerCloudletList(int brokerId, int numberOfCloudlets)
 			throws FileNotFoundException {
 		// pasta com os traces de interferência
-		//String inputFolderName = System.getProperty("user.dir") + "/src/resources/workload/interference";// ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
-		String inputFolderName = xxIntExample.class.getClassLoader().getResource("resources/workload/interference").getPath();
-		
-		//String inputFolderName = "/home/vinicius/git/CloudSimInterference/src/resources/workload/interference";
-		//Log.printLine("========"+inputFolderName);
+		// String inputFolderName = System.getProperty("user.dir") +
+		// "/src/resources/workload/interference";//
+		// ContainerCloudSimExampleInterference.class.getClassLoader().getResource("workload/interference").getPath();
+		String inputFolderName = xxIntExample.class.getClassLoader().getResource("resources/workload/interference")
+				.getPath();
+
+		// String inputFolderName =
+		// "/home/vinicius/git/CloudSimInterference/src/resources/workload/interference";
+		// Log.printLine("========"+inputFolderName);
 		ArrayList<IntContainerCloudlet> cloudletList = new ArrayList<IntContainerCloudlet>(); // criar um ArrayList de
 																								// IntContainerCloudlet
 		int count = 1;
 		long fileSize = 300L;
 		long outputSize = 300L;
-		//UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); // Modo NULO (simples)
+		// UtilizationModelNull utilizationModelNull = new UtilizationModelNull(); //
+		// Modo NULO (simples)
 		UtilizationModelFull utilizationModelFull = new UtilizationModelFull();
-		//UtilizationModelPlanetLabInMemory = teste new UtilizationModelPlanetLabInMemory(inputPath, schedulingInterval);
-		
+		// UtilizationModelPlanetLabInMemory = teste new
+		// UtilizationModelPlanetLabInMemory(inputPath, schedulingInterval);
+
 		java.io.File inputFolder1 = new java.io.File(inputFolderName);
 		java.io.File[] files1 = inputFolder1.listFiles();
-		//Log.printLine("======== "+files1.length);
+		// Log.printLine("======== "+files1.length);
 		int createdCloudlets = 0;
 		for (java.io.File aFiles1 : files1) {
 			java.io.File inputFolder = new java.io.File(aFiles1.toString());
@@ -504,10 +515,11 @@ public class xxIntExample {
 					IntContainerCloudlet cloudlet = null;
 
 					try {
-						cloudlet = new IntContainerCloudlet(IntIDs.pollId(IntContainerCloudlet.class), CLOUDLET_LENGTH, 1,
-								fileSize, outputSize, utilizationModelFull, utilizationModelFull, utilizationModelFull,
-								new Interference(files[i].getAbsolutePath()));
-						Log.printLine("Cloudlet "+count+" <- interf. traces: \"" + files[i].getAbsolutePath()+"\"");
+						cloudlet = new IntContainerCloudlet(IntIDs.pollId(IntContainerCloudlet.class), CLOUDLET_LENGTH,
+								1, fileSize, outputSize, utilizationModelFull, utilizationModelFull,
+								utilizationModelFull, new Interference(files[i].getAbsolutePath()));
+						Log.printLine(
+								"Cloudlet " + count + " <- interf. traces: \"" + files[i].getAbsolutePath() + "\"");
 						count++;
 //						System.out.println(files[i].getAbsolutePath().toString());
 //                                new UtilizationModelPlanetLabInMemoryExtended(files[i].getAbsolutePath(), 300.0D),
@@ -524,9 +536,9 @@ public class xxIntExample {
 
 					return cloudletList;
 				}
-				
+
 			}
-			
+
 		}
 		return cloudletList;
 	}

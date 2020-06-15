@@ -12,6 +12,7 @@ import cloudsim.interference.IntContainerAllocationPolicy;
 import cloudsim.interference.IntContainerHost;
 import cloudsim.interference.MLCResult;
 import cloudsim.interference.MLClassifier;
+import cloudsim.interference.Placement;
 import cloudsim.interference.Solution;
 import cloudsim.interference.cloudlet.IntContainerCloudlet;
 import cloudsim.interference.vm.IntContainerVm;
@@ -1091,25 +1092,42 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	void InterferenceClassifier() {
-		int interval = 50, start = 1, end = 0, total = 700, count=1;
+
+		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
+		int interval = 100, start = 1, end = 0, total = 700, count = 1;
 
 		for (int second = 1; second <= total; second++) {
 
 			if (second == total) {
-				//start = total - (total % interval);
+				// start = total - (total % interval);
 				end = total;
 				solutionList.add(fillSolution(start, end, interval, total));
-				Log.printLine("Total cost of interval "+count+" ("+start+" "+end+") -   "+solutionList.get(solutionList.size()-1).getTotalInterferenceCost());
+				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
+						+ solutionList.get(solutionList.size() - 1).getTotalInterferenceCost());
+
 				break;
 			}
 			if (second % interval == 0) {
 				end += interval;
 				solutionList.add(fillSolution(start, end, interval, total));
-				Log.printLine("Total cost of interval "+count+" ("+start+" "+end+") -   "+solutionList.get(solutionList.size()-1).getTotalInterferenceCost());
+				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
+						+ solutionList.get(solutionList.size() - 1).getTotalInterferenceCost());
+
+				// PAREI AQUI
+				// Solution nextSolution =
+				// Placement.HillClimbing(solutionList.get(solutionList.size()-1));
+				Solution nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
+				solutionList1.add(nextSolution);
+
 				start += interval;
 				count++;
 			}
 
+		}
+		
+		int u = 2;
+		for (Solution sol : solutionList1) {
+			Log.printLine("COST HC: " +(u++)+" -    "+ sol.getTotalInterferenceCost());
 		}
 
 		/*
@@ -1173,9 +1191,9 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	public Solution fillSolution(int start, int end, int interval, int ttime) {
-		
+
 		Solution solution = new Solution();
-		
+
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		// for each host...
 		for (int i = 0; i < list.size(); i++) {
@@ -1186,7 +1204,8 @@ public class IntContainerDataCenter extends SimEntity {
 				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
 
 				MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
-				solution.addCloudletToSolution(host.getId(), host.getNumberOfPes(), cloudlet.getCloudletId(), container.getNumberOfPes(), MLCR.getCloudletCost());
+				solution.addCloudletToSolution(host.getId(), host.getNumberOfPes(), cloudlet.getCloudletId(),
+						container.getNumberOfPes(), MLCR.getCloudletCost());
 
 			}
 		}
