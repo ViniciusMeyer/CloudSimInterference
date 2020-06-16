@@ -540,7 +540,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void processVmCreate(SimEvent ev, boolean ack) {
-		//Log.printLine("DC:processVmCreate");
+		// Log.printLine("DC:processVmCreate");
 		IntContainerVm containerVm = (IntContainerVm) ev.getData();
 
 		boolean result = getVmAllocationPolicy().allocateHostForVm(containerVm);
@@ -1092,10 +1092,11 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	void InterferenceClassifier() {
+		long startT = System.currentTimeMillis();
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
-		
+
 		int interval = 100, start = 1, end = 0, total = 700, count = 1;
 
 		for (int second = 1; second <= total; second++) {
@@ -1107,22 +1108,35 @@ public class IntContainerDataCenter extends SimEntity {
 				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
 						+ solutionList.get(solutionList.size() - 1).getTotalInterferenceCost());
 
+				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
+				// nextSolution.printPlacement();
+				solutionList1.add(nextSolution);
+
 				break;
 			}
 			if (second % interval == 0) {
 				end += interval;
 				solutionList.add(fillSolution(start, end, interval, total));
-				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
-						+ solutionList.get(solutionList.size() - 1).getTotalInterferenceCost());
+				// solutionList.get(solutionList.size() - 1).print();
+				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(1));
+				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(2));
+				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(3));
+				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(4));
+				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(5));
+				// Log.printLine(solutionList.get(solutionList.size() -
+				// 1).getTotalInterferenceCost());
+				// System.exit(0);
 
-				
-				//solutionList.get(solutionList.size() - 1).printPlacement();
-				
+				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
+						+ String.format("%.2f",solutionList.get(solutionList.size() - 1).getTotalInterferenceCost()));
+
+			solutionList.get(solutionList.size()-1).print();
+
 				// PAREI AQUI
 				// Solution nextSolution =
 				// Placement.HillClimbing(solutionList.get(solutionList.size()-1));
 				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
-				//nextSolution.printPlacement();
+				// nextSolution.printPlacement();
 				solutionList1.add(nextSolution);
 
 				start += interval;
@@ -1130,10 +1144,10 @@ public class IntContainerDataCenter extends SimEntity {
 			}
 
 		}
-		
-		int u = 2;
-		for (Solution sol : solutionList1) {
-			Log.printLine("COST HC: " +(u++)+" -    "+ sol.getTotalInterferenceCost());
+
+		int u = 1;
+		for (int i = 0; i<solutionList.size(); i++) {
+			Log.printLine((u++) +" - Original: " + solutionList.get(i).getTotalInterferenceCost() + " -   HC " + solutionList.get(i).getTotalInterferenceCost()+ "   - "+(1-(solutionList1.get(i).getTotalInterferenceCost() / solutionList.get(i).getTotalInterferenceCost())));
 		}
 
 		/*
@@ -1191,7 +1205,8 @@ public class IntContainerDataCenter extends SimEntity {
 		// Log.print("- "+o+"\n");
 		// }
 
-		Log.printLine("End of Simulation ...");
+		long totalTime = System.currentTimeMillis() - startT;
+		Log.printLine("End of Simulation ... " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
 		System.exit(0);
 
 	}

@@ -40,13 +40,11 @@ public class Placement {
 			double bestCost = best.getTotalInterferenceCost();
 			double newCost = newSolution.getTotalInterferenceCost();
 
-			if (newCost != bestCost) {
-				Log.printLine("new " + newCost + " current " + bestCost + "    - " + iterations);
-			}
-
+			
 		
 			if (newCost < bestCost) {
-				Log.printLine("melhor custo" + newCost);
+				//Log.printLine("====== new " + newCost + " current " + bestCost + "    - " + numOp + "     - "+ (1-(newCost/bestCost)));
+				
 				best = newSolution.copy();
 				noChange = 0;
 			}

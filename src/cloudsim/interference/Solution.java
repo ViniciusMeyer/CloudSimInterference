@@ -1,16 +1,18 @@
 package cloudsim.interference;
 
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.cloudbus.cloudsim.Log;
 
-public class Solution implements Cloneable{
+public class Solution implements Cloneable {
 
 	private HashMap placement = new HashMap<Integer, HashMap<String, Double>>();
 	private int ttime;
 	private int start;
 	private int end;
+	private int nHosts;
 
 	public void Solution() {
 
@@ -48,19 +50,54 @@ public class Solution implements Cloneable{
 	}
 
 	public double getTotalInterferenceCost() {
+		int nHosts = countHosts();
 		double totalCost = 0;
+
+		for (int i = 1; i < nHosts; i++) {
+			totalCost += getCostFromHost(i);
+
+		}
+		//Log.printLine(totalCost);
+		return (totalCost * (end - start)) / ttime;
+
+	}
+
+	public double getCostFromHost(int host) {
+		double hostCost = 1;
+		HashMap cloudlet = new HashMap<String, Double>();
+
 		for (int i = 1; i <= getSize(); i++) {
-			// Log.printConcatLine(getCostFromCloudlet(i), " - ",getCloudRes(i), " -
-			// ",getHostRes(i) );
+			cloudlet = (HashMap) this.placement.get(i);
 			// if this cloudlet/container is the only one ruuning inside a given Host,
-			// there will be no interference incidence, hence its interference cost is 0
-			if (!runninginOnlyOneHost(i)) {
-				totalCost += getCostFromCloudlet(i) / (getCloudRes(i) / getHostRes(i));
-				// Log.printConcatLine(totalCost);
+			// there will be no interference incidence, hence its interference cost is 1
+			if ((double) cloudlet.get("hostId") == host && !runninginOnlyOneHost(i)) {
+				hostCost *= getCostFromCloudlet(i) / (getCloudRes(i) / getHostRes(i));
+				// Log.printConcatLine(getCostFromCloudlet(i), " - ",getCloudRes(i), " -
+				// ",getHostRes(i) );
 			}
 		}
 
-		return (totalCost * (end - start)) / ttime;
+		return hostCost == 1 ? 0 : hostCost;
+
+	}
+
+	private int countHosts() {
+		int count = 0;
+
+		HashMap cloudlet = new HashMap<String, Double>();
+		ArrayList<Double> hosts = new ArrayList<Double>();
+
+		for (int i = 1; i <= getSize(); i++) {
+			cloudlet = (HashMap) this.placement.get(i);
+			if (!hosts.contains((double) cloudlet.get("hostId"))) {
+				hosts.add((double) cloudlet.get("hostId"));
+				count++;
+			}
+		}
+
+		// Log.printLine(count);
+		return count;
+
 	}
 
 	private double getCloudRes(int clId) {
@@ -118,20 +155,19 @@ public class Solution implements Cloneable{
 		HashMap cl1 = (HashMap) this.placement.get(cloudlet1);
 		HashMap cl2 = (HashMap) this.placement.get(cloudlet2);
 		HashMap aux = new HashMap<String, Double>();
-			
+
 		aux.put("hostId", cl1.get("hostId"));
 		aux.put("hostPe", cl1.get("hostPe"));
-		
+
 		cl1.replace("hostId", cl2.get("hostId"));
 		cl1.replace("hostPe", cl2.get("hostPe"));
-	
+
 		cl2.replace("hostId", aux.get("hostId"));
 		cl2.replace("hostPe", aux.get("hostPe"));
-		
-		
+
 		this.placement.replace(cl1.get("clId"), cl1);
 		this.placement.replace(cl2.get("clId"), cl2);
-	
+
 	}
 
 	public boolean hasSameCloudletSize(int reference, int find) {
@@ -150,21 +186,23 @@ public class Solution implements Cloneable{
 		Solution copy = new Solution();
 		for (int i = 1; i <= this.placement.size(); i++) {
 			HashMap cloudlet = (HashMap) this.placement.get(i);
-			copy.addCloudletToSolution((double)cloudlet.get("hostId"), (double)cloudlet.get("hostPe"),(double) cloudlet.get("clId"), (double)cloudlet.get("clPe"), (double)cloudlet.get("clCost"));
+			copy.addCloudletToSolution((double) cloudlet.get("hostId"), (double) cloudlet.get("hostPe"),
+					(double) cloudlet.get("clId"), (double) cloudlet.get("clPe"), (double) cloudlet.get("clCost"));
 			copy.setAdditionalParameters(this.getStart(), this.getEnd(), this.getTtime());
-			
+
 		}
 		return copy;
 	}
 
 	public void print() {
 		Log.printConcatLine("\n\n======================================");
-
+		Log.printConcatLine("Cloudlet " ,"Host ", " Hpe ", " Cpe ", "CloudletCost" );
 		for (int i = 1; i <= this.placement.size(); i++) {
 			HashMap cloudlet = (HashMap) this.placement.get(i);
 
-			Log.printConcatLine(cloudlet.get("clId"), " ", cloudlet.get("clPe"), " ", cloudlet.get("clCost"), " ",
-					cloudlet.get("hostId"), " ", cloudlet.get("hostPe"));
+			
+			Log.printConcatLine("   ", cloudlet.get("clId"), "   ", cloudlet.get("hostId"), "  ",  cloudlet.get("hostPe"), "  ",
+					cloudlet.get("clPe"), "    ",String.format("%.2f", cloudlet.get("clCost")) );
 
 		}
 		Log.printConcatLine("======================================\n\n");
@@ -181,13 +219,15 @@ public class Solution implements Cloneable{
 		}
 		Log.printConcatLine("======================================\n\n");
 	}
-	
+
 	private int getTtime() {
 		return ttime;
 	}
+
 	private int getStart() {
 		return start;
 	}
+
 	private int getEnd() {
 		return end;
 	}
