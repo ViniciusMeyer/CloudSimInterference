@@ -24,19 +24,29 @@ public class Placement {
 		int maxNoChange = 2000;
 		int numOp = 0;
 		int noChange = 0;
+		
+		Solution best = new Solution();
 
-		Solution best = solution.copy();
+		best = solution;
+		//best.printPlacement();
 
 		while (iterations > 1 && noChange < maxNoChange) {
 			numOp++;
 			Solution newSolution = best.copy();
-
+			
 			newSolution = randomSwap(newSolution);
-			//Log.printLine("RANDOM");
+
+			// Log.printLine("RANDOM");
 			double bestCost = best.getTotalInterferenceCost();
 			double newCost = newSolution.getTotalInterferenceCost();
 
+			if (newCost != bestCost) {
+				Log.printLine("new " + newCost + " current " + bestCost + "    - " + iterations);
+			}
+
+		
 			if (newCost < bestCost) {
+				Log.printLine("melhor custo" + newCost);
 				best = newSolution.copy();
 				noChange = 0;
 			}
@@ -45,6 +55,8 @@ public class Placement {
 			iterations--;
 		}
 
+		//best.printPlacement();
+		
 		return best;
 
 	}
@@ -54,14 +66,14 @@ public class Placement {
 	 * swaping two cloudlets 50% of change of moving a cloudlet to a new PM
 	 */
 
-	private static Solution randomSwap(Solution solution) {
+	private static Solution randomSwap(Solution solution1) {
 
 		double rand = Math.random();
 
 		if (rand > 0.5) {
-			return swapping(solution);
+			return swapping(solution1);
 		} else {
-			return moving(solution);
+			return swapping(solution1);
 		}
 	}
 
@@ -69,38 +81,35 @@ public class Placement {
 	 * Swap two random cloudlets from two different Hosts(VMs)
 	 */
 
-	private static Solution swapping(Solution solution) {
+	private static Solution swapping(Solution solution2) {
 
-		int cloudlet1 = randomInt(1, solution.getSize());
+		int cloudlet1 = randomInt(1, solution2.getSize());
 		int cloudlet2;
 
-		while (solution.runninginOnlyOneHost(cloudlet1)) {
-			cloudlet1 = randomInt(1, solution.getSize());
+		while (solution2.runninginOnlyOneHost(cloudlet1)) {
+			cloudlet1 = randomInt(1, solution2.getSize());
 		}
 
 		cloudlet2 = cloudlet1;
 
-		while (cloudlet2 == cloudlet1) { // || solution.runninginOnlyOneHost(cloudlet2) ||
-											// solution.hasSameCloudletSize(cloudlet1, cloudlet2)) {
-
-			cloudlet2 = randomInt(1, solution.getSize());
-			//Log.printLine("AAA");
+		while (cloudlet2 == cloudlet1) { // || !solution.hasSameCloudletSize(cloudlet1, cloudlet2)) {
+			cloudlet2 = randomInt(1, solution2.getSize());
 
 		}
-		//Log.printLine("CL1: " + cloudlet1 + " CL2: " + cloudlet2);
+		// Log.printLine("CL1: " + cloudlet1 + " CL2: " + cloudlet2);
 
-		solution.swapCloudletHost(cloudlet1, cloudlet2);
+		solution2.swapCloudletHost(cloudlet1, cloudlet2);
 
-		return solution;
+		return solution2;
 	}
 
 	/**
 	 * Move a random cloudlet of the Host(VM) with highest cost to the Host(VM) with
 	 * lowest cost
 	 */
-	private static Solution moving(Solution solution) {
+	private static Solution moving(Solution solution3) {
 
-		return solution;
+		return solution3;
 	}
 
 	private static int randomInt(int min, int max) {

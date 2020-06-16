@@ -540,7 +540,7 @@ public class IntContainerDataCenter extends SimEntity {
 	 * @post $none
 	 */
 	protected void processVmCreate(SimEvent ev, boolean ack) {
-		Log.printLine("DC:processVmCreate");
+		//Log.printLine("DC:processVmCreate");
 		IntContainerVm containerVm = (IntContainerVm) ev.getData();
 
 		boolean result = getVmAllocationPolicy().allocateHostForVm(containerVm);
@@ -1094,6 +1094,8 @@ public class IntContainerDataCenter extends SimEntity {
 	void InterferenceClassifier() {
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
+		Solution nextSolution = new Solution();
+		
 		int interval = 100, start = 1, end = 0, total = 700, count = 1;
 
 		for (int second = 1; second <= total; second++) {
@@ -1113,10 +1115,14 @@ public class IntContainerDataCenter extends SimEntity {
 				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
 						+ solutionList.get(solutionList.size() - 1).getTotalInterferenceCost());
 
+				
+				//solutionList.get(solutionList.size() - 1).printPlacement();
+				
 				// PAREI AQUI
 				// Solution nextSolution =
 				// Placement.HillClimbing(solutionList.get(solutionList.size()-1));
-				Solution nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
+				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
+				//nextSolution.printPlacement();
 				solutionList1.add(nextSolution);
 
 				start += interval;

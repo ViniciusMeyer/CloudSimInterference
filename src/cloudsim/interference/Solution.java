@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.cloudbus.cloudsim.Log;
 
-public class Solution {
+public class Solution implements Cloneable{
 
 	private HashMap placement = new HashMap<Integer, HashMap<String, Double>>();
 	private int ttime;
@@ -78,8 +78,8 @@ public class Solution {
 	}
 
 	public boolean runninginOnlyOneHost(int clId) {
-		
-		//Log.printLine("AQUI ======= ID: "+ clId);
+
+		// Log.printLine("AQUI ======= ID: "+ clId);
 		int count = 0;
 		double hostId = 0;
 		HashMap cloudlet = new HashMap<String, Double>();
@@ -89,12 +89,13 @@ public class Solution {
 		for (int i = 1; i <= this.placement.size(); i++) {
 			cloudlet = (HashMap) this.placement.get(i);
 
-			//Log.printLine((double) cloudlet.get("hostId") + " " + hostId + " "+ i + " "+ this.placement.size());
+			// Log.printLine((double) cloudlet.get("hostId") + " " + hostId + " "+ i + " "+
+			// this.placement.size());
 			if ((double) cloudlet.get("hostId") == hostId) {
 				count++;
 			}
 		}
-		//Log.printLine("AQUI");
+		// Log.printLine("AQUI");
 
 		if (count == 1) {
 			return true;
@@ -117,31 +118,20 @@ public class Solution {
 		HashMap cl1 = (HashMap) this.placement.get(cloudlet1);
 		HashMap cl2 = (HashMap) this.placement.get(cloudlet2);
 		HashMap aux = new HashMap<String, Double>();
-
-		aux = cl1;
-		// cl1 = cl2;
-		// cl2 = aux;
-		//Log.printLine("ANTES:");
-		//Log.printConcatLine("CL1: host", cl1.get("hostId"), " hostPe: ", cl1.get("hostPe"), " clId: ", cl1.get("clId"),		" clPe: ", cl1.get("clPe"), " clCost:", cl1.get("clCost"));
-		//Log.printConcatLine("CL2: host", cl2.get("hostId"), " hostPe: ", cl2.get("hostPe"), " clId: ", cl2.get("clId")," clPe: ", cl2.get("clPe"), " clCost:", cl2.get("clCost"));
-
+			
+		aux.put("hostId", cl1.get("hostId"));
+		aux.put("hostPe", cl1.get("hostPe"));
+		
 		cl1.replace("hostId", cl2.get("hostId"));
 		cl1.replace("hostPe", cl2.get("hostPe"));
-		// cl1.put("clId", cl2.get("clId"));
-		// cl1.put("clPe", cl2.get("clPe"));
-		// cl1.put("clCost", cl2.get("clCost"));
-
+	
 		cl2.replace("hostId", aux.get("hostId"));
 		cl2.replace("hostPe", aux.get("hostPe"));
-		// cl2.put("clId", aux.get("clId"));
-		// cl2.put("clPe", aux.get("clPe"));
-		// cl2.put("clCost", aux.get("clCost"));
-		//Log.printLine("DEPOIS:");
-		//Log.printConcatLine("CL1: host", cl1.get("hostId"), " hostPe: ", cl1.get("hostPe"), " clId: ", cl1.get("clId")," clPe: ", cl1.get("clPe"), " clCost:", cl1.get("clCost"));
-		//Log.printConcatLine("CL2: host", cl2.get("hostId"), " hostPe: ", cl2.get("hostPe"), " clId: ", cl2.get("clId"), " clPe: ", cl2.get("clPe"), " clCost:", cl2.get("clCost"));
+		
+		
 		this.placement.replace(cl1.get("clId"), cl1);
 		this.placement.replace(cl2.get("clId"), cl2);
-
+	
 	}
 
 	public boolean hasSameCloudletSize(int reference, int find) {
@@ -149,6 +139,7 @@ public class Solution {
 		HashMap cl2_find = (HashMap) this.placement.get(find);
 
 		if (cl1_ref.get("clPe") == cl2_find.get("clPe")) {
+			// Log.printLine(cl1_ref.get("clPe") + " " + cl2_find.get("clPe"));
 			return true;
 		} else {
 			return false;
@@ -156,6 +147,48 @@ public class Solution {
 	}
 
 	public Solution copy() {
-		return this;
+		Solution copy = new Solution();
+		for (int i = 1; i <= this.placement.size(); i++) {
+			HashMap cloudlet = (HashMap) this.placement.get(i);
+			copy.addCloudletToSolution((double)cloudlet.get("hostId"), (double)cloudlet.get("hostPe"),(double) cloudlet.get("clId"), (double)cloudlet.get("clPe"), (double)cloudlet.get("clCost"));
+			copy.setAdditionalParameters(this.getStart(), this.getEnd(), this.getTtime());
+			
+		}
+		return copy;
+	}
+
+	public void print() {
+		Log.printConcatLine("\n\n======================================");
+
+		for (int i = 1; i <= this.placement.size(); i++) {
+			HashMap cloudlet = (HashMap) this.placement.get(i);
+
+			Log.printConcatLine(cloudlet.get("clId"), " ", cloudlet.get("clPe"), " ", cloudlet.get("clCost"), " ",
+					cloudlet.get("hostId"), " ", cloudlet.get("hostPe"));
+
+		}
+		Log.printConcatLine("======================================\n\n");
+	}
+
+	public void printPlacement() {
+		Log.printConcatLine("\n\n======================================");
+
+		for (int i = 1; i <= this.placement.size(); i++) {
+			HashMap cloudlet = (HashMap) this.placement.get(i);
+
+			Log.printConcatLine(cloudlet.get("clId"), " - ", cloudlet.get("hostId"));
+
+		}
+		Log.printConcatLine("======================================\n\n");
+	}
+	
+	private int getTtime() {
+		return ttime;
+	}
+	private int getStart() {
+		return start;
+	}
+	private int getEnd() {
+		return end;
 	}
 }
