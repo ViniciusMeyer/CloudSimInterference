@@ -36,6 +36,18 @@ public class Solution implements Cloneable {
 		}
 
 	}
+	
+	public void updateCloudletInterferenceCost(int cloudlet, double cost) {
+		HashMap cl =  (HashMap) this.placement.get(cloudlet);
+	
+		
+		//Log.printLine(" ===== "+cloudlet + "    "+ cost);
+		cl.replace("clCost", cost);
+		
+		this.placement.replace(cloudlet, cl);
+		
+		
+	}
 
 	public double getCostFromCloudlet(int clId) {
 		HashMap cloudlet = new HashMap<String, Double>();
@@ -283,5 +295,10 @@ public class Solution implements Cloneable {
 
 	private int getEnd() {
 		return end;
+	}
+	
+	public HashMap getPlacement() {
+		
+		return this.placement;
 	}
 }

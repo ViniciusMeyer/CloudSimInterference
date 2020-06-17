@@ -1094,6 +1094,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 	void InterferenceClassifier() {
 		long startT = System.currentTimeMillis();
+		boolean first = true;
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
@@ -1105,40 +1106,28 @@ public class IntContainerDataCenter extends SimEntity {
 			if (second == total) {
 				// start = total - (total % interval);
 				end = total;
-				solutionList.add(fillSolution(start, end, interval, total));
-				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
-						+ String.format("%.2f",solutionList.get(solutionList.size() - 1).getTotalInterferenceCost()));
-
 				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
-				// nextSolution.printPlacement();
-				solutionList1.add(nextSolution);
+
+				solutionList.add(classify(nextSolution, start, end, interval, total));
 
 				break;
 			}
+
+			if (second % interval == 0 && first) {
+				end += interval;
+				solutionList.add(fillInitialSolution(start, end, interval, total));
+
+				start += interval;
+				count++;
+
+			}
+
 			if (second % interval == 0) {
 				end += interval;
-				solutionList.add(fillSolution(start, end, interval, total));
-				// solutionList.get(solutionList.size() - 1).print();
-				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(1));
-				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(2));
-				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(3));
-				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(4));
-				// Log.printLine(solutionList.get(solutionList.size() - 1).getCostFromHost(5));
-				// Log.printLine(solutionList.get(solutionList.size() -
-				// 1).getTotalInterferenceCost());
-				// System.exit(0);
 
-				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
-						+ String.format("%.2f",solutionList.get(solutionList.size() - 1).getTotalInterferenceCost()));
-
-			solutionList.get(solutionList.size()-1).print();
-
-				// PAREI AQUI
-				// Solution nextSolution =
-				// Placement.HillClimbing(solutionList.get(solutionList.size()-1));
 				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
-				// nextSolution.printPlacement();
-				solutionList1.add(nextSolution);
+
+				solutionList.add(classify(nextSolution, start, end, interval, total));
 
 				start += interval;
 				count++;
@@ -1147,69 +1136,17 @@ public class IntContainerDataCenter extends SimEntity {
 		}
 
 		int u = 1;
-		double same=0, hc=0;
+		double same = 0, hc = 0;
 		Log.printLine("");
-		for (int i = 0; i<solutionList.size(); i++) {
-			Log.printLine((u++) +" - Original: " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()) + " -   HC " + util.printDouble(solutionList1.get(i).getTotalInterferenceCost())+ "   - "+util.printDouble((1-(solutionList1.get(i).getTotalInterferenceCost() / solutionList.get(i).getTotalInterferenceCost()))));
-			same+=solutionList.get(i).getTotalInterferenceCost();
-			hc+=solutionList1.get(i).getTotalInterferenceCost();
+		for (int i = 0; i < solutionList.size(); i++) {
+			Log.printLine((u++) + " - Original: " + util.printDouble(solutionList.get(i).getTotalInterferenceCost())
+					+ " -   HC " + util.printDouble(solutionList1.get(i).getTotalInterferenceCost()) + "   - "
+					+ util.printDouble((1 - (solutionList1.get(i).getTotalInterferenceCost()
+							/ solutionList.get(i).getTotalInterferenceCost()))));
+			same += solutionList.get(i).getTotalInterferenceCost();
+			hc += solutionList1.get(i).getTotalInterferenceCost();
 		}
-		Log.printLine("Improvement: "+util.printDouble((1-(hc/same)))+"%");
-
-		/*
-		 * long startT = System.currentTimeMillis(); List<? extends IntContainerHost>
-		 * list = getVmAllocationPolicy().getContainerHostList(); // for each host...
-		 * 
-		 * Log.
-		 * printLine("\n\n\n ==============================================================\n"
-		 * );
-		 * 
-		 * for (int i = 0; i < list.size(); i++) {
-		 * 
-		 * double cost=1; IntContainerHost host = list.get(i); // inform VMs to update
-		 * processing
-		 * 
-		 * for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
-		 * long startT1 = System.currentTimeMillis(); IntContainer container =
-		 * host.getVmList().get(0).getContainerList().get(x); IntContainerCloudlet
-		 * cloudlet = cloudletList.get(container.getId() - 1);//container.getCloudlet();
-		 * 
-		 * Log.printConcatLine("Host: ", host.getId(), ", Container: ",
-		 * container.getId(), ", Cloudlet: ", cloudlet.getCloudletId());
-		 * 
-		 * 
-		 * 
-		 * MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), 1 ,200);
-		 * 
-		 * Log.printLine("cpu[" + MLCR.getCpu() + "]  mem[" + MLCR.getMemory() +
-		 * "]  net[" + MLCR.getNetwork() + "]  disk[" + MLCR.getDisk() + "]  cache[" +
-		 * MLCR.getCache() + "]"); Log.printLine("Total Cost: " + String.format("%.3f",
-		 * MLCR.getCloudletCost()));
-		 * 
-		 * cost*=MLCR.getCloudletCost();
-		 * 
-		 * long totalTime1 = System.currentTimeMillis() - startT1;
-		 * Log.printLine("Partial " + totalTime1 / 1000 / 60 + " min - " + totalTime1 /
-		 * 1000 % 60 + " sec\n");
-		 * 
-		 * } Log.printLine("===Host:"+host.getId()+
-		 * " Total Cost:"+String.format("%.3f",cost)+"\n"); cost=1;
-		 * 
-		 * } long totalTime = System.currentTimeMillis() - startT;
-		 * Log.printLine("Total time .. " + totalTime / 1000 / 60 + " min - " +
-		 * totalTime / 1000 % 60 + " sec");
-		 * 
-		 * Log.
-		 * printLine("\n ============================================================== \n\n\n"
-		 * );
-		 */
-
-		// for (int o = 0; o < cloudletList.get(15).interfMetrics.getIntLength(); o++) {
-		// for (int h = 0; h < 7; h++) {
-		// Log.print(cloudletList.get(15).interfMetrics.getIntByLine(o)[h] + " ");
-		// }
-		// Log.print("- "+o+"\n");
-		// }
+		Log.printLine("Improvement: " + util.printDouble((1 - (hc / same))) + "%");
 
 		long totalTime = System.currentTimeMillis() - startT;
 		Log.printLine("End of Simulation ... (" + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec)");
@@ -1217,7 +1154,26 @@ public class IntContainerDataCenter extends SimEntity {
 
 	}
 
-	public Solution fillSolution(int start, int end, int interval, int ttime) {
+	public Solution classify(Solution solution, int start, int end, int interval, int ttime) {
+		//solution.print();
+		// for each container/cloudlet (in given VM)
+		for (int i = 0; i < solution.getSize(); i++) {
+			HashMap cl = (HashMap) solution.getPlacement().get(i);
+
+			IntContainerCloudlet cloudlet = cloudletList.get(i);
+
+			MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
+
+			solution.updateCloudletInterferenceCost((i + 1), MLCR.getCloudletCost());
+
+		}
+		//solution.print();
+		solution.setAdditionalParameters(start, end, ttime);
+
+		return solution;
+	}
+
+	public Solution fillInitialSolution(int start, int end, int interval, int ttime) {
 
 		Solution solution = new Solution();
 
