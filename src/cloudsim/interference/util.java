@@ -47,6 +47,11 @@ public class util {
 	}
 	
 	
+	public static String printDouble(double number) {
+		
+		return String.format("%.2f", number);
+	}
+	
 
 	
 	

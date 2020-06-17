@@ -14,6 +14,7 @@ import cloudsim.interference.MLCResult;
 import cloudsim.interference.MLClassifier;
 import cloudsim.interference.Placement;
 import cloudsim.interference.Solution;
+import cloudsim.interference.util;
 import cloudsim.interference.cloudlet.IntContainerCloudlet;
 import cloudsim.interference.vm.IntContainerVm;
 import cloudsim.interference.vm.IntContainerVmAllocationPolicy;
@@ -1106,7 +1107,7 @@ public class IntContainerDataCenter extends SimEntity {
 				end = total;
 				solutionList.add(fillSolution(start, end, interval, total));
 				Log.printLine("Total cost of interval " + count + " (" + start + " " + end + ") -   "
-						+ solutionList.get(solutionList.size() - 1).getTotalInterferenceCost());
+						+ String.format("%.2f",solutionList.get(solutionList.size() - 1).getTotalInterferenceCost()));
 
 				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
 				// nextSolution.printPlacement();
@@ -1146,9 +1147,14 @@ public class IntContainerDataCenter extends SimEntity {
 		}
 
 		int u = 1;
+		double same=0, hc=0;
+		Log.printLine("");
 		for (int i = 0; i<solutionList.size(); i++) {
-			Log.printLine((u++) +" - Original: " + solutionList.get(i).getTotalInterferenceCost() + " -   HC " + solutionList.get(i).getTotalInterferenceCost()+ "   - "+(1-(solutionList1.get(i).getTotalInterferenceCost() / solutionList.get(i).getTotalInterferenceCost())));
+			Log.printLine((u++) +" - Original: " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()) + " -   HC " + util.printDouble(solutionList1.get(i).getTotalInterferenceCost())+ "   - "+util.printDouble((1-(solutionList1.get(i).getTotalInterferenceCost() / solutionList.get(i).getTotalInterferenceCost()))));
+			same+=solutionList.get(i).getTotalInterferenceCost();
+			hc+=solutionList1.get(i).getTotalInterferenceCost();
 		}
+		Log.printLine("Improvement: "+util.printDouble((1-(hc/same)))+"%");
 
 		/*
 		 * long startT = System.currentTimeMillis(); List<? extends IntContainerHost>
@@ -1206,7 +1212,7 @@ public class IntContainerDataCenter extends SimEntity {
 		// }
 
 		long totalTime = System.currentTimeMillis() - startT;
-		Log.printLine("End of Simulation ... " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
+		Log.printLine("End of Simulation ... (" + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec)");
 		System.exit(0);
 
 	}

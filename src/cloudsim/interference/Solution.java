@@ -3,6 +3,7 @@ package cloudsim.interference;
 import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.cloudbus.cloudsim.Log;
 
@@ -57,7 +58,7 @@ public class Solution implements Cloneable {
 			totalCost += getCostFromHost(i);
 
 		}
-		//Log.printLine(totalCost);
+		// Log.printLine(totalCost);
 		return (totalCost * (end - start)) / ttime;
 
 	}
@@ -196,13 +197,13 @@ public class Solution implements Cloneable {
 
 	public void print() {
 		Log.printConcatLine("\n\n======================================");
-		Log.printConcatLine("Cloudlet " ,"Host ", " Hpe ", " Cpe ", "CloudletCost" );
+		Log.printConcatLine("Cloudlet ", "Host ", " Hpe ", " Cpe ", "CloudletCost");
 		for (int i = 1; i <= this.placement.size(); i++) {
 			HashMap cloudlet = (HashMap) this.placement.get(i);
 
-			
-			Log.printConcatLine("   ", cloudlet.get("clId"), "   ", cloudlet.get("hostId"), "  ",  cloudlet.get("hostPe"), "  ",
-					cloudlet.get("clPe"), "    ",String.format("%.2f", cloudlet.get("clCost")) );
+			Log.printConcatLine("   ", cloudlet.get("clId"), "   ", cloudlet.get("hostId"), "  ",
+					cloudlet.get("hostPe"), "  ", cloudlet.get("clPe"), "    ",
+					String.format("%.2f", cloudlet.get("clCost")));
 
 		}
 		Log.printConcatLine("======================================\n\n");
@@ -218,6 +219,58 @@ public class Solution implements Cloneable {
 
 		}
 		Log.printConcatLine("======================================\n\n");
+	}
+
+	public int getHostWithHighestCost() {
+		double higherCost = 0;
+		int host = 0, hostNumber = 0;
+		hostNumber = countHosts();
+		for (int i = 1; i <= hostNumber; i++) {
+			if (getCostFromHost(i) > higherCost) {
+				higherCost = getCostFromHost(i);
+				host = i;
+			}
+		}
+
+		return host;
+	}
+
+	public int getHostWithLowerCost() {
+		double lowerCost = Double.MAX_VALUE;
+		int host = 0, hostNumber = 0;
+		hostNumber = countHosts();
+		for (int i = 1; i <= hostNumber; i++) {
+			if (getCostFromHost(i) < lowerCost) {
+				lowerCost = getCostFromHost(i);
+				host = i;
+			}
+		}
+
+		return host;
+	}
+
+	public int randomCloudletInHost(int min, int max, int host) {
+		int cloudlet = ThreadLocalRandom.current().nextInt(min, max + 1);
+		while (!isInHost(cloudlet, host)) {
+			cloudlet = ThreadLocalRandom.current().nextInt(min, max + 1);
+		}
+
+		return cloudlet;
+	}
+
+	private boolean isInHost(int cloudletN, int hostN) {
+		double hostId = 0;
+		
+		HashMap cloudlet = new HashMap<String, Double>();
+		cloudlet = (HashMap) this.placement.get(cloudletN);
+		
+		hostId = (double) cloudlet.get("hostId");
+
+		if (hostId == (double)hostN) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private int getTtime() {

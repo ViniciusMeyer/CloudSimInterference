@@ -24,27 +24,28 @@ public class Placement {
 		int maxNoChange = 2000;
 		int numOp = 0;
 		int noChange = 0;
-		
+
 		Solution best = new Solution();
 
 		best = solution;
-		//best.printPlacement();
+		// best.printPlacement();
 
 		while (iterations > 1 && noChange < maxNoChange) {
 			numOp++;
 			Solution newSolution = best.copy();
-			
-			newSolution = randomSwap(newSolution);
 
+			//newSolution.print();
+			newSolution = randomSwap(newSolution);
+			//newSolution.print();
+			
 			// Log.printLine("RANDOM");
 			double bestCost = best.getTotalInterferenceCost();
 			double newCost = newSolution.getTotalInterferenceCost();
 
-			
-		
 			if (newCost < bestCost) {
-				//Log.printLine("====== new " + newCost + " current " + bestCost + "    - " + numOp + "     - "+ (1-(newCost/bestCost)));
-				
+				// Log.printLine("====== new " + newCost + " current " + bestCost + " - " +
+				// numOp + " - "+ (1-(newCost/bestCost)));
+
 				best = newSolution.copy();
 				noChange = 0;
 			}
@@ -53,8 +54,8 @@ public class Placement {
 			iterations--;
 		}
 
-		//best.printPlacement();
-		
+		// best.printPlacement();
+
 		return best;
 
 	}
@@ -71,7 +72,7 @@ public class Placement {
 		if (rand > 0.5) {
 			return swapping(solution1);
 		} else {
-			return swapping(solution1);
+			return moving(solution1);
 		}
 	}
 
@@ -107,6 +108,20 @@ public class Placement {
 	 */
 	private static Solution moving(Solution solution3) {
 
+		//solution3.print();
+
+		int highestHost = solution3.getHostWithHighestCost();
+		int lowerHost = solution3.getHostWithLowerCost();
+
+		//Log.printConcatLine("HIGHHOST: ", highestHost, " LOWERHOST: ", lowerHost);
+
+		int cloudlet1 = solution3.randomCloudletInHost(1, solution3.getSize(), highestHost);
+		int cloudlet2 = solution3.randomCloudletInHost(1, solution3.getSize(), lowerHost);
+
+		//Log.printConcatLine("CL1: ", cloudlet1, " CL2: ", cloudlet2);
+		
+		solution3.swapCloudletHost(cloudlet1, cloudlet2);
+		
 		return solution3;
 	}
 
