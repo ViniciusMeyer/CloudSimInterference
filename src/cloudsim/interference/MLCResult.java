@@ -3,6 +3,8 @@ package cloudsim.interference;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cloudbus.cloudsim.Log;
+
 public class MLCResult {
 
 	// String[][] result = new String[2][5];
@@ -43,7 +45,9 @@ public class MLCResult {
 	public double getCloudletCost() {
 		double cost = 0;
 		cost = Degradation.getCpu(getCpu()) * Degradation.getMem(getMemory()) * Degradation.getDisk(getDisk()) * Degradation.getCache(getCache()) * Degradation.getNet(getNetwork());
-					
+		//Log.printLine("CPU: "+getCpu()+" Mem: "+getMemory()+" Disk: "+getDisk()+" Cache: "+getCache()+" Net: "+getNetwork());			
+		
+		
 		return cost>1 ? cost : 1;
 		
 	}

@@ -66,11 +66,12 @@ public class Solution implements Cloneable {
 		int nHosts = countHosts();
 		double totalCost = 0;
 
-		for (int i = 1; i < nHosts; i++) {
+		for (int i = 1; i <= nHosts; i++) {
 			totalCost += getCostFromHost(i);
 
+			//Log.printLine("AQUI - host: "+i+ " cost: "+ getCostFromHost(i));
 		}
-		// Log.printLine(totalCost);
+		//Log.printLine(totalCost);
 		return (totalCost * (end - start)) / ttime;
 
 	}

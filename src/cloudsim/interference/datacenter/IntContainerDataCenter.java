@@ -1093,60 +1093,81 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	void InterferenceClassifier() {
+		String algorithm = "GA"; //FF HC SA GA
 		long startT = System.currentTimeMillis();
 		boolean first = true;
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
-
-		int interval = 100, start = 1, end = 0, total = 700, count = 1;
+		
+		int interval = 60, start = 1, end = 0, total = 300, count = 1;
 
 		for (int second = 1; second <= total; second++) {
 
 			if (second == total) {
 				// start = total - (total % interval);
 				end = total;
-				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
 
-				solutionList.add(classify(nextSolution, start, end, interval, total));
+				// if the interval is equal to total time
+				if (solutionList.size() < 1) {
+					Log.printLine("Intervalo1: "+ start +" - "+end);
+					solutionList.add(fillInitialSolution(start, end, interval, total));
+					
+				} else {
+					Log.printLine("Intervalo3: "+ start +" - "+end);
+					nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
+					solutionList.add(classifier(nextSolution, start, end, interval, total));
 
+				}
+				solutionList.get(solutionList.size() - 1).print();
+			
+				
+				
 				break;
+			}
+			
+			if (second % interval == 0 && !first) {
+				end += interval;
+
+				Log.printLine("Intervalo2: "+ start +" - "+end);
+				nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
+
+				solutionList.add(classifier(nextSolution, start, end, interval, total));
+				
+				solutionList.get(solutionList.size() - 1).print();
+				
+				start += interval;
+				count++;
 			}
 
 			if (second % interval == 0 && first) {
 				end += interval;
+				
+				Log.printLine("Intervalo1: "+ start +" - "+end);
 				solutionList.add(fillInitialSolution(start, end, interval, total));
 
+				solutionList.get(solutionList.size() - 1).print();
+			
+				
+				
 				start += interval;
 				count++;
+				first = false;
 
 			}
 
-			if (second % interval == 0) {
-				end += interval;
-
-				nextSolution = Placement.HillClimbing(solutionList.get(solutionList.size() - 1));
-
-				solutionList.add(classify(nextSolution, start, end, interval, total));
-
-				start += interval;
-				count++;
-			}
+			
+			
+		
 
 		}
 
-		int u = 1;
-		double same = 0, hc = 0;
-		Log.printLine("");
+		
 		for (int i = 0; i < solutionList.size(); i++) {
-			Log.printLine((u++) + " - Original: " + util.printDouble(solutionList.get(i).getTotalInterferenceCost())
-					+ " -   HC " + util.printDouble(solutionList1.get(i).getTotalInterferenceCost()) + "   - "
-					+ util.printDouble((1 - (solutionList1.get(i).getTotalInterferenceCost()
-							/ solutionList.get(i).getTotalInterferenceCost()))));
-			same += solutionList.get(i).getTotalInterferenceCost();
-			hc += solutionList1.get(i).getTotalInterferenceCost();
+			//Log.printLine((i+1) + " - "+algorithm+"  " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			Log.printLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
 		}
-		Log.printLine("Improvement: " + util.printDouble((1 - (hc / same))) + "%");
+
 
 		long totalTime = System.currentTimeMillis() - startT;
 		Log.printLine("End of Simulation ... (" + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec)");
@@ -1154,8 +1175,8 @@ public class IntContainerDataCenter extends SimEntity {
 
 	}
 
-	public Solution classify(Solution solution, int start, int end, int interval, int ttime) {
-		//solution.print();
+	public Solution classifier(Solution solution, int start, int end, int interval, int ttime) {
+		// solution.print();
 		// for each container/cloudlet (in given VM)
 		for (int i = 0; i < solution.getSize(); i++) {
 			HashMap cl = (HashMap) solution.getPlacement().get(i);
@@ -1163,11 +1184,11 @@ public class IntContainerDataCenter extends SimEntity {
 			IntContainerCloudlet cloudlet = cloudletList.get(i);
 
 			MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
-
+			
 			solution.updateCloudletInterferenceCost((i + 1), MLCR.getCloudletCost());
 
 		}
-		//solution.print();
+		// solution.print();
 		solution.setAdditionalParameters(start, end, ttime);
 
 		return solution;
