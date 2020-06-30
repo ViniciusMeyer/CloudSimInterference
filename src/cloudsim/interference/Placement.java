@@ -47,6 +47,7 @@ public class Placement {
 		int epoch = 10;
 		int bestIndex = -1;
 		double bestCost = Double.MAX_VALUE;
+		double currentCost=0;
 
 		List<Solution> population = fillPopulation(solution);
 
@@ -58,8 +59,10 @@ public class Placement {
 				population.set(j, randomSwap(population.get(j)));
 				population.set(j, randomSwap(population.get(j)));
 
-				if (population.get(j).getTotalInterferenceCost() < bestCost) {
+				currentCost = population.get(j).getTotalInterferenceCost();
+				if (currentCost < bestCost) {
 					bestIndex = j;
+					bestCost = currentCost;
 				}
 			}
 
