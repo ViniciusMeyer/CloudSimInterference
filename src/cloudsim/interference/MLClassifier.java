@@ -77,6 +77,7 @@ public class MLClassifier {
 	}
 
 	public MLCResult getMLClass(Interference interf, int start, int finish) {
+		long startT = System.currentTimeMillis();
 		String hostname = "Unknown";
 
 		try {
@@ -172,6 +173,8 @@ public class MLClassifier {
 		MLCResult result = new MLCResult(gg);
 
 		re.stop();
+		long totalTime = System.currentTimeMillis() - startT;
+		Log.printLine(totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec");
 		return (result);
 
 	}

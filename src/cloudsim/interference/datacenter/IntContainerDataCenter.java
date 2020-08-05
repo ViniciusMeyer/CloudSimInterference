@@ -1100,7 +1100,7 @@ public class IntContainerDataCenter extends SimEntity {
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
 		
-		int interval = 600, start = 1, end = 0, total = 7200
+		int interval = 3600, start = 1, end = 0, total = 7200
 				, count = 1;
 
 		for (int second = 1; second <= total; second++) {
@@ -1206,7 +1206,7 @@ public class IntContainerDataCenter extends SimEntity {
 			IntContainerHost host = list.get(i);
 			// for each container/cloudlet (in given VM)
 			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
-				Log.printLine(i+ " " + x);
+				//Log.printLine(i+ " " + x);
 				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
 				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
 
