@@ -145,7 +145,8 @@ public class MLClassifier {
 		re.eval("teste <- setNames(teste, c(\"nets\",\"netp\",\"blk\",\"mbw\",\"llcmr\",\"llcocc\",\"cpu\"))");
 
 		int[] aux = new int[7];
-		for (int i = 1; i < interf.getSize(); i++) {
+
+		for (int i = start; i < finish; i++) {
 
 			for (int j = 0; j < 7; j++) {
 				aux[j] = interf.getIntByLine(i)[j];
@@ -160,8 +161,27 @@ public class MLClassifier {
 			// System.out.print("\n");
 
 		}
+		
+		
+		/*
+		for (int i = 1; i < interf.getSize(); i++) {
 
-		REXP hh = re.eval("abc <-svm_classifier_level(teste," + start + "," + finish + ")");
+			for (int j = 0; j < 7; j++) {
+				aux[j] = interf.getIntByLine(i)[j];
+				// System.out.print(a.getIntByLine(i)[j] + " ");
+
+			}
+			re.eval("aux <- data.frame(as.integer(" + aux[0] + "),as.integer(" + aux[1] + "),as.integer(" + aux[2]
+					+ "),as.integer(" + aux[3] + "),as.integer(" + aux[4] + "),as.integer(" + aux[5] + "),as.integer("
+					+ aux[6] + "))");
+			re.eval("aux <- setNames(aux, c(\"nets\",\"netp\",\"blk\",\"mbw\",\"llcmr\",\"llcocc\",\"cpu\"))");
+			re.eval("teste <- rbind(teste, aux)");
+			// System.out.print("\n");
+
+		}*/
+
+		//REXP hh = re.eval("abc <-svm_classifier_level(teste," + start + "," + finish + ")");
+		REXP hh = re.eval("abc <-svm_classifier_level(teste,1,nrow(teste))");
 		RVector ff = hh.asVector();
 
 		Map<String, String> gg = new HashMap<String, String>();

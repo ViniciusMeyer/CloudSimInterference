@@ -1100,7 +1100,7 @@ public class IntContainerDataCenter extends SimEntity {
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
 		
-		int interval = 3600, start = 1, end = 0, total = 7200
+		int interval = 600, start = 1, end = 0, total = 7200
 				, count = 1;
 
 		for (int second = 1; second <= total; second++) {
