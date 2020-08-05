@@ -74,7 +74,7 @@ public class xxIntExample {
 
 	static final int VM_TYPES = 1;
 	static final double[] VM_MIPS = new double[] { 100 };
-	static final int[] VM_PES = new int[] { 12 };
+	static final int[] VM_PES = new int[] { 48 };
 
 	/**
 	 * The available types of container along with the specs.
@@ -82,7 +82,7 @@ public class xxIntExample {
 
 	static final int CONTAINER_TYPES = 1;
 	static final int[] CONTAINER_MIPS = new int[] { 100 };
-	static final int[] CONTAINER_PES = new int[] { 3 };
+	static final int[] CONTAINER_PES = new int[] { 12 };
 
 	/**
 	 * The available types of hosts along with the specs.
@@ -90,20 +90,20 @@ public class xxIntExample {
 
 	static final int HOST_TYPES = 1;
 	static final int[] HOST_MIPS = new int[] { 100 };
-	static final int[] HOST_PES = new int[] { 12 };
+	static final int[] HOST_PES = new int[] { 48 };
 
 	/**
 	 *
 	 *
-	 * The population of hosts, containers, and VMs are specified. The containers
+	 * The population of hosts, containers, and VM																																																																																																																												s are specified. The containers
 	 * population is equal to the cloudlets population as each cloudlet is mapped to
 	 * each container. However, depending on the simualtion scenario the container's
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS =3;
-	static final int NUMBER_VMS = 3;
-	static final int NUMBER_CLOUDLETS = 12;
+	static final int NUMBER_HOSTS =6;
+	static final int NUMBER_VMS = 6;
+	static final int NUMBER_CLOUDLETS = 24;
 
 	/**
 	 * The cloudlet list.

@@ -1093,17 +1093,17 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	void InterferenceClassifier() {
-		String algorithm = "GA"; //FF HC SA GA
+		String algorithm = "FF"; //FF HC SA GA
 		long startT = System.currentTimeMillis();
 		boolean first = true;
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
 		
-		int interval = 60, start = 1, end = 0, total = 300, count = 1;
+		int interval = 600, start = 1, end = 0, total = 700, count = 1;
 
 		for (int second = 1; second <= total; second++) {
-
+			
 			if (second == total) {
 				// start = total - (total % interval);
 				end = total;
@@ -1162,7 +1162,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 		}
 
-		
+		Log.printLine("Algorithm: "+algorithm);
 		for (int i = 0; i < solutionList.size(); i++) {
 			//Log.printLine((i+1) + " - "+algorithm+"  " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
 			Log.printLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
@@ -1201,9 +1201,11 @@ public class IntContainerDataCenter extends SimEntity {
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		// for each host...
 		for (int i = 0; i < list.size(); i++) {
+			
 			IntContainerHost host = list.get(i);
 			// for each container/cloudlet (in given VM)
 			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+				Log.printLine(i+ " " + x);
 				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
 				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
 
