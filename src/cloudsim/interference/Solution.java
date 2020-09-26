@@ -14,6 +14,7 @@ public class Solution implements Cloneable {
 	private int start;
 	private int end;
 	private int nHosts;
+	private int nMig;
 
 	public void Solution() {
 
@@ -301,5 +302,20 @@ public class Solution implements Cloneable {
 	public HashMap getPlacement() {
 		
 		return this.placement;
+	}
+	
+	public int getNumberOfMigrations(Solution solutionAux) {
+		int cont =0;
+		
+		for(int i = 1; i<this.placement.size()+1;i++) {
+			HashMap cloudletAux = (HashMap) solutionAux.getPlacement().get(i);
+			HashMap cloudlet = (HashMap) this.placement.get(i);
+			
+			
+			if(!cloudlet.get("hostId").equals(cloudletAux.get("hostId"))) {
+				cont++;
+			}
+		}
+		return cont;
 	}
 }

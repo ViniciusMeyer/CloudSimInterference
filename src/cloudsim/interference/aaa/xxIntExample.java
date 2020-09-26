@@ -21,6 +21,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,8 +102,8 @@ public class xxIntExample {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS =6;
-	static final int NUMBER_VMS = 6;
+	static final int NUMBER_HOSTS = 12;
+	static final int NUMBER_VMS = 12;
 	static final int NUMBER_CLOUDLETS = 24;
 
 	/**
@@ -510,6 +511,7 @@ public class xxIntExample {
 		for (java.io.File aFiles1 : files1) {
 			java.io.File inputFolder = new java.io.File(aFiles1.toString());
 			java.io.File[] files = inputFolder.listFiles();
+			Arrays.sort(files); //adapt
 			for (int i = 0; i < files.length; ++i) {
 				if (createdCloudlets < numberOfCloudlets) {
 					IntContainerCloudlet cloudlet = null;

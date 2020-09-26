@@ -20,11 +20,15 @@ public class Placement {
 		}
 
 		if (algorithm.equals("SA")) {
-			return HillClimbing(solution);// SimulatedAnnealing(solution);
+			return SimulatedAnnealing(solution);
+		}
+
+		if (algorithm.equals("SAO")) {
+			return SimulatedAnnealingOptimized(solution);
 		}
 
 		if (algorithm.equals("GA")) {
-			return GeneticAlgorithm(solution);// SimulatedAnnealing(solution);
+			return GeneticAlgorithm(solution);
 		}
 
 		// since the first placement if done through FF algorithme, it returns itself.
@@ -47,7 +51,7 @@ public class Placement {
 		int epoch = 10;
 		int bestIndex = -1;
 		double bestCost = Double.MAX_VALUE;
-		double currentCost=0;
+		double currentCost = 0;
 
 		List<Solution> population = fillPopulation(solution);
 
@@ -68,9 +72,9 @@ public class Placement {
 
 		}
 
-		//population.get(bestIndex).print();
-		//Log.printLine("FIM "+ population.get(bestIndex).getTotalInterferenceCost());
-		//System.exit(0);
+		// population.get(bestIndex).print();
+		// Log.printLine("FIM "+ population.get(bestIndex).getTotalInterferenceCost());
+		// System.exit(0);
 		return population.get(bestIndex);
 	}
 
@@ -131,6 +135,49 @@ public class Placement {
 			if (currentSolution.getTotalInterferenceCost() < best.getTotalInterferenceCost()) {
 				best = currentSolution;
 				noChange = 0;
+			}
+			noChange++;
+			temperature *= 1 - coolingRate;
+		}
+		return best;
+
+	}
+
+	public static Solution SimulatedAnnealingOptimized(Solution solution) {
+		int temperature = 10000000;
+		double coolingRate = 0.003;
+		int numOp = 0;
+		int noChange = 0;
+		int maxNoChange = 10000;
+		int nCloudlets = solution.getSize();
+
+		Solution best = new Solution();
+		best = solution.copy();
+
+		Solution currentSolution = new Solution();
+		currentSolution = best.copy();
+
+		while (temperature > 0.000001 && noChange < maxNoChange) {
+			numOp++;
+			Solution newSolution = currentSolution.copy();
+
+			newSolution = randomSwap(newSolution); // generate a modified solution
+
+			double currentCost = currentSolution.getTotalInterferenceCost();
+			double newCost = newSolution.getTotalInterferenceCost();
+
+			if (acceptanceProbability(currentCost, newCost, temperature) > Math.random()) {
+				currentSolution = newSolution;
+			}
+
+			if (currentSolution.getTotalInterferenceCost() < best.getTotalInterferenceCost()) {
+				if (currentSolution.getNumberOfMigrations(best) < nCloudlets) {
+					nCloudlets=currentSolution.getNumberOfMigrations(best);
+					
+					best = currentSolution;
+					noChange = 0;
+					
+				}
 			}
 			noChange++;
 			temperature *= 1 - coolingRate;

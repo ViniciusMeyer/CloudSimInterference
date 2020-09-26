@@ -140,6 +140,7 @@ public class MLClassifier {
 		re.eval("source(\"" + project_folder + "cpd.R\")");
 		re.eval("source(\"" + project_folder + "kmeans.R\")");
 		re.eval("source(\"" + project_folder + "svm.R\")");
+		re.eval("source(\"" + project_folder + "avg.R\")");
 
 		re.eval("teste <- as.data.frame(matrix(0, ncol = 7))");
 		re.eval("teste <- setNames(teste, c(\"nets\",\"netp\",\"blk\",\"mbw\",\"llcmr\",\"llcocc\",\"cpu\"))");
@@ -163,12 +164,12 @@ public class MLClassifier {
 		}
 		
 		
-		/*
+/*		
 		for (int i = 1; i < interf.getSize(); i++) {
 
 			for (int j = 0; j < 7; j++) {
 				aux[j] = interf.getIntByLine(i)[j];
-				// System.out.print(a.getIntByLine(i)[j] + " ");
+				// System.out.print(a.getIo workontByLine(i)[j] + " ");
 
 			}
 			re.eval("aux <- data.frame(as.integer(" + aux[0] + "),as.integer(" + aux[1] + "),as.integer(" + aux[2]
@@ -178,10 +179,12 @@ public class MLClassifier {
 			re.eval("teste <- rbind(teste, aux)");
 			// System.out.print("\n");
 
-		}*/
-
-		//REXP hh = re.eval("abc <-svm_classifier_level(teste," + start + "," + finish + ")");
-		REXP hh = re.eval("abc <-svm_classifier_level(teste,1,nrow(teste))");
+		}
+*/
+	//	REXP hh = re.eval("abc <-svm_classifier_level(teste," + start + "," + finish + ")");
+		//REXP hh = re.eval("abc <-svm_classifier_level(teste,1,nrow(teste))");
+		REXP hh = re.eval("abc <-avg_classifier_level(teste,1,nrow(teste))");
+		
 		RVector ff = hh.asVector();
 
 		Map<String, String> gg = new HashMap<String, String>();

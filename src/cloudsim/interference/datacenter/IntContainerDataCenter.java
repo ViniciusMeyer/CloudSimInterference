@@ -1093,14 +1093,15 @@ public class IntContainerDataCenter extends SimEntity {
 	}
 
 	void InterferenceClassifier() {
-		String algorithm = "FF"; //FF HC SA GA
+		String algorithm = "FF"; //FF HC SA GA SAO
 		long startT = System.currentTimeMillis();
 		boolean first = true;
+		List<Integer> nMig= new ArrayList<Integer>();
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		Solution nextSolution = new Solution();
 		
-		int interval = 600, start = 1, end = 0, total = 7200
+		int interval = 7200, start = 1, end = 0, total = 7200
 				, count = 1;
 
 		for (int second = 1; second <= total; second++) {
@@ -1111,17 +1112,21 @@ public class IntContainerDataCenter extends SimEntity {
 
 				// if the interval is equal to total time
 				if (solutionList.size() < 1) {
-					Log.printLine("Intervalo1: "+ start +" - "+end);
+					Log.printLine(algorithm+" Intervalo1: "+ start +" - "+end);
 					solutionList.add(fillInitialSolution(start, end, interval, total));
 					
 				} else {
-					Log.printLine("Intervalo3: "+ start +" - "+end);
+					Log.printLine(algorithm+" Intervalo3: "+ start +" - "+end);
 					nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
 					solutionList.add(classifier(nextSolution, start, end, interval, total));
 
 				}
 				solutionList.get(solutionList.size() - 1).print();
 			
+				//find out how many migrations were done 
+				Log.printLine(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+				nMig.add(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+				
 				
 				
 				break;
@@ -1130,12 +1135,16 @@ public class IntContainerDataCenter extends SimEntity {
 			if (second % interval == 0 && !first) {
 				end += interval;
 
-				Log.printLine("Intervalo2: "+ start +" - "+end);
+				Log.printLine(algorithm+" Intervalo2: "+ start +" - "+end);
 				nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
 
 				solutionList.add(classifier(nextSolution, start, end, interval, total));
 				
 				solutionList.get(solutionList.size() - 1).print();
+				
+				//find out how many migrations were done
+				Log.printLine(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+				nMig.add(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
 				
 				start += interval;
 				count++;
@@ -1144,13 +1153,12 @@ public class IntContainerDataCenter extends SimEntity {
 			if (second % interval == 0 && first) {
 				end += interval;
 				
-				Log.printLine("Intervalo1: "+ start +" - "+end);
+				Log.printLine(algorithm+" Intervalo1: "+ start +" - "+end);
 				solutionList.add(fillInitialSolution(start, end, interval, total));
 
 				solutionList.get(solutionList.size() - 1).print();
 			
-				
-				
+								
 				start += interval;
 				count++;
 				first = false;
@@ -1166,7 +1174,14 @@ public class IntContainerDataCenter extends SimEntity {
 		Log.printLine("Algorithm: "+algorithm);
 		for (int i = 0; i < solutionList.size(); i++) {
 			//Log.printLine((i+1) + " - "+algorithm+"  " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
-			Log.printLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			Log.printConcatLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			
+		}
+		
+		for (int i = 0; i < nMig.size(); i++) {
+			//Log.printLine((i+1) + " - "+algorithm+"  " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			Log.printConcatLine(nMig.get(i));
+			
 		}
 
 
