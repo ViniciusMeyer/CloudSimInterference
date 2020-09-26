@@ -1091,7 +1091,7 @@ public class IntContainerDataCenter extends SimEntity {
 			setLastProcessTime(CloudSim.clock());
 		}
 	}
-
+//teste
 	void InterferenceClassifier() {
 		String algorithm = "FF"; //FF HC SA GA SAO
 		long startT = System.currentTimeMillis();
