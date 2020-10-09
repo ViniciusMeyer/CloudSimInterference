@@ -96,7 +96,7 @@ public class MLClassifier {
 			re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
 		}
 		if (hostname.equals("DESKTOP-OTD5GFM")) {
-			project_folder = "C:/Users/vinim/eclipse-workspace/IntegrationRandJava/R/"; //windows
+			project_folder = "C:/Users/vinim/git/CloudSimInterference/R/"; //windows
 			re.eval(".libPaths('c:/users/vinim/Documents/R/win-library/3.5')"); //windows	
 		}
 		if (hostname.equals("pantana01")) {
