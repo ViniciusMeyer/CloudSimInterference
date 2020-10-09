@@ -189,6 +189,8 @@ public class MLClassifier {
 
 		Map<String, String> gg = new HashMap<String, String>();
 
+		System.out.println(ff.at(2).toString());
+		
 		for (int i = 0; i < ff.at(1).asStringArray().length; i++) {
 			gg.put(ff.at(1).asStringArray()[i], ff.at(2).asStringArray()[i]);
 		}
