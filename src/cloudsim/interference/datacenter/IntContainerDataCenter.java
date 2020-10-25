@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.core.SimEvent;
 import cloudsim.interference.IntContainer;
 import cloudsim.interference.IntContainerAllocationPolicy;
 import cloudsim.interference.IntContainerHost;
+import cloudsim.interference.Interference;
 import cloudsim.interference.MLCResult;
 import cloudsim.interference.MLClassifier;
 import cloudsim.interference.Placement;
@@ -1091,99 +1092,143 @@ public class IntContainerDataCenter extends SimEntity {
 			setLastProcessTime(CloudSim.clock());
 		}
 	}
+
 //teste
 	void InterferenceClassifier() {
-		String algorithm = "SAO"; //FF HC SA GA SAO
+		double migvalue = 10;
+		String algorithm = "SAO"; // FF HC SA GA SAO
 		long startT = System.currentTimeMillis();
 		boolean first = true;
-		List<Integer> nMig= new ArrayList<Integer>();
+		List<Integer> nMig = new ArrayList<Integer>();
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
-		Solution nextSolution = new Solution();
+		int interval = 600, start = 1, end = 0, total = 7200, count = 1;
 		
-		int interval = 600, start = 1, end = 0, total = 7200
-				, count = 1;
+		Solution nextSolution = new Solution();
+		// find the best intervals to make placement decisions.
+		// first, we run a PCA over every trace
+
+		// transforming cloudletList into CloudletTraces list
+		List<Interference> cloudletTraces = new ArrayList<>(); // list with all container information
+		List<Integer> intervals = new ArrayList<Integer>();
+		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
+		// for each host...
+		for (int i = 0; i < list.size(); i++) {
+			long startT1 = System.currentTimeMillis();
+			IntContainerHost host = list.get(i);
+			// for each container/cloudlet (in given VM)
+			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
+				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
+				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
+				cloudletTraces.add(cloudlet.getInterferenceMetrics());
+			}
+		}
+		
+		// second, send this information to R to find the best instervals with OnlineCPModel
+		// sending cloudletTraces list to R function
+		intervals = MLC.getIntervalsOCPM(cloudletTraces, start, 120);
+
+		//System.out.println("fim");
+		//System.exit(0);
+		// third, ###############################################
+
+	
+
+		
 
 		for (int second = 1; second <= total; second++) {
-			
+
 			if (second == total) {
 				// start = total - (total % interval);
 				end = total;
 
 				// if the interval is equal to total time
 				if (solutionList.size() < 1) {
-					Log.printLine(algorithm+" Intervalo1: "+ start +" - "+end);
+					Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
 					solutionList.add(fillInitialSolution(start, end, interval, total));
-					
+
 				} else {
-					Log.printLine(algorithm+" Intervalo3: "+ start +" - "+end);
+					Log.printLine(algorithm + " Intervalo3: " + start + " - " + end);
 					nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
 					solutionList.add(classifier(nextSolution, start, end, interval, total));
 
 				}
 				solutionList.get(solutionList.size() - 1).print();
-			
-				//find out how many migrations were done 
-				Log.printLine(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-				nMig.add(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-				
-				
-				
+
+				// find out how many migrations were done
+				Log.printLine(solutionList.get(solutionList.size() - 1)
+						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+				nMig.add(solutionList.get(solutionList.size() - 1)
+						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+
 				break;
 			}
-			
+
 			if (second % interval == 0 && !first) {
 				end += interval;
 
-				Log.printLine(algorithm+" Intervalo2: "+ start +" - "+end);
+				Log.printLine(algorithm + " Intervalo2: " + start + " - " + end);
 				nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
 
 				solutionList.add(classifier(nextSolution, start, end, interval, total));
-				
+
 				solutionList.get(solutionList.size() - 1).print();
-				
-				//find out how many migrations were done
-				Log.printLine(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-				nMig.add(solutionList.get(solutionList.size() - 1).getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-				
+
+				// find out how many migrations were done
+				Log.printLine(solutionList.get(solutionList.size() - 1)
+						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+				nMig.add(solutionList.get(solutionList.size() - 1)
+						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+
 				start += interval;
 				count++;
 			}
 
 			if (second % interval == 0 && first) {
 				end += interval;
-				
-				Log.printLine(algorithm+" Intervalo1: "+ start +" - "+end);
+
+				Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
 				solutionList.add(fillInitialSolution(start, end, interval, total));
 
 				solutionList.get(solutionList.size() - 1).print();
-			
-								
+
 				start += interval;
 				count++;
 				first = false;
 
 			}
 
-			
-			
-		
-
 		}
 
-		Log.printLine("Algorithm: "+algorithm);
+		Log.printLine("Algorithm: " + algorithm);
 		for (int i = 0; i < solutionList.size(); i++) {
-			//Log.printLine((i+1) + " - "+algorithm+"  " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			// Log.printLine((i+1) + " - "+algorithm+" " +
+			// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
 			Log.printConcatLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
-			
-		}
-		
-		for (int i = 0; i < nMig.size(); i++) {
-			//Log.printLine((i+1) + " - "+algorithm+"  " + util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
-			Log.printConcatLine(nMig.get(i));
-			
+
 		}
 
+		Log.printLine("\nMigrations:\n");
+		for (int i = 0; i < nMig.size(); i++) {
+			// Log.printLine((i+1) + " - "+algorithm+" " +
+			// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			Log.printConcatLine(nMig.get(i));
+
+		}
+
+		Log.printLine("\ninterf with mig :\n");
+		Log.printConcatLine(util.printDouble(solutionList.get(0).getTotalInterferenceCost()));
+		for (int i = 1; i < solutionList.size(); i++) {
+			// Log.printLine((i+1) + " - "+algorithm+" " +
+			// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			Log.printConcatLine(
+					util.printDouble(solutionList.get(i).getTotalInterferenceCost() + (nMig.get(i - 1) * migvalue))); // interference
+																														// index
+																														// per
+																														// migration
+																														// incidence
+
+		}
 
 		long totalTime = System.currentTimeMillis() - startT;
 		Log.printLine("End of Simulation ... (" + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60 + " sec)");
@@ -1200,7 +1245,7 @@ public class IntContainerDataCenter extends SimEntity {
 			IntContainerCloudlet cloudlet = cloudletList.get(i);
 
 			MLCR = MLC.getMLClass(cloudlet.getInterferenceMetrics(), start, end);
-			
+
 			solution.updateCloudletInterferenceCost((i + 1), MLCR.getCloudletCost());
 
 		}
@@ -1217,11 +1262,11 @@ public class IntContainerDataCenter extends SimEntity {
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		// for each host...
 		for (int i = 0; i < list.size(); i++) {
-			
+
 			IntContainerHost host = list.get(i);
 			// for each container/cloudlet (in given VM)
 			for (int x = 0; x < host.getVmList().get(0).getContainerList().size(); x++) {
-				//Log.printLine(i+ " " + x);
+				// Log.printLine(i+ " " + x);
 				IntContainer container = host.getVmList().get(0).getContainerList().get(x);
 				IntContainerCloudlet cloudlet = cloudletList.get(container.getId() - 1);
 
