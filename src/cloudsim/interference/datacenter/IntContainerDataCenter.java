@@ -1126,10 +1126,14 @@ public class IntContainerDataCenter extends SimEntity {
 		
 		// second, send this information to R to find the best instervals with OnlineCPModel
 		// sending cloudletTraces list to R function
-		intervals = MLC.getIntervalsOCPM(cloudletTraces, start, 120);
+		intervals = MLC.getIntervalsOCPM(cloudletTraces, start, total);
 
-		//System.out.println("fim");
-		//System.exit(0);
+		for(int i=0; i < intervals.size() ; i++) {
+			System.out.println(intervals.get(i));
+		}
+		
+		System.out.println("fim");
+		System.exit(0);
 		// third, ###############################################
 
 	

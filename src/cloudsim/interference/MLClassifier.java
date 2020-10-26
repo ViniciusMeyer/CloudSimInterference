@@ -64,10 +64,10 @@ public class MLClassifier {
 		}
 	}
 
-	Logger log = Logger.getLogger("test"); // with log
-	Rengine re = new Rengine(new String[] { "--no-save" }, false, new LoggingConsole(log)); // with log
+	//Logger log = Logger.getLogger("test"); // with log
+	//Rengine re = new Rengine(new String[] { "--no-save" }, false, new LoggingConsole(log)); // with log
 
-	// Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
+	 Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
 	String project_folder = null;
 
 	private int firstTime;
@@ -246,8 +246,12 @@ public class MLClassifier {
 		Log.printLine("[R] total time to read ctraces: " + totalTime / 1000 / 60 + " min - " + totalTime / 1000 % 60
 				+ " sec");
 
+		long startT2 = System.currentTimeMillis();
 		REXP rReturn = re.eval("intervals <-cTracesPCA(cTraces," + start + "," + finish + ")");
+		long totalTime2 = System.currentTimeMillis() - startT2;
+		Log.printLine("[R] pca and ocp (" + totalTime2 / 1000 / 60 + " min - " + totalTime2 / 1000 % 60 + " sec)");
 		RVector rVector = rReturn.asVector();
+		
 
 		// information from R
 		// System.out.println(rVector);

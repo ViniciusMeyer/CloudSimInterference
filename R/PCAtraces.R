@@ -25,13 +25,13 @@ cTracesPCA<-function(dataset,start,end){
     for(i in output$changepoint_lists$maxCPs[[1]][2]:which.max(output$changepoint_lists$maxCPs[[1]])){
     
     #print(output$changepoint_lists$maxCPs[[1]][i])
-    if((output$changepoint_lists$maxCPs[[1]][i])-current>20){
+    if((output$changepoint_lists$maxCPs[[1]][i])-current>300){
       current<-output$changepoint_lists$maxCPs[[1]][i]
       result<-c(result,current)
       #print(current)
       
     }
   } 
-print(result)
+#print(result)
   return(result)
 }
