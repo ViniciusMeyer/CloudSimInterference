@@ -247,6 +247,8 @@ public class MLClassifier {
 				+ " sec");
 
 		long startT2 = System.currentTimeMillis();
+		
+		Log.printLine("[R] running pca and ocp ... ");
 		REXP rReturn = re.eval("intervals <-cTracesPCA(cTraces," + start + "," + finish + ")");
 		long totalTime2 = System.currentTimeMillis() - startT2;
 		Log.printLine("[R] pca and ocp (" + totalTime2 / 1000 / 60 + " min - " + totalTime2 / 1000 % 60 + " sec)");

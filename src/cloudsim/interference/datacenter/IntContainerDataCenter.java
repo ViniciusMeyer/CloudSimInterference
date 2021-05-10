@@ -1097,20 +1097,21 @@ public class IntContainerDataCenter extends SimEntity {
 	void InterferenceClassifier() {
 		double migvalue = 10;
 		String algorithm = "SAO"; // FF HC SA GA SAO
+		// SA or SAO start PCA_OCP automatically
 		long startT = System.currentTimeMillis();
 		boolean first = true;
 		List<Integer> nMig = new ArrayList<Integer>();
 
 		List<Solution> solutionList1 = new ArrayList<Solution>(); // adapt
 		int interval = 600, start = 1, end = 0, total = 7200, count = 1;
-		
+
 		Solution nextSolution = new Solution();
 		// find the best intervals to make placement decisions.
 		// first, we run a PCA over every trace
 
 		// transforming cloudletList into CloudletTraces list
 		List<Interference> cloudletTraces = new ArrayList<>(); // list with all container information
-		List<Integer> intervals = new ArrayList<Integer>();
+		List<Integer> intervals = new ArrayList<Integer>(); // list with OCP intervals
 		List<? extends IntContainerHost> list = getVmAllocationPolicy().getContainerHostList();
 		// for each host...
 		for (int i = 0; i < list.size(); i++) {
@@ -1123,24 +1124,63 @@ public class IntContainerDataCenter extends SimEntity {
 				cloudletTraces.add(cloudlet.getInterferenceMetrics());
 			}
 		}
-		
-		// second, send this information to R to find the best instervals with OnlineCPModel
-		// sending cloudletTraces list to R function
-		intervals = MLC.getIntervalsOCPM(cloudletTraces, start, total);
 
-		for(int i=0; i < intervals.size() ; i++) {
-			System.out.println(intervals.get(i));
+		// if SA or SAO is defined
+		if (algorithm.equals("SA") || algorithm.equals("SAO")) {
+			// second, send this information to R to find the best instervals with
+			// OnlineCPModel
+			
+			// sending cloudletTraces list to R function
+			//intervals = MLC.getIntervalsOCPM(cloudletTraces, start, total);
+			
+			//manual
+			intervals.add(1);
+			intervals.add(311);
+			intervals.add(622);
+			intervals.add(940);
+			intervals.add(1267);
+			intervals.add(1575);
+			intervals.add(1878);
+			intervals.add(2183);
+			intervals.add(2491);
+			intervals.add(2812);
+			intervals.add(3130);
+			intervals.add(3448);
+			intervals.add(3758);
+			intervals.add(4070);
+			intervals.add(4371);
+			intervals.add(4678);
+			intervals.add(4982);
+			intervals.add(5287);
+			intervals.add(5591);
+			intervals.add(5902);
+			intervals.add(6217);
+			intervals.add(6534);
+			intervals.add(6850);
+			intervals.add(7164);
+			// print found intervals
+			// for (int i = 0; i < intervals.size(); i++) {
+			// System.out.println(intervals.get(i));
+			// }
 		}
-		
-		System.out.println("fim");
-		System.exit(0);
+
+		// System.out.println("fim");
+		// System.exit(0);
 		// third, ###############################################
 
-	
-
-		
+		int nextInterval = 1;
 
 		for (int second = 1; second <= total; second++) {
+
+			// if SA or SAO is defined
+			if (algorithm.equals("SA") || algorithm.equals("SAO")) {
+				if (second == intervals.get(nextInterval)) {
+					interval = intervals.get(nextInterval);
+					// Log.print("interval ..."+interval );
+
+				}
+
+			}
 
 			if (second == total) {
 				// start = total - (total % interval);
