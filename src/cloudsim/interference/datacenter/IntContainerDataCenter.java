@@ -1093,10 +1093,10 @@ public class IntContainerDataCenter extends SimEntity {
 		}
 	}
 
-//teste
 	void InterferenceClassifier() {
-		double migvalue = 10;
-		String algorithm = "SAO"; // FF HC SA GA SAO
+		double migvalue = 10; // oversized value
+		String approach = "CIAPA"; // "IASA", "EVEN", "CIAPA"
+		String algorithm; // RR HC SA GA SAO
 		// SA or SAO start PCA_OCP automatically
 		long startT = System.currentTimeMillis();
 		boolean first = true;
@@ -1125,15 +1125,16 @@ public class IntContainerDataCenter extends SimEntity {
 			}
 		}
 
-		// if SA or SAO is defined
-		if (algorithm.equals("SA") || algorithm.equals("SAO")) {
+		// IASA Scheduler
+		if (approach.equals("IASA")) {
+			algorithm = "SAO";
 			// second, send this information to R to find the best instervals with
 			// OnlineCPModel
-			
+
 			// sending cloudletTraces list to R function
-			//intervals = MLC.getIntervalsOCPM(cloudletTraces, start, total);
-			
-			//manual
+			// intervals = MLC.getIntervalsOCPM(cloudletTraces, start, total);
+
+			// manual
 			intervals.add(1);
 			intervals.add(311);
 			intervals.add(622);
@@ -1162,116 +1163,197 @@ public class IntContainerDataCenter extends SimEntity {
 			// for (int i = 0; i < intervals.size(); i++) {
 			// System.out.println(intervals.get(i));
 			// }
-		}
 
-		// System.out.println("fim");
-		// System.exit(0);
-		// third, ###############################################
+			// System.out.println("fim");
+			// System.exit(0);
+			// third, ###############################################
 
-		int nextInterval = 1;
+			int nextInterval = 1;
 
-		for (int second = 1; second <= total; second++) {
+			for (int second = 1; second <= total; second++) {
 
-			// if SA or SAO is defined
-			if (algorithm.equals("SA") || algorithm.equals("SAO")) {
 				if (second == intervals.get(nextInterval)) {
 					interval = intervals.get(nextInterval);
 					// Log.print("interval ..."+interval );
 
 				}
 
-			}
+				// last interval
+				if (second == total) {
+					// start = total - (total % interval);
+					end = total;
 
-			if (second == total) {
-				// start = total - (total % interval);
-				end = total;
+					// if the interval is equal to total time
+					if (solutionList.size() < 1) {
+						Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
+						solutionList.add(fillInitialSolution(start, end, interval, total));
 
-				// if the interval is equal to total time
-				if (solutionList.size() < 1) {
+					} else {
+						Log.printLine(algorithm + " Intervalo3: " + start + " - " + end);
+						nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
+						solutionList.add(classifier(nextSolution, start, end, interval, total));
+
+					}
+					solutionList.get(solutionList.size() - 1).print();
+
+					// find out how many migrations were done
+					Log.printLine(solutionList.get(solutionList.size() - 1)
+							.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+					nMig.add(solutionList.get(solutionList.size() - 1)
+							.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+
+					break;
+				}
+
+				// middle intervals
+				if (second % interval == 0 && !first) {
+					end += interval;
+
+					Log.printLine(algorithm + " Intervalo2: " + start + " - " + end);
+					nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
+
+					solutionList.add(classifier(nextSolution, start, end, interval, total));
+
+					solutionList.get(solutionList.size() - 1).print();
+
+					// find out how many migrations were done
+					Log.printLine(solutionList.get(solutionList.size() - 1)
+							.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+					nMig.add(solutionList.get(solutionList.size() - 1)
+							.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+
+					start += interval;
+					count++;
+				}
+
+				// first interval
+				if (second % interval == 0 && first) {
+					end += interval;
+
 					Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
 					solutionList.add(fillInitialSolution(start, end, interval, total));
 
-				} else {
-					Log.printLine(algorithm + " Intervalo3: " + start + " - " + end);
-					nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
-					solutionList.add(classifier(nextSolution, start, end, interval, total));
+					solutionList.get(solutionList.size() - 1).print();
+
+					start += interval;
+					count++;
+					first = false;
 
 				}
-				solutionList.get(solutionList.size() - 1).print();
-
-				// find out how many migrations were done
-				Log.printLine(solutionList.get(solutionList.size() - 1)
-						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-				nMig.add(solutionList.get(solutionList.size() - 1)
-						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-
-				break;
-			}
-
-			if (second % interval == 0 && !first) {
-				end += interval;
-
-				Log.printLine(algorithm + " Intervalo2: " + start + " - " + end);
-				nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
-
-				solutionList.add(classifier(nextSolution, start, end, interval, total));
-
-				solutionList.get(solutionList.size() - 1).print();
-
-				// find out how many migrations were done
-				Log.printLine(solutionList.get(solutionList.size() - 1)
-						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-				nMig.add(solutionList.get(solutionList.size() - 1)
-						.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
-
-				start += interval;
-				count++;
-			}
-
-			if (second % interval == 0 && first) {
-				end += interval;
-
-				Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
-				solutionList.add(fillInitialSolution(start, end, interval, total));
-
-				solutionList.get(solutionList.size() - 1).print();
-
-				start += interval;
-				count++;
-				first = false;
 
 			}
 
-		}
+			Log.printLine("Algorithm: " + algorithm);
+			for (int i = 0; i < solutionList.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
 
-		Log.printLine("Algorithm: " + algorithm);
-		for (int i = 0; i < solutionList.size(); i++) {
-			// Log.printLine((i+1) + " - "+algorithm+" " +
-			// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
-			Log.printConcatLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+			}
 
-		}
+			Log.printLine("\nMigrations:\n");
+			for (int i = 0; i < nMig.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(nMig.get(i));
 
-		Log.printLine("\nMigrations:\n");
-		for (int i = 0; i < nMig.size(); i++) {
-			// Log.printLine((i+1) + " - "+algorithm+" " +
-			// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
-			Log.printConcatLine(nMig.get(i));
+			}
 
-		}
-
-		Log.printLine("\ninterf with mig :\n");
-		Log.printConcatLine(util.printDouble(solutionList.get(0).getTotalInterferenceCost()));
-		for (int i = 1; i < solutionList.size(); i++) {
-			// Log.printLine((i+1) + " - "+algorithm+" " +
-			// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
-			Log.printConcatLine(
-					util.printDouble(solutionList.get(i).getTotalInterferenceCost() + (nMig.get(i - 1) * migvalue))); // interference
+			Log.printLine("\ninterf with mig :\n");
+			Log.printConcatLine(util.printDouble(solutionList.get(0).getTotalInterferenceCost()));
+			for (int i = 1; i < solutionList.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(util
+						.printDouble(solutionList.get(i).getTotalInterferenceCost() + (nMig.get(i - 1) * migvalue))); // interference
 																														// index
-																														// per
-																														// migration
-																														// incidence
+			}
+		}
 
+		// Even Scheduler
+		if (approach.equals("EVEN")) {
+			algorithm = "RR";
+			// there are no intervals set, the entire execution is done through RR algorithm
+			start = 1;
+			end = total;
+
+			Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
+			solutionList.add(fillInitialSolution(start, end, interval, total));
+
+			solutionList.get(solutionList.size() - 1).print();
+
+			Log.printLine("Algorithm: " + algorithm);
+			for (int i = 0; i < solutionList.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+
+			}
+
+		}
+
+		// CIAPA Scheduler
+		if (approach.equals("CIAPA")) {
+			algorithm = "SA";
+			// there are only one interval to analyze data, after that the placement does
+			// not change
+			// this solution uses SimulatedAnnealing algorithm
+
+			// analysis interval (first)
+			interval = 600;
+			end += interval;
+
+			Log.printLine(algorithm + " Intervalo1: " + start + " - " + end);
+			solutionList.add(fillInitialSolution(start, end, interval, total));
+
+			solutionList.get(solutionList.size() - 1).print();
+
+			start += interval;
+
+			// Next interval (until the end)
+			end = total;
+
+			Log.printLine(algorithm + " Intervalo3: " + start + " - " + end);
+			nextSolution = Placement.run(solutionList.get(solutionList.size() - 1), algorithm).copy();
+			solutionList.add(classifier(nextSolution, start, end, interval, total));
+
+			solutionList.get(solutionList.size() - 1).print();
+
+			// find out how many migrations were done
+			Log.printLine(solutionList.get(solutionList.size() - 1)
+					.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+			nMig.add(solutionList.get(solutionList.size() - 1)
+					.getNumberOfMigrations(solutionList.get(solutionList.size() - 2)));
+
+			
+			
+			
+			Log.printLine("Algorithm: " + algorithm);
+			for (int i = 0; i < solutionList.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+
+			}
+
+			Log.printLine("\nMigrations:\n");
+			for (int i = 0; i < nMig.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(nMig.get(i));
+
+			}
+
+			Log.printLine("\ninterf with mig :\n");
+			Log.printConcatLine(util.printDouble(solutionList.get(0).getTotalInterferenceCost()));
+			for (int i = 1; i < solutionList.size(); i++) {
+				// Log.printLine((i+1) + " - "+algorithm+" " +
+				// util.printDouble(solutionList.get(i).getTotalInterferenceCost()));
+				Log.printConcatLine(util
+						.printDouble(solutionList.get(i).getTotalInterferenceCost() + (nMig.get(i - 1) * migvalue))); // interference
+																														// index
+			}
+			
 		}
 
 		long totalTime = System.currentTimeMillis() - startT;

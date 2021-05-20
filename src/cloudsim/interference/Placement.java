@@ -31,9 +31,9 @@ public class Placement {
 			return GeneticAlgorithm(solution);
 		}
 
-		// since the first placement if done through FF algorithme, it returns itself.
-		if (algorithm.equals("FF")) {
-			return solution; // FirtsFit(solution)
+		// since the first placement is done through RR algorithm, it returns itself.
+		if (algorithm.equals("RR")) {
+			return solution; // RoundRobin(solution)
 		}
 
 		return new Solution();

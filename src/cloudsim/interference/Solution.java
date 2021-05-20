@@ -73,6 +73,7 @@ public class Solution implements Cloneable {
 			//Log.printLine("AQUI - host: "+i+ " cost: "+ getCostFromHost(i));
 		}
 		//Log.printLine(totalCost);
+		//Log.printLine("end: "+ end+" -  start: "+start+" ttime: "+ttime);
 		return (totalCost * (end - start)) / ttime;
 
 	}
@@ -86,6 +87,8 @@ public class Solution implements Cloneable {
 			// if this cloudlet/container is the only one ruuning inside a given Host,
 			// there will be no interference incidence, hence its interference cost is 1
 			if ((double) cloudlet.get("hostId") == host && !runninginOnlyOneHost(i)) {
+				
+				//hostCost *= getCostFromCloudlet(i) ;
 				hostCost *= getCostFromCloudlet(i) / (getCloudRes(i) / getHostRes(i));
 				// Log.printConcatLine(getCostFromCloudlet(i), " - ",getCloudRes(i), " -
 				// ",getHostRes(i) );
