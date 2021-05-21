@@ -95,8 +95,10 @@ public class MLClassifier {
 			re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
 		}
 		if (hostname.equals("DESKTOP-OTD5GFM")) {
+			Log.printLine("BBBBBBB");
 			project_folder = "C:/Users/vinim/git/CloudSimInterference/R/"; // windows
 			re.eval(".libPaths('c:/users/vinim/Documents/R/win-library/3.5')"); // windows
+			Log.printLine("AAAAAA");
 		}
 		if (hostname.equals("pantana01")) {
 			project_folder = "/home/student/vinicius/CloudSimInterference/R/"; // pantanal
