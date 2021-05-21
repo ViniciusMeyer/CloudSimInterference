@@ -64,10 +64,10 @@ public class MLClassifier {
 		}
 	}
 
-	//Logger log = Logger.getLogger("test"); // with log
-	//Rengine re = new Rengine(new String[] { "--no-save" }, false, new LoggingConsole(log)); // with log
+	Logger log = Logger.getLogger("test"); // with log
+	Rengine re = new Rengine(new String[] { "--no-save" }, false, new LoggingConsole(log)); // with log
 
-	 Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
+	// Rengine re = new Rengine(new String[] { "--no-save" }, false, null);
 	String project_folder = null;
 
 	private int firstTime;

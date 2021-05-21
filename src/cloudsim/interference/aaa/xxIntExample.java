@@ -102,9 +102,9 @@ public class xxIntExample {
 	 * population can also be different from cloudlet's population.
 	 */
 
-	static final int NUMBER_HOSTS = 12;
-	static final int NUMBER_VMS = 12;
-	static final int NUMBER_CLOUDLETS = 24;
+	static final int NUMBER_HOSTS = 96; //initial creation (need to fix)
+	static final int NUMBER_VMS = 96;
+	static final int NUMBER_CLOUDLETS = 192;
 
 	/**
 	 * The cloudlet list.

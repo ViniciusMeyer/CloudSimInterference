@@ -1095,7 +1095,7 @@ public class IntContainerDataCenter extends SimEntity {
 
 	void InterferenceClassifier() {
 		double migvalue = 10; // oversized value
-		String approach = "CIAPA"; // "IASA", "EVEN", "CIAPA"
+		String approach = "IASA"; // "IASA", "EVEN", "CIAPA"
 		String algorithm; // RR HC SA GA SAO
 		// SA or SAO start PCA_OCP automatically
 		long startT = System.currentTimeMillis();

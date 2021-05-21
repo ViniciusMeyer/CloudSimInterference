@@ -10,6 +10,7 @@
 #install.packages("caret")
 #install.packages("stringr")
 #install.packages("dplyr")
+#install.packages("rJava", dependencies=TRUE)
 
 
 #rm(list=ls())
