@@ -3,9 +3,9 @@
 CloudSimInterference is an extension of famous cloud computing simulator namely the CloudSim Toolkit, introduceced in [**CloudSim: a toolkit for modeling and simulation of cloud
 computing environments and evaluation of resource provisioning algorithms**](http://www.buyya.com/papers/CloudSim2010.pdf). After that, many CloudSim extensions have been developed, and the one we have extended here is called [ContainerCloudSim](https://github.com/decheng-zhang/cloudsim-container), introduced in [**ContainerCloudSim: An environment for modeling and simulation of containers in cloud data centers**](https://onlinelibrary.wiley.com/doi/10.1002/spe.2422).
 
-CloudSimInterference is an outcome from an extensive research process, producing the paper **IADA: A Dynamic Interference-Aware Cloud Scheduling Architecture for Latency-sensitive Workloads**, submitted to **Future Generations Computer Systems (FGCS)**. At this moment, the current paper is under-review.
+CloudSimInterference is an outcome from an extensive research process, producing the paper **IADA: A Dynamic Interference-Aware Cloud Scheduling Architecture for Latency-sensitive Workloads**, submitted to [**Future Generations Computer Systems (FGCS)**](https://www.sciencedirect.com/journal/future-generation-computer-systems). At this moment, the current paper is under-review.
 
-https://www.sciencedirect.com/journal/future-generation-computer-systems
+
 
 Here, you will find all used codes and results from the submitted paper.</br>
 
