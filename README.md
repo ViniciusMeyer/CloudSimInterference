@@ -15,7 +15,7 @@ Polytechnic School, Pontifical Catholic University of Rio Grande do Sul (PUCRS)-
 # Instalation
 
 Requirements:
-- Java JDK 1.8 or above.
+- Java JDK 1.7 or above.
 - R-base 3.6 or above.
 
 Java libraries are included in this repository. However, some R packages need to be installed, such as:
