@@ -26,7 +26,8 @@ Java libraries are included in this repository. However, some R packages need to
 - rJava
 
 This can be easly accomplished through the following R command:
-
+```console
 install.packages(c("e1071", "caret", "stringr", "dplyr", "fossil", "ipred", "ocp", "rJava"))
+```
 
 If you have any question please do not exitate to contact us through vinicius.meyer@edu.pucrs.br</br>
