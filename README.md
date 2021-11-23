@@ -1,6 +1,6 @@
 # CloudSimInterference
 
-This tool is an outcome from an extensive research process, producing the paper **IADA: A Dynamic Interference-Aware Cloud Scheduling Architecture for Latency-sensitive Workloads**, submitted to **Future Generations Computer Systems (FGCS)**. At this moment, the current paper is under-review status.
+This tool is an outcome from an extensive research process, producing the paper **IADA: A Dynamic Interference-Aware Cloud Scheduling Architecture for Latency-sensitive Workloads**, submitted to **Future Generations Computer Systems (FGCS)**. At this moment, the current paper is under-review.
 
 https://www.sciencedirect.com/journal/future-generation-computer-systems
 
