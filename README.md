@@ -15,7 +15,7 @@ Requirements:
 Java JDK 1.8 or above.
 R-base 3.6 or above.
 
-Java libraries are included in this repository. However, some R packages need to be installed:
+Java libraries are included in this repository. However, some R packages need to be installed, such as:
 - e1071
 - caret
 - stringr
@@ -25,7 +25,7 @@ Java libraries are included in this repository. However, some R packages need to
 - ocp
 - rJava
 
-This can be easly accomplished through the R command:
+This can be easly accomplished through the following R command:
 
 install.packages(c("e1071", "caret", "stringr", "dplyr", "fossil", "ipred", "ocp", "rJava"))
 
