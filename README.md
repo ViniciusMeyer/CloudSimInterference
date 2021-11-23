@@ -30,4 +30,4 @@ This can be easly accomplished through the following R command:
 install.packages(c("e1071", "caret", "stringr", "dplyr", "fossil", "ipred", "ocp", "rJava"))
 ```
 
-If you have any question please do not exitate to contact us through vinicius.meyer@edu.pucrs.br</br>
+If you have any question, please do not exitate to contact us through vinicius.meyer@edu.pucrs.br</br>
