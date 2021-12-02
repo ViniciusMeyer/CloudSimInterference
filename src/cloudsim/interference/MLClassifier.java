@@ -95,10 +95,8 @@ public class MLClassifier {
 			re.eval(".libPaths('/home/vinicius/R/x86_64-pc-linux-gnu-library/3.6')"); // ubuntu
 		}
 		if (hostname.equals("DESKTOP-OTD5GFM")) {
-			Log.printLine("BBBBBBB");
 			project_folder = "C:/Users/vinim/git/CloudSimInterference/R/"; // windows
 			re.eval(".libPaths('c:/users/vinim/Documents/R/win-library/3.5')"); // windows
-			Log.printLine("AAAAAA");
 		}
 		if (hostname.equals("pantana01")) {
 			project_folder = "/home/student/vinicius/CloudSimInterference/R/"; // pantanal
@@ -139,7 +137,6 @@ public class MLClassifier {
 		re.eval("source(\"" + project_folder + "cpd.R\")");
 		re.eval("source(\"" + project_folder + "kmeans.R\")");
 		re.eval("source(\"" + project_folder + "svm.R\")");
-		re.eval("source(\"" + project_folder + "avg.R\")");
 
 		re.eval("teste <- as.data.frame(matrix(0, ncol = 7))");
 		re.eval("teste <- setNames(teste, c(\"nets\",\"netp\",\"blk\",\"mbw\",\"llcmr\",\"llcocc\",\"cpu\"))");
@@ -162,25 +159,8 @@ public class MLClassifier {
 
 		}
 
-		/*
-		 * for (int i = 1; i < interf.getSize(); i++) {
-		 * 
-		 * for (int j = 0; j < 7; j++) { aux[j] = interf.getIntByLine(i)[j]; //
-		 * System.out.print(a.getIo workontByLine(i)[j] + " ");
-		 * 
-		 * } re.eval("aux <- data.frame(as.integer(" + aux[0] + "),as.integer(" + aux[1]
-		 * + "),as.integer(" + aux[2] + "),as.integer(" + aux[3] + "),as.integer(" +
-		 * aux[4] + "),as.integer(" + aux[5] + "),as.integer(" + aux[6] + "))"); re.
-		 * eval("aux <- setNames(aux, c(\"nets\",\"netp\",\"blk\",\"mbw\",\"llcmr\",\"llcocc\",\"cpu\"))"
-		 * ); re.eval("teste <- rbind(teste, aux)"); // System.out.print("\n");
-		 * 
-		 * }
-		 */
-		// REXP hh = re.eval("abc <-svm_classifier_level(teste," + start + "," + finish
-		// + ")");
-		// REXP hh = re.eval("abc <-svm_classifier_level(teste,1,nrow(teste))");
-		REXP hh = re.eval("abc <-avg_classifier_level(teste,1,nrow(teste))");
-
+		REXP hh = re.eval("abc <-svm_classifier_level(teste,1,nrow(teste))");
+		
 		RVector ff = hh.asVector();
 
 		Map<String, String> gg = new HashMap<String, String>();
